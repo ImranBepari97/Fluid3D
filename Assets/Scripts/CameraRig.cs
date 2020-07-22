@@ -21,7 +21,15 @@ public class CameraRig : MonoBehaviour
         gameObject.transform.Rotate(-Input.GetAxis("Mouse Y")* sensitivity, 0, 0);
 
         Vector3 eulerRotation = transform.rotation.eulerAngles;
-        transform.rotation = Quaternion.Euler(eulerRotation.x, eulerRotation.y, 0);
+        float clampedX = eulerRotation.x;
+        
+        if(clampedX > 180) {
+            clampedX = Mathf.Clamp(eulerRotation.x, 275f, 360f);
+        } else {
+            clampedX = Mathf.Clamp(eulerRotation.x, 0f, 67.5f);
+        }
+         
+        transform.rotation = Quaternion.Euler(clampedX, eulerRotation.y, 0); //cancel z 
 
 
         if(Input.GetKeyDown("escape")) {

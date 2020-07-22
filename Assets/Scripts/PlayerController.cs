@@ -41,9 +41,7 @@ public class PlayerController : MonoBehaviour
         Vector3 movementZ = camForward * Input.GetAxis("Vertical");
         
         Vector3 moveDirection = (movementX + movementZ);
-         
-
-
+        moveDirection = Vector3.ClampMagnitude(moveDirection, 1f);
 
         if(moveDirection.magnitude > 0) {
             model.transform.rotation = Quaternion.LookRotation(moveDirection);
@@ -53,7 +51,6 @@ public class PlayerController : MonoBehaviour
         if(cc.isGrounded) {
             currentJumps = maxJumps;
             
-
             if(Input.GetButtonDown("Jump") && currentJumps > 0) {
                 currentYVelocity = initialJumpForce;
                 currentJumps -= 1;
@@ -62,11 +59,15 @@ public class PlayerController : MonoBehaviour
             }
         } else {
 
+            Vector3 currentHorizontalVelocity = cc.velocity;
+            currentHorizontalVelocity.y = 0;
+            Debug.Log("Horizontal Airspeed: " + currentHorizontalVelocity.magnitude);           
+            
             currentYVelocity += Time.deltaTime * gravity;
              if(Input.GetButtonDown("Jump") && currentJumps > 0) {
                 currentYVelocity = initialJumpForce;
                 currentJumps -= 1;
-            }
+            }   
         }
         
         moveDirection *= defaultRunSpeed;
@@ -82,17 +83,4 @@ public class PlayerController : MonoBehaviour
         return camDir;
     }
 }
-
-
-            // Vector3 debug = new Vector3(move.x, 0, move.z);
-            // Vector3 debug2 = new Vector3(cc.velocity.x, 0, cc.velocity.z);
-
-            // if(cc.velocity.magnitude > 0) {
-            //     Debug.Log(Vector3.Dot(debug2.normalized, debug.normalized));
-            // }
-            
-            // if(Vector3.Dot(debug2.normalized, debug.normalized) < 1) { 
-            //     move.x *= airControl;
-            //     move.z *= airControl;
-            // }
             
