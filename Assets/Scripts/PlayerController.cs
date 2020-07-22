@@ -6,6 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     CharacterController cc;
     public float defaultRunSpeed;
+    public float maxRunSpeed;
     public float initialJumpForce;
 
     public int maxJumps = 1;
@@ -39,10 +40,16 @@ public class PlayerController : MonoBehaviour
 
         Vector3 movementX = camRight * Input.GetAxis("Horizontal");
         Vector3 movementZ = camForward * Input.GetAxis("Vertical");
+
+        Vector3 currentHorizontalVelocity = cc.velocity;
+        currentHorizontalVelocity.y = 0;
         
         Vector3 moveDirection = (movementX + movementZ);
         moveDirection = Vector3.ClampMagnitude(moveDirection, 1f);
 
+        bool hasJumped = false; //have you successfully input jump this frame?
+
+        // Character face direction of input
         if(moveDirection.magnitude > 0) {
             model.transform.rotation = Quaternion.LookRotation(moveDirection);
         }
@@ -52,6 +59,7 @@ public class PlayerController : MonoBehaviour
             currentJumps = maxJumps;
             
             if(Input.GetButtonDown("Jump") && currentJumps > 0) {
+                hasJumped = true;
                 currentYVelocity = initialJumpForce;
                 currentJumps -= 1;
             } else {
@@ -59,16 +67,18 @@ public class PlayerController : MonoBehaviour
             }
         } else {
 
-            Vector3 currentHorizontalVelocity = cc.velocity;
-            currentHorizontalVelocity.y = 0;
-            Debug.Log("Horizontal Airspeed: " + currentHorizontalVelocity.magnitude);           
+            if (!hasJumped) {
+                moveDirection = Vector3.Lerp(currentHorizontalVelocity.normalized, moveDirection.normalized, airControl);
+            }
             
             currentYVelocity += Time.deltaTime * gravity;
              if(Input.GetButtonDown("Jump") && currentJumps > 0) {
+                hasJumped = true;
                 currentYVelocity = initialJumpForce;
                 currentJumps -= 1;
             }   
         }
+        
         
         moveDirection *= defaultRunSpeed;
         moveDirection.y = currentYVelocity;

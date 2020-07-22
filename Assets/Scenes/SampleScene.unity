@@ -732,9 +732,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultRunSpeed: 10
+  maxRunSpeed: 20
   initialJumpForce: 15
   maxJumps: 2
-  airControl: 0.5
+  airControl: 0.05
   gravity: -25
 --- !u!143 &996200983
 CharacterController:
