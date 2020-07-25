@@ -77,7 +77,7 @@ public class DefaultPlayerController : MonoBehaviour
                 rb.velocity = Vector3.ClampMagnitude(new Vector3(rb.velocity.x, 0, rb.velocity.z), currentMaxSpeed);
 
                 if(InputController.jumpPressed && gpc.currentJumps > 0) {
-                    gpc.hasRecentlyJumped = RecentJumpType.Regular;;
+                    gpc.hasRecentlyJumped = RecentJumpType.Regular;
                     yVel = initialJumpForce;
                     gpc.currentJumps -= 1;
                 } 

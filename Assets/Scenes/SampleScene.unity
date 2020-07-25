@@ -879,10 +879,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d9cc54045765d448bceebbc1eae5258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityScale: 15
+  gravityScale: 12.5
   defaultRunSpeed: 10
   maxPossibleSpeed: 20
-  initialJumpForce: 17.5
+  initialJumpForce: 20
   airControl: 5
 --- !u!114 &996200983
 MonoBehaviour:
@@ -926,6 +926,7 @@ MonoBehaviour:
   extraJumps: 1
   currentJumps: 0
   isGrounded: 0
+  hasRecentlyJumped: 0
 --- !u!136 &996200986
 CapsuleCollider:
   m_ObjectHideFlags: 0

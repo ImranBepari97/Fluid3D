@@ -36,19 +36,24 @@ public class GlobalPlayerController : MonoBehaviour
 
         if(isGrounded) {
             EnableDefaultControls();
+            wallPlayerController.wallNormal = new Vector3(0,0,0);
         }
-    }
 
-    private void FixedUpdate() {
         switch(hasRecentlyJumped) {
             case RecentJumpType.Regular:
                 StartCoroutine(JumpControlCoolDown(0.01f));
                 break;
             case RecentJumpType.Wall:
-                StartCoroutine(JumpControlCoolDown(0.02f));
+                StartCoroutine(JumpControlCoolDown(0.35f));
                 break;
 
         }
+    }
+
+    private void FixedUpdate() {
+
+
+        
     }
 
     bool CheckIfGrounded() {
@@ -104,10 +109,13 @@ public class GlobalPlayerController : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
             Debug.DrawRay(other.GetContact(0).point, other.GetContact(0).normal ,Color.white, 1f);
 
-            wallPlayerController.wallNormal = other.GetContact(0).normal;
+            
 
-            if(!isGrounded && other.GetContact(0).normal.y > -0.3f && other.GetContact(0).normal.y < 0.5f ) {
+            bool isCorrectAngle = other.GetContact(0).normal.y > -0.3f && other.GetContact(0).normal.y < 0.5f;
+            if(!isGrounded && isCorrectAngle && 
+            (other.gameObject != lastWallTouched || other.GetContact(0).normal != wallPlayerController.wallNormal)) {
                 lastWallTouched = other.collider.gameObject;
+                wallPlayerController.wallNormal = other.GetContact(0).normal;
                 Debug.Log("OnWall");   
                 EnableWallControls();
             }
