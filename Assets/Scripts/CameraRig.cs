@@ -6,11 +6,15 @@ public class CameraRig : MonoBehaviour
 {
 
     public float sensitivity = 1f;
+    public GameObject target;
+
+    
 
     // Start is called before the first frame update
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+
     }
 
     // Update is called once per frame
@@ -31,6 +35,8 @@ public class CameraRig : MonoBehaviour
          
         transform.rotation = Quaternion.Euler(clampedX, eulerRotation.y, 0); //cancel z 
 
+        //gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position, 1f);
+        gameObject.transform.position = target.transform.position;
 
         if(Input.GetKeyDown("escape")) {
             Cursor.lockState = CursorLockMode.None;
