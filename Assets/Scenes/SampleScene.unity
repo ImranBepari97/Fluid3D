@@ -766,6 +766,7 @@ GameObject:
   - component: {fileID: 996200986}
   - component: {fileID: 996200987}
   - component: {fileID: 996200988}
+  - component: {fileID: 996200983}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -787,9 +788,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravityScale: 5
   defaultRunSpeed: 10
-  maxRunSpeed: 20
+  maxPossibleSpeed: 20
   initialJumpForce: 15
-  airControl: 0.025
+  airControl: 5
+--- !u!114 &996200983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 996200981}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 375eac1c881b0564e9f33069d79422e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &996200984
 Transform:
   m_ObjectHideFlags: 0
@@ -847,7 +860,7 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 80
   m_CollisionDetection: 0
 --- !u!114 &996200988
