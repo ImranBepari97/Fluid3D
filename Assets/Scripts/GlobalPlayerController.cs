@@ -8,10 +8,14 @@ public class GlobalPlayerController : MonoBehaviour
     DefaultPlayerController defaultPlayerController;
     WallPlayerController wallPlayerController;
 
+    GameObject lastWallTouched;
+
     public int extraJumps = 1;
     public int currentJumps;
 
     public bool isGrounded;
+
+    public RecentJumpType hasRecentlyJumped;
 
     Rigidbody rb;
 
@@ -22,6 +26,7 @@ public class GlobalPlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         defaultPlayerController = GetComponent<DefaultPlayerController>();
         wallPlayerController = GetComponent<WallPlayerController>();
+        hasRecentlyJumped = RecentJumpType.None;
     }
 
     // Update is called once per frame
@@ -31,6 +36,18 @@ public class GlobalPlayerController : MonoBehaviour
 
         if(isGrounded) {
             EnableDefaultControls();
+        }
+    }
+
+    private void FixedUpdate() {
+        switch(hasRecentlyJumped) {
+            case RecentJumpType.Regular:
+                StartCoroutine(JumpControlCoolDown(0.01f));
+                break;
+            case RecentJumpType.Wall:
+                StartCoroutine(JumpControlCoolDown(0.02f));
+                break;
+
         }
     }
 
@@ -50,6 +67,14 @@ public class GlobalPlayerController : MonoBehaviour
     }
 
 
+    //Basically controls the boolean that see if you've jumped in the last split second
+    //Generally used to give the player absolute control in this short window 
+    public IEnumerator JumpControlCoolDown(float cooldownTimeSeconds) {
+        yield return new WaitForSeconds(cooldownTimeSeconds);
+        hasRecentlyJumped = RecentJumpType.None;
+    }
+
+
     public static Vector3 GetForwardRelativeToCamera() {
         Vector3 camDir = Camera.main.transform.forward;
         camDir.y = 0;
@@ -57,9 +82,6 @@ public class GlobalPlayerController : MonoBehaviour
         
         return camDir;
     }
-
-    
-
 
     public void EnableDefaultControls() {
         defaultPlayerController.enabled = true;
@@ -80,19 +102,16 @@ public class GlobalPlayerController : MonoBehaviour
 
     void OnCollisionEnter(Collision other) {
         if (other.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
+            Debug.DrawRay(other.GetContact(0).point, other.GetContact(0).normal ,Color.white, 1f);
 
-            Debug.DrawLine(rb.position, other.GetContact(0).point, Color.white, 1f);
-            //Physics.Raycast( out hit);
+            wallPlayerController.wallNormal = other.GetContact(0).normal;
 
-            float angleDot = Vector3.Dot(Vector3.up, rb.position - other.GetContact(0).point);
-            
-            if(angleDot > - 0.2f && angleDot < 0.35f && !isGrounded) {
+            if(!isGrounded && other.GetContact(0).normal.y > -0.3f && other.GetContact(0).normal.y < 0.5f ) {
+                lastWallTouched = other.collider.gameObject;
                 Debug.Log("OnWall");   
                 EnableWallControls();
             }
-
             
         }
-
     }
 }

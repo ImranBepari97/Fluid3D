@@ -22,7 +22,6 @@ public class DefaultPlayerController : MonoBehaviour
     Vector3 moveDirection;    
 
     //this is a successful jump, where we cannot jump again, yet maintain 100% air control for a split second 
-    bool hasRecentlyJumped = false; 
     Vector3 currentHorizontalVelocity;
 
 
@@ -59,7 +58,7 @@ public class DefaultPlayerController : MonoBehaviour
             gpc.currentJumps = gpc.extraJumps;
 
             if(InputController.jumpPressed) {
-                hasRecentlyJumped = true;
+                gpc.hasRecentlyJumped = RecentJumpType.Regular;
                 yVel = initialJumpForce;
             } 
 
@@ -72,30 +71,27 @@ public class DefaultPlayerController : MonoBehaviour
 
         } else {
 
-            if(!hasRecentlyJumped) {
+            if(gpc.hasRecentlyJumped == RecentJumpType.None) { //general air drift
                 
                 rb.AddForce(moveDirection * currentMaxSpeed * airControl, ForceMode.Force);
                 rb.velocity = Vector3.ClampMagnitude(new Vector3(rb.velocity.x, 0, rb.velocity.z), currentMaxSpeed);
 
                 if(InputController.jumpPressed && gpc.currentJumps > 0) {
-                    hasRecentlyJumped = true;
+                    gpc.hasRecentlyJumped = RecentJumpType.Regular;;
                     yVel = initialJumpForce;
                     gpc.currentJumps -= 1;
                 } 
-            } else {
+
+            } else if(gpc.hasRecentlyJumped == RecentJumpType.Regular) {
                 rb.velocity = new Vector3(
-                    moveDirection.x * defaultRunSpeed,
+                    moveDirection.x * defaultRunSpeed * 0.5f,
                     rb.velocity.y,
-                    moveDirection.z * defaultRunSpeed
+                    moveDirection.z * defaultRunSpeed * 0.5f
                 );
             }
         }
-
-        if(hasRecentlyJumped) {
-            StartCoroutine(JumpControlCoolDown());
-        }
-
         
+        //put it all together
         rb.velocity = new Vector3(rb.velocity.x, yVel, rb.velocity.z);
 
         //reset inputs
@@ -103,12 +99,7 @@ public class DefaultPlayerController : MonoBehaviour
     }
 
 
-    //Basically controls the boolean that see if you've jumped in the last split second
-    //Generally used to give the player absolute control in this short window 
-    IEnumerator JumpControlCoolDown() {
-        yield return new WaitForSeconds(0.01f);
-        hasRecentlyJumped = false;
-    }
+    
     
 }
             
