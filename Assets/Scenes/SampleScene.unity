@@ -884,6 +884,7 @@ MonoBehaviour:
   maxPossibleSpeed: 20
   initialJumpForce: 20
   airControl: 5
+  airDashSpeed: 25
 --- !u!114 &996200983
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -925,6 +926,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   extraJumps: 1
   currentJumps: 0
+  numberOfDashes: 1
+  currentDashes: 0
   isGrounded: 0
   hasRecentlyJumped: 2
 --- !u!136 &996200986
@@ -971,6 +974,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallNormal: {x: 0, y: 0, z: 0}
   initialJumpForce: 17.5
+  wallSlideDownSpeed: 0.75
+  defaultWallRunSpeed: 11
+  wallRunDirection: {x: 0, y: 0, z: 0}
 --- !u!1 &1273418255
 GameObject:
   m_ObjectHideFlags: 0

@@ -82,11 +82,16 @@ public class DefaultPlayerController : MonoBehaviour
                     yVel = initialJumpForce;
                     gpc.currentJumps -= 1;
                 } else if (InputController.dashPressed && gpc.currentDashes > 0) { //dash if you can
-                    Debug.Log("dash");
                     gpc.hasRecentlyJumped = RecentJumpType.Dash;
                     yVel = 0;
                     gpc.currentDashes -= 1;
+                    Debug.DrawRay(rb.position, moveDirection.normalized, Color.cyan, 2f );
                     dashDirection = moveDirection.normalized;
+                    rb.velocity = new Vector3(
+                        dashDirection.x * airDashSpeed,
+                        0,
+                        dashDirection.z * airDashSpeed
+                    );
                 }
 
             } else if(gpc.hasRecentlyJumped == RecentJumpType.Regular) {

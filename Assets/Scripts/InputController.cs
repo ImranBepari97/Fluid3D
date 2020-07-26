@@ -25,8 +25,6 @@ public class InputController : MonoBehaviour
             jumpPressed = Input.GetButtonDown("Jump");
         }
 
-        
-
         if(!dashPressed) {
             dashPressed = Input.GetButtonDown("AirDash");
             

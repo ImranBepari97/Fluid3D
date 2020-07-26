@@ -11,6 +11,11 @@ public class WallPlayerController : MonoBehaviour
     bool canAct = true;
 
     public float initialJumpForce = 17.5f;
+    public float wallSlideDownSpeed = 1f;
+
+    public float defaultWallRunSpeed = 7.5f;
+
+    public Vector3 wallRunDirection;
 
     Rigidbody rb;
 
@@ -20,6 +25,7 @@ public class WallPlayerController : MonoBehaviour
         globalPlayerController = GetComponent<GlobalPlayerController>();
         rb = GetComponent<Rigidbody>();
         wallNormal = new Vector3(0,0,0);
+        wallRunDirection = new Vector3(0,0,0);
     }
 
     void OnEnable() {
@@ -39,7 +45,12 @@ public class WallPlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-
+        if(wallRunDirection != new Vector3(0,0,0)) {
+            rb.velocity = wallRunDirection * defaultWallRunSpeed;
+        } else {
+            rb.AddForce(Physics.gravity * wallSlideDownSpeed);
+        }
+        
 
         if(InputController.jumpPressed && canAct) {
             rb.velocity = new Vector3(wallNormal.normalized.x, 1f, wallNormal.normalized.z) * initialJumpForce;
