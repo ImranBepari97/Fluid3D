@@ -16,10 +16,12 @@ public class DefaultPlayerController : MonoBehaviour
     float currentMaxSpeed; //current speed the player get's to move at
     public float initialJumpForce = 17.5f;
     public float airControl = 0.5f;
+    public float airDashSpeed = 25f;
     float yVel;
 
     //Input management and error correcting variables
-    Vector3 moveDirection;    
+    Vector3 moveDirection;
+    Vector3 dashDirection;
 
     //this is a successful jump, where we cannot jump again, yet maintain 100% air control for a split second 
     Vector3 currentHorizontalVelocity;
@@ -31,7 +33,6 @@ public class DefaultPlayerController : MonoBehaviour
         gpc = GetComponent<GlobalPlayerController>();
         rb = GetComponent<Rigidbody>();
         model = transform.Find("Model").gameObject;
-        gpc.currentJumps = 0;
         currentMaxSpeed = defaultRunSpeed;
     }
 
@@ -47,17 +48,16 @@ public class DefaultPlayerController : MonoBehaviour
         if(moveDirection.magnitude > 0.01f) {
             gameObject.transform.rotation = Quaternion.LookRotation(moveDirection);
         }
-        
-       
     }
 
     void FixedUpdate() {
-        rb.AddForce(Physics.gravity * gravityScale); //custom gravity
 
+        if(gpc.hasRecentlyJumped != RecentJumpType.Dash) { //custom gravity, turn off while dashing
+            rb.AddForce(Physics.gravity * gravityScale);
+        }
+        
         if(gpc.isGrounded) {
-            gpc.currentJumps = gpc.extraJumps;
-
-            if(InputController.jumpPressed) {
+            if(InputController.jumpPressed) { //initial jump fine
                 gpc.hasRecentlyJumped = RecentJumpType.Regular;
                 yVel = initialJumpForce;
             } 
@@ -71,22 +71,35 @@ public class DefaultPlayerController : MonoBehaviour
 
         } else {
 
+            //check what the players doing
             if(gpc.hasRecentlyJumped == RecentJumpType.None) { //general air drift
                 
                 rb.AddForce(moveDirection * currentMaxSpeed * airControl, ForceMode.Force);
-                rb.velocity = Vector3.ClampMagnitude(new Vector3(rb.velocity.x, 0, rb.velocity.z), currentMaxSpeed);
+                rb.velocity = Vector3.ClampMagnitude(new Vector3(rb.velocity.x, 0, rb.velocity.z), currentMaxSpeed); //make sure you can't drift too fast
 
-                if(InputController.jumpPressed && gpc.currentJumps > 0) {
+                if(InputController.jumpPressed && gpc.currentJumps > 0) { //multi jump if you have the resources
                     gpc.hasRecentlyJumped = RecentJumpType.Regular;
                     yVel = initialJumpForce;
                     gpc.currentJumps -= 1;
-                } 
+                } else if (InputController.dashPressed && gpc.currentDashes > 0) { //dash if you can
+                    Debug.Log("dash");
+                    gpc.hasRecentlyJumped = RecentJumpType.Dash;
+                    yVel = 0;
+                    gpc.currentDashes -= 1;
+                    dashDirection = moveDirection.normalized;
+                }
 
             } else if(gpc.hasRecentlyJumped == RecentJumpType.Regular) {
                 rb.velocity = new Vector3(
                     moveDirection.x * defaultRunSpeed * 0.5f,
                     rb.velocity.y,
                     moveDirection.z * defaultRunSpeed * 0.5f
+                );
+            } else if(gpc.hasRecentlyJumped == RecentJumpType.Dash) { //if dashing continue doing that 
+                rb.velocity = new Vector3(
+                    dashDirection.x * airDashSpeed,
+                    0,
+                    dashDirection.z * airDashSpeed
                 );
             }
         }
@@ -96,10 +109,8 @@ public class DefaultPlayerController : MonoBehaviour
 
         //reset inputs
         InputController.jumpPressed = false;
-    }
-
-
-    
+        InputController.dashPressed = false;
+    }    
     
 }
             

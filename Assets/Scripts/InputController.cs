@@ -10,12 +10,12 @@ public class InputController : MonoBehaviour
 
     public static bool jumpPressed;
     public static Vector3 moveDirection;
+    public static bool dashPressed;
 
 
     void Start()
     {   
         gpc = GetComponent<GlobalPlayerController>();
-        jumpPressed = Input.GetButtonDown("Jump");
     }
 
     // Update is called once per frame
@@ -23,6 +23,13 @@ public class InputController : MonoBehaviour
     {
         if(!jumpPressed) {
             jumpPressed = Input.GetButtonDown("Jump");
+        }
+
+        
+
+        if(!dashPressed) {
+            dashPressed = Input.GetButtonDown("AirDash");
+            
         }
 
         Vector3 camForward = GlobalPlayerController.GetForwardRelativeToCamera();

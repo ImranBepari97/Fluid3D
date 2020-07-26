@@ -29,7 +29,7 @@ public class WallPlayerController : MonoBehaviour
         StartCoroutine(CanActCoolDown(0.15f));
 
         gameObject.transform.rotation = Quaternion.LookRotation(wallNormal);
-        globalPlayerController.currentJumps = globalPlayerController.extraJumps;
+        globalPlayerController.ResetJumpsAndDashes();
     }
 
     void OnDisable() {
@@ -48,6 +48,7 @@ public class WallPlayerController : MonoBehaviour
         }
 
         InputController.jumpPressed = false;
+        InputController.dashPressed = false;
     }
 
 

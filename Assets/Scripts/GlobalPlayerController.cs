@@ -13,6 +13,9 @@ public class GlobalPlayerController : MonoBehaviour
     public int extraJumps = 1;
     public int currentJumps;
 
+    public int numberOfDashes = 1;
+    public int currentDashes;
+
     public bool isGrounded;
 
     public RecentJumpType hasRecentlyJumped;
@@ -27,6 +30,8 @@ public class GlobalPlayerController : MonoBehaviour
         defaultPlayerController = GetComponent<DefaultPlayerController>();
         wallPlayerController = GetComponent<WallPlayerController>();
         hasRecentlyJumped = RecentJumpType.None;
+        currentJumps = 0;
+        currentDashes = 0;
     }
 
     // Update is called once per frame
@@ -35,6 +40,7 @@ public class GlobalPlayerController : MonoBehaviour
         CheckIfGrounded();
 
         if(isGrounded) {
+            ResetJumpsAndDashes();
             EnableDefaultControls();
             wallPlayerController.wallNormal = new Vector3(0,0,0);
         }
@@ -46,19 +52,18 @@ public class GlobalPlayerController : MonoBehaviour
             case RecentJumpType.Wall:
                 StartCoroutine(JumpControlCoolDown(0.35f));
                 break;
-
+            case RecentJumpType.Dash:
+                StartCoroutine(JumpControlCoolDown(0.25f));
+                break;
         }
     }
 
     private void FixedUpdate() {
-
-
         
     }
 
     bool CheckIfGrounded() {
         RaycastHit hit;
-        //Debug.DrawLine(rb.position, rb.position - Vector3.up * 1.1f);
 
         if(Physics.Raycast(rb.position, -Vector3.up, out hit, 1.1f)) {
             if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
@@ -121,5 +126,10 @@ public class GlobalPlayerController : MonoBehaviour
             }
             
         }
+    }
+
+    public void ResetJumpsAndDashes() {
+        currentJumps = extraJumps; 
+        currentDashes = numberOfDashes;
     }
 }
