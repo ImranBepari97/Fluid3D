@@ -152,7 +152,7 @@ public class GlobalPlayerController : MonoBehaviour
 
         Debug.Log("DOT: " + angleAsDotProduct + " VelXz =" +  currentHorizontalVelocity.magnitude);
 
-        bool correctRunSpeed = currentHorizontalVelocity.magnitude > 0.5f * defaultPlayerController.defaultRunSpeed;
+        bool correctRunSpeed = currentHorizontalVelocity.magnitude > 0.4f * defaultPlayerController.defaultRunSpeed;
         bool correctDotProduct = angleAsDotProduct < 0.875f;
 
         if(correctRunSpeed && correctDotProduct) {
