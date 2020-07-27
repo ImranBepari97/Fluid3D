@@ -5,7 +5,12 @@ using UnityEngine;
 public class CameraRig : MonoBehaviour
 {
 
-    public float sensitivity = 1f;
+    public float mouseSensitivity = 1f;
+
+    public float stickXSensitivity = 1f;
+    public float stickYSensitivity = 1f;
+
+
     public GameObject target;
 
     
@@ -21,8 +26,11 @@ public class CameraRig : MonoBehaviour
     void Update()
     {
 
-        gameObject.transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivity, 0);
-        gameObject.transform.Rotate(-Input.GetAxis("Mouse Y")* sensitivity, 0, 0);
+        gameObject.transform.Rotate(0, Input.GetAxis("Mouse X") * mouseSensitivity, 0);
+        gameObject.transform.Rotate(-Input.GetAxis("Mouse Y")* mouseSensitivity, 0, 0);
+
+        gameObject.transform.Rotate(0, Input.GetAxis("RStick X") * stickXSensitivity, 0);
+        gameObject.transform.Rotate(-Input.GetAxis("RStick Y") * stickYSensitivity, 0, 0);
 
         Vector3 eulerRotation = transform.rotation.eulerAngles;
         float clampedX = eulerRotation.x;

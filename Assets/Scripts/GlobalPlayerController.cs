@@ -89,6 +89,8 @@ public class GlobalPlayerController : MonoBehaviour
     }
 
 
+
+
     public static Vector3 GetForwardRelativeToCamera() {
         Vector3 camDir = Camera.main.transform.forward;
         camDir.y = 0;
@@ -109,7 +111,7 @@ public class GlobalPlayerController : MonoBehaviour
 
     void OnCollisionExit(Collision other) {
         if (other.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
-            Debug.Log("OffWall");
+            // Debug.Log("OffWall");
             if (wallPlayerController.wallsCollidingWith.Contains(other.gameObject)) {
                 wallPlayerController.wallsCollidingWith.Remove(other.gameObject);
             }
@@ -142,7 +144,7 @@ public class GlobalPlayerController : MonoBehaviour
 
                 lastWallTouched = other.collider.gameObject;
                 wallPlayerController.wallNormal = other.GetContact(0).normal;
-                Debug.Log("OnWall");   
+                //Debug.Log("OnWall");   
                 EnableWallControls();
             }
         }

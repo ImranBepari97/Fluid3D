@@ -46,7 +46,6 @@ public class WallPlayerController : MonoBehaviour
         currentWallRunDuration = wallRunDuration;
         StartCoroutine(CanActCoolDown(0.15f));
 
-        gameObject.transform.rotation = Quaternion.LookRotation(wallNormal);
         globalPlayerController.ResetJumpsAndDashes();
     }
 
@@ -64,34 +63,31 @@ public class WallPlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (isWallRunning)
-        {
+        if (isWallRunning) { //regular wall running
             rb.velocity = wallRunDirection * ((defaultWallRunSpeed * currentWallRunDuration * 0.5f) + 4f);
+            gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
         }
-        else if (currentWallRunDuration < 0 && wallRunDirection != new Vector3(0, 0, 0))
-        {
+        else if (currentWallRunDuration < 0 && wallRunDirection != new Vector3(0, 0, 0)) { //stopped wall running, detach from wall
             rb.velocity = new Vector3(rb.velocity.normalized.x + wallNormal.normalized.x, 0f, rb.velocity.normalized.z + wallNormal.normalized.z);
+            gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
         }
-        else
-        {
+        else { //sliding down wall
             rb.AddForce(Physics.gravity * wallSlideDownSpeed);
+            gameObject.transform.rotation = Quaternion.LookRotation(wallNormal);
         }
 
-        if (InputController.jumpPressed && canAct)
-        {
+        if (InputController.jumpPressed && canAct) {
 
-            if (isWallRunning)
-            {
+            if (isWallRunning) {
                 rb.velocity = new Vector3(rb.velocity.normalized.x + wallNormal.normalized.x, 1f, rb.velocity.normalized.z + wallNormal.normalized.z) * wallRunInitialJumpForce;
-            }
-            else
-            {
+            } else {
                 rb.velocity = new Vector3(wallNormal.normalized.x, 1f, wallNormal.normalized.z) * initialJumpForce;
             }
 
             globalPlayerController.hasRecentlyJumped = RecentJumpType.Wall;
 
             Debug.DrawRay(rb.position, new Vector3(wallNormal.normalized.x, 1f, wallNormal.normalized.z), Color.blue, 2f);
+            globalPlayerController.EnableDefaultControls();
         }
 
 
