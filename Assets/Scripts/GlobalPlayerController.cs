@@ -8,7 +8,7 @@ public class GlobalPlayerController : MonoBehaviour
     DefaultPlayerController defaultPlayerController;
     WallPlayerController wallPlayerController;
 
-    GameObject lastWallTouched;
+    public GameObject lastWallTouched;
 
     public int extraJumps = 1;
     public int currentJumps;
@@ -66,10 +66,6 @@ public class GlobalPlayerController : MonoBehaviour
         }
     }
 
-    private void FixedUpdate() {
-        
-    }
-
     bool CheckIfGrounded() {
         RaycastHit hit;
 
@@ -83,7 +79,6 @@ public class GlobalPlayerController : MonoBehaviour
 
         return isGrounded;
     }
-
 
     //Basically controls the boolean that see if you've jumped in the last split second
     //Generally used to give the player absolute control in this short window 
@@ -113,15 +108,22 @@ public class GlobalPlayerController : MonoBehaviour
     }
 
     void OnCollisionExit(Collision other) {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Parkour") && wallPlayerController.enabled) {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
             Debug.Log("OffWall");
-            EnableDefaultControls();
+            if (wallPlayerController.wallsCollidingWith.Contains(other.gameObject)) {
+                wallPlayerController.wallsCollidingWith.Remove(other.gameObject);
+            }
+
+            if(wallPlayerController.wallsCollidingWith.Count == 0) {
+                EnableDefaultControls();
+            }
         }
     }
 
     void OnCollisionEnter(Collision other) {
         if (other.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
             //Debug.DrawRay(other.GetContact(0).point, other.GetContact(0).normal ,Color.white, 1f);
+            wallPlayerController.wallsCollidingWith.Add(other.gameObject);
 
             //Are you actually touching a wall?
             bool isCorrectAngle = other.GetContact(0).normal.y > -0.3f && other.GetContact(0).normal.y < 0.5f;
