@@ -45,7 +45,7 @@ public class DefaultPlayerController : MonoBehaviour
 
         moveDirection = InputController.moveDirection; //current input left and right, relative to the camera
 
-        if(moveDirection.magnitude > 0.01f) {
+        if(moveDirection.magnitude > 0.1f) {
             gameObject.transform.rotation = Quaternion.LookRotation(moveDirection);
         }
     }

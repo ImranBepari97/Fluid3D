@@ -63,6 +63,7 @@ public class WallPlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        Debug.Log("is it u");
         if (isWallRunning) { //regular wall running
             rb.velocity = wallRunDirection * ((defaultWallRunSpeed * currentWallRunDuration * 0.5f) + 4f);
             gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
@@ -79,9 +80,15 @@ public class WallPlayerController : MonoBehaviour
         if (InputController.jumpPressed && canAct) {
 
             if (isWallRunning) {
-                rb.velocity = new Vector3(rb.velocity.normalized.x + wallNormal.normalized.x, 1f, rb.velocity.normalized.z + wallNormal.normalized.z) * wallRunInitialJumpForce;
+                rb.velocity = new Vector3(
+                    rb.velocity.normalized.x + wallNormal.normalized.x + (InputController.moveDirection.x * 0.4f), 
+                    1f, 
+                    rb.velocity.normalized.z + wallNormal.normalized.z + (InputController.moveDirection.z * 0.4f)) * wallRunInitialJumpForce;
             } else {
-                rb.velocity = new Vector3(wallNormal.normalized.x, 1f, wallNormal.normalized.z) * initialJumpForce;
+                rb.velocity = new Vector3(
+                    wallNormal.normalized.x + (InputController.moveDirection.x * 0.4f), 
+                    1f, 
+                    wallNormal.normalized.z + (InputController.moveDirection.z * 0.4f)) * initialJumpForce;
             }
 
             globalPlayerController.hasRecentlyJumped = RecentJumpType.Wall;

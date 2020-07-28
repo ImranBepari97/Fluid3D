@@ -2054,22 +2054,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 549293561, guid: 4eb4b60b987c31347bab743568f24671, type: 3}
-      propertyPath: m_Name
-      value: Scarf
-      objectReference: {fileID: 0}
-    - target: {fileID: 549293562, guid: 4eb4b60b987c31347bab743568f24671, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -1.36
-      objectReference: {fileID: 0}
-    - target: {fileID: 549293564, guid: 4eb4b60b987c31347bab743568f24671, type: 3}
-      propertyPath: m_CapsuleColliders.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 549293564, guid: 4eb4b60b987c31347bab743568f24671, type: 3}
-      propertyPath: m_StretchingStiffness
-      value: 0.95
-      objectReference: {fileID: 0}
     - target: {fileID: 4456431860825829366, guid: 4eb4b60b987c31347bab743568f24671,
         type: 3}
       propertyPath: m_Name
@@ -2129,6 +2113,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4456431860825829375, guid: 4eb4b60b987c31347bab743568f24671,
+        type: 3}
+      propertyPath: initialJumpForce
+      value: 16.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4eb4b60b987c31347bab743568f24671, type: 3}
