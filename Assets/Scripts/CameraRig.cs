@@ -71,16 +71,14 @@ public class CameraRig : MonoBehaviour
             Vector3 camDirection = gameObject.transform.forward;
             camDirection.y = 0;
 
-            //Closer DOT product to 0 the more perpendicular the camera is to movement 
-
             //Debug.Log("DOT camera: " + Vector3.Dot(camDirection.normalized , xzMovement.normalized));
             float camMoveDot = Vector3.Dot(camDirection.normalized, xzMovement.normalized);
-            //TODO FIX IT so that small adjustments can happen
-            if(camMoveDot > -0.4 && camMoveDot < 0.4f) {
-                Vector3 rotated = Vector3.RotateTowards(camDirection, xzMovement, xzMovement.magnitude * Time.deltaTime * 0.1f, 2f);
-                transform.rotation = Quaternion.LookRotation(rotated);
-            }
-            
+
+            float oldX = transform.rotation.eulerAngles.x;
+            Vector3 rotated = Vector3.RotateTowards(camDirection, xzMovement, Mathf.Pow(xzMovement.magnitude, 1.5f) * Time.deltaTime * 0.01f / Mathf.Clamp(Mathf.Abs(camMoveDot), 0.25f, 1f), 2f);
+            transform.rotation = Quaternion.LookRotation(rotated); //rotate to look at the new angle
+            transform.rotation = Quaternion.Euler(oldX, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z); // dont rotate X though
+
 
         }
     }
