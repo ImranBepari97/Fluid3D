@@ -63,7 +63,6 @@ public class WallPlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        Debug.Log("is it u");
         if (isWallRunning) { //regular wall running
             rb.velocity = wallRunDirection * ((defaultWallRunSpeed * currentWallRunDuration * 0.5f) + 4f);
             gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);

@@ -12,19 +12,28 @@ public class CameraRig : MonoBehaviour
 
 
     public GameObject target;
+    Rigidbody targetRb;
 
+    public bool isManuallyMovingCamera;
     
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Awake() { 
         Cursor.lockState = CursorLockMode.Locked;
+        targetRb = target.GetComponent<Rigidbody>();
+        isManuallyMovingCamera = false;
 
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
+        if(Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0
+            || Input.GetAxis("RStick X") != 0 || Input.GetAxis("RStick Y") != 0) {
+            isManuallyMovingCamera = true;
+        } else {
+            isManuallyMovingCamera = false;
+        }
+        
 
         gameObject.transform.Rotate(0, Input.GetAxis("Mouse X") * mouseSensitivity, 0);
         gameObject.transform.Rotate(-Input.GetAxis("Mouse Y")* mouseSensitivity, 0, 0);
@@ -46,9 +55,33 @@ public class CameraRig : MonoBehaviour
         //gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position, 1f);
         gameObject.transform.position = target.transform.position;
 
+           
+
         if(Input.GetKeyDown("escape")) {
             Cursor.lockState = CursorLockMode.None;
         }
 
+    }
+
+    void FixedUpdate() {
+        Vector3 xzMovement = targetRb.velocity;
+        xzMovement.y = 0;
+        if (!isManuallyMovingCamera && xzMovement.magnitude > 4f) {
+
+            Vector3 camDirection = gameObject.transform.forward;
+            camDirection.y = 0;
+
+            //Closer DOT product to 0 the more perpendicular the camera is to movement 
+
+            //Debug.Log("DOT camera: " + Vector3.Dot(camDirection.normalized , xzMovement.normalized));
+            float camMoveDot = Vector3.Dot(camDirection.normalized, xzMovement.normalized);
+            //TODO FIX IT so that small adjustments can happen
+            if(camMoveDot > -0.4 && camMoveDot < 0.4f) {
+                Vector3 rotated = Vector3.RotateTowards(camDirection, xzMovement, xzMovement.magnitude * Time.deltaTime * 0.1f, 2f);
+                transform.rotation = Quaternion.LookRotation(rotated);
+            }
+            
+
+        }
     }
 }
