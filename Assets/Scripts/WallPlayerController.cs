@@ -114,13 +114,11 @@ public class WallPlayerController : MonoBehaviour
         {
             //Debug.DrawRay(other.GetContact(0).point, other.GetContact(0).normal ,Color.white, 1f);
 
-            if (other.GetContact(0).normal == wallNormal)
-            {
+            if (other.GetContact(0).normal == wallNormal) {
                 return;
             }
 
-            if (0.966f < Vector3.Dot(wallNormal, other.GetContact(0).normal))
-            { //can transition the wall run
+            if (0.966f < Vector3.Dot(wallNormal, other.GetContact(0).normal)) { //can transition the wall run
                 Vector3 currentHorizontalVelocity = rb.velocity;
                 currentHorizontalVelocity.y = 0;
                 Debug.Log("New Wall");
