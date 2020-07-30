@@ -45,7 +45,7 @@ public class DefaultPlayerController : MonoBehaviour
 
         moveDirection = InputController.moveDirection; //current input left and right, relative to the camera
 
-        if(moveDirection.magnitude > 0.1f) {
+        if(moveDirection.magnitude > 0.1f && gpc.hasRecentlyJumped != RecentJumpType.Dash) {
             gameObject.transform.rotation = Quaternion.LookRotation(moveDirection);
         }
     }
@@ -106,6 +106,7 @@ public class DefaultPlayerController : MonoBehaviour
                     0,
                     dashDirection.z * airDashSpeed
                 );
+                gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
             }
         }
         
