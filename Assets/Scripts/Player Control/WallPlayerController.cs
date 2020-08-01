@@ -57,7 +57,7 @@ public class WallPlayerController : MonoBehaviour
     void Update()
     {
         currentWallRunDuration -= Time.deltaTime;
-        isWallRunning = wallRunDirection != new Vector3(0, 0, 0) && currentWallRunDuration > 0 && globalPlayerController.hasRecentlyJumped != RecentJumpType.Wall;
+        isWallRunning = wallRunDirection != new Vector3(0, 0, 0) && currentWallRunDuration > 0 && globalPlayerController.recentAction != RecentActionType.WallJump;
     }
 
     // Update is called once per frame
@@ -90,7 +90,7 @@ public class WallPlayerController : MonoBehaviour
                     wallNormal.normalized.z + (InputController.moveDirection.z * 0.4f)) * initialJumpForce;
             }
 
-            globalPlayerController.hasRecentlyJumped = RecentJumpType.Wall;
+            globalPlayerController.recentAction = RecentActionType.WallJump;
 
             Debug.DrawRay(rb.position, new Vector3(wallNormal.normalized.x, 1f, wallNormal.normalized.z), Color.blue, 2f);
             globalPlayerController.EnableDefaultControls();

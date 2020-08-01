@@ -7,16 +7,18 @@ public class DefaultPlayerController : MonoBehaviour
     //general variables
     GlobalPlayerController gpc;
     Rigidbody rb;
+    CapsuleCollider col;
     GameObject model;
 
     //control variables
     public float gravityScale = -35f;
     public float defaultRunSpeed = 10f; //the slowest run speed the player has
-    public float maxPossibleSpeed = 20f; //the fastest speed the player has
-    float currentMaxSpeed; //current speed the player get's to move at
+    public float currentMaxSpeed; //current speed the player get's to move at
     public float initialJumpForce = 17.5f;
     public float airControl = 0.5f;
     public float airDashSpeed = 25f;
+    public float crouchSpeedMultiplier = 0.5f;
+    public float slideControl = 10f;
     float yVel;
 
     //Input management and error correcting variables
@@ -30,6 +32,7 @@ public class DefaultPlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        col = GetComponent<CapsuleCollider>();
         gpc = GetComponent<GlobalPlayerController>();
         rb = GetComponent<Rigidbody>();
         model = transform.Find("Model").gameObject;
@@ -43,69 +46,104 @@ public class DefaultPlayerController : MonoBehaviour
         currentHorizontalVelocity = rb.velocity;
         currentHorizontalVelocity.y = 0;
 
+        currentMaxSpeed = defaultRunSpeed * gpc.currentSpeedMultiplier;
         moveDirection = InputController.moveDirection; //current input left and right, relative to the camera
 
-        if(moveDirection.magnitude > 0.1f && gpc.hasRecentlyJumped != RecentJumpType.Dash) {
+        if(moveDirection.magnitude > 0.1f && gpc.recentAction != RecentActionType.Dash && gpc.recentAction != RecentActionType.Slide) {
             gameObject.transform.rotation = Quaternion.LookRotation(moveDirection);
         }
     }
 
     void FixedUpdate() {
 
-        if(gpc.hasRecentlyJumped != RecentJumpType.Dash) { //custom gravity, turn off while dashing
+        if (gpc.recentAction != RecentActionType.Dash) { //custom gravity, turn off while dashing
             rb.AddForce(Physics.gravity * gravityScale);
         }
         
         if(gpc.isGrounded) {
-            if(InputController.jumpPressed) { //initial jump fine
-                gpc.hasRecentlyJumped = RecentJumpType.Regular;
+
+            if (InputController.jumpPressed) { //initial jump fine
                 yVel = initialJumpForce;
-            } 
+                if (InputController.crouchPressed && gpc.recentAction == RecentActionType.Slide) {
+                    gpc.recentAction = RecentActionType.SlideJump;
+                    rb.velocity = new Vector3(rb.velocity.x, yVel, rb.velocity.z);
+
+                } else {
+                    gpc.recentAction = RecentActionType.RegularJump;
+                }       
+            }
 
             //running is always locked at a default speed to encourage air movement
-            rb.velocity = new Vector3(
-                moveDirection.x * defaultRunSpeed,
-                rb.velocity.y,
-                moveDirection.z * defaultRunSpeed
-            );
+            if (InputController.crouchPressed && currentHorizontalVelocity.magnitude > 0.9f * defaultRunSpeed
+                && gpc.recentAction == RecentActionType.None) { //slide if you're moving fast enough on the ground
+                ShrinkPlayer();
+                gpc.recentAction = RecentActionType.Slide;
+                rb.velocity = new Vector3(
+                    Mathf.Clamp(rb.velocity.x * 2f, 2f *-currentMaxSpeed, 2f * currentMaxSpeed),
+                    rb.velocity.y,
+                    Mathf.Clamp(rb.velocity.z * 2f, 2f * -currentMaxSpeed, 2f * currentMaxSpeed)
+                );
 
-        } else {
-
-            //check what the players doing
-            if(gpc.hasRecentlyJumped == RecentJumpType.None) { //general air drift
+            } else if (gpc.recentAction == RecentActionType.Slide && currentHorizontalVelocity.magnitude < defaultRunSpeed * 0.25f) {
+                UnshrinkPlayer();
+                gpc.recentAction = RecentActionType.None;
                 
-                rb.AddForce(moveDirection * currentMaxSpeed * airControl, ForceMode.Force);
-                rb.velocity = Vector3.ClampMagnitude(new Vector3(rb.velocity.x, 0, rb.velocity.z), currentMaxSpeed); //make sure you can't drift too fast
+            } else if (InputController.crouchPressed && gpc.recentAction == RecentActionType.None) { //move with crouched speed
+                ShrinkPlayer();
+                rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * currentMaxSpeed * crouchSpeedMultiplier;
 
-                if(InputController.jumpPressed && gpc.currentJumps > 0) { //multi jump if you have the resources
-                    gpc.hasRecentlyJumped = RecentJumpType.Regular;
+            } else if (InputController.crouchPressed && gpc.recentAction == RecentActionType.Slide && gpc.floorNormal != new Vector3(0, 1, 0)) { //slide time
+                ShrinkPlayer();
+                Vector3 slideDir = gpc.floorNormal;
+                slideDir.y = 0;
+                rb.AddForce((slideDir * currentMaxSpeed * 1.2f) + (moveDirection * slideControl));
+                gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
+
+            } else if (gpc.recentAction == RecentActionType.Slide) { //getting up from slide
+                rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z) * 0.95f;
+
+            } else if (gpc.recentAction != RecentActionType.SlideJump) { //move normally
+                UnshrinkPlayer();
+                rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * currentMaxSpeed;
+                
+            } 
+        } else {
+            UnshrinkPlayer();
+            //check what the players doing
+            if (gpc.recentAction == RecentActionType.None) { //general air drift
+
+                if(currentHorizontalVelocity.magnitude < currentMaxSpeed * 1.1f) {
+                    rb.AddForce(moveDirection * currentMaxSpeed * airControl, ForceMode.Force);
+                    rb.velocity = Vector3.ClampMagnitude(new Vector3(rb.velocity.x, 0, rb.velocity.z), currentMaxSpeed);
+                }
+
+                if(InputController.jumpPressed && gpc.currentJumps > 0) { //multi jump if you can
+                    gpc.recentAction = RecentActionType.RegularJump;
                     yVel = initialJumpForce;
                     gpc.currentJumps -= 1;
                 } else if (InputController.dashPressed && gpc.currentDashes > 0) { //dash if you can
-                    gpc.hasRecentlyJumped = RecentJumpType.Dash;
+                    gpc.recentAction = RecentActionType.Dash;
                     yVel = 0;
                     gpc.currentDashes -= 1;
                     Debug.DrawRay(rb.position, moveDirection.normalized, Color.cyan, 2f );
-                    dashDirection = moveDirection.normalized;
-                    rb.velocity = new Vector3(
-                        dashDirection.x * airDashSpeed,
-                        0,
-                        dashDirection.z * airDashSpeed
-                    );
+
+                    if (moveDirection.magnitude > 0) { //dash in your current facing direction if you have no directional input 
+                        dashDirection = moveDirection.normalized;
+                    } else {
+                        dashDirection = rb.transform.forward;
+                    }
+                    
+                    rb.velocity = new Vector3(dashDirection.x, 0, dashDirection.z) * airDashSpeed;
                 }
 
-            } else if(gpc.hasRecentlyJumped == RecentJumpType.Regular) {
+            } else if(gpc.recentAction == RecentActionType.RegularJump) { //if you just jumped, you still have air control for a split second
                 rb.velocity = new Vector3(
-                    moveDirection.x * defaultRunSpeed * 0.5f,
+                    moveDirection.x * currentMaxSpeed * 0.5f,
                     rb.velocity.y,
-                    moveDirection.z * defaultRunSpeed * 0.5f
+                    moveDirection.z * currentMaxSpeed * 0.5f
                 );
-            } else if(gpc.hasRecentlyJumped == RecentJumpType.Dash) { //if dashing continue doing that 
-                rb.velocity = new Vector3(
-                    dashDirection.x * airDashSpeed,
-                    0,
-                    dashDirection.z * airDashSpeed
-                );
+            } else if(gpc.recentAction == RecentActionType.Dash) { //if dashing continue doing that 
+                rb.velocity = new Vector3(dashDirection.x, 0, dashDirection.z) * airDashSpeed;
                 gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
             }
         }
@@ -117,6 +155,21 @@ public class DefaultPlayerController : MonoBehaviour
         InputController.jumpPressed = false;
         InputController.dashPressed = false;
     }    
-    
+
+    void ShrinkPlayer() {
+        col.height = 0f;
+        col.radius = 0.4f;
+    }
+
+    void UnshrinkPlayer() {
+        col.height = 1.5f;
+        col.radius = 0.5f;
+    }
+
+    IEnumerator SlideActCooldown(float cooldownTimeSeconds) {
+        yield return new WaitForSeconds(cooldownTimeSeconds);
+        
+    }
+
 }
             

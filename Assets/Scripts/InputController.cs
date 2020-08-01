@@ -11,6 +11,7 @@ public class InputController : MonoBehaviour
     public static bool jumpPressed;
     public static Vector3 moveDirection;
     public static bool dashPressed;
+    public static bool crouchPressed;
 
 
     void Start()
@@ -27,8 +28,9 @@ public class InputController : MonoBehaviour
 
         if(!dashPressed) {
             dashPressed = Input.GetButtonDown("AirDash");
-            
         }
+
+        crouchPressed = Input.GetButton("Crouch");
 
         Vector3 camForward = GlobalPlayerController.GetForwardRelativeToCamera();
         Vector3 camRight = new Vector3(camForward.z, 0f, -camForward.x);

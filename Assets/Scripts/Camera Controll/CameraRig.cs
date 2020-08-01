@@ -55,15 +55,6 @@ public class CameraRig : MonoBehaviour
         //gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position, 1f);
         gameObject.transform.position = target.transform.position;
 
-           
-
-        if(Input.GetKeyDown("escape")) {
-            Cursor.lockState = CursorLockMode.None;
-        }
-
-    }
-
-    void FixedUpdate() {
         Vector3 xzMovement = targetRb.velocity;
         xzMovement.y = 0;
         if (!isManuallyMovingCamera && xzMovement.magnitude > 4f) {
@@ -78,8 +69,15 @@ public class CameraRig : MonoBehaviour
             Vector3 rotated = Vector3.RotateTowards(camDirection, xzMovement, Mathf.Pow(xzMovement.magnitude, 1.5f) * Time.deltaTime * 0.01f / Mathf.Clamp(Mathf.Abs(camMoveDot), 0.25f, 1f), 2f);
             transform.rotation = Quaternion.LookRotation(rotated); //rotate to look at the new angle
             transform.rotation = Quaternion.Euler(oldX, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z); // dont rotate X though
-
-
         }
+
+        if (Input.GetKeyDown("escape")) {
+            Cursor.lockState = CursorLockMode.None;
+        }
+
+    }
+
+    void FixedUpdate() {
+        
     }
 }

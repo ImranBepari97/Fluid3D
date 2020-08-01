@@ -16,15 +16,20 @@ public class GlobalPlayerController : MonoBehaviour
     public int numberOfDashes = 1;
     public int currentDashes;
 
+    public float currentSpeedMultiplier = 1f;
+    public float maxSpeedMultiplier = 2f;
+
     public bool isGrounded;
 
-    public RecentJumpType hasRecentlyJumped;
+    public RecentActionType recentAction;
 
     Rigidbody rb;
 
     bool isResetCRRunning;
 
     float dotProductOfNearestWall;
+
+    public Vector3 floorNormal;
 
     // Start is called before the first frame update
     void Start()
@@ -33,7 +38,7 @@ public class GlobalPlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         defaultPlayerController = GetComponent<DefaultPlayerController>();
         wallPlayerController = GetComponent<WallPlayerController>();
-        hasRecentlyJumped = RecentJumpType.None;
+        recentAction = RecentActionType.None;
         currentJumps = 0;
         currentDashes = 0;
         isResetCRRunning = false;
@@ -57,28 +62,34 @@ public class GlobalPlayerController : MonoBehaviour
         Debug.DrawRay(rb.position, xzVelocity.normalized, Color.white, 0.01f);
         if (Physics.Raycast(rb.position, xzVelocity.normalized, out hit, 5f)) {
             dotProductOfNearestWall = Mathf.Abs(Vector3.Dot(hit.normal, xzVelocity.normalized));
-            //Debug.Log();
         }
 
         if (!isResetCRRunning) {
-            switch(hasRecentlyJumped) {
-                case RecentJumpType.Regular:
+            switch(recentAction) {
+                case RecentActionType.RegularJump:
                     isResetCRRunning = true;
                     StartCoroutine(JumpControlCoolDown(0.01f));
                     break;
-                case RecentJumpType.Wall:
+                case RecentActionType.SlideJump:
                     isResetCRRunning = true;
                     StartCoroutine(JumpControlCoolDown(0.35f));
                     break;
-                case RecentJumpType.Dash:
+                case RecentActionType.WallJump:
                     isResetCRRunning = true;
-                    StartCoroutine(JumpControlCoolDown(0.25f));
+                    StartCoroutine(JumpControlCooldownClampSpeed(0.35f, defaultPlayerController.currentMaxSpeed));
+                    break;
+                case RecentActionType.Dash:
+                    isResetCRRunning = true;
+                    StartCoroutine(JumpControlCooldownClampSpeed(0.25f, defaultPlayerController.currentMaxSpeed));
+                    break;
+                case RecentActionType.Slide:
+                    if(!InputController.crouchPressed) {
+                        isResetCRRunning = true;
+                        StartCoroutine(JumpControlCoolDown(0.35f));
+                    }
                     break;
             }
         }
-
-        
-
     }
 
     bool CheckIfGrounded() {
@@ -86,10 +97,16 @@ public class GlobalPlayerController : MonoBehaviour
 
         if(Physics.Raycast(rb.position, -Vector3.up, out hit, 1.1f)) {
             if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
-               isGrounded = true;
+                isGrounded = true;
+                floorNormal = hit.normal;
+            
+                if(recentAction == RecentActionType.None) {
+                    currentSpeedMultiplier = 1.0f;
+                }
             } 
         } else {
             isGrounded = false;
+            floorNormal = new Vector3(0, 0, 0);
         }
 
         return isGrounded;
@@ -99,11 +116,17 @@ public class GlobalPlayerController : MonoBehaviour
     //Generally used to give the player absolute control in this short window 
     public IEnumerator JumpControlCoolDown(float cooldownTimeSeconds) {
         yield return new WaitForSeconds(cooldownTimeSeconds);
-        hasRecentlyJumped = RecentJumpType.None;
+        recentAction = RecentActionType.None;
         isResetCRRunning = false;
     }
+    
 
-
+    public IEnumerator JumpControlCooldownClampSpeed(float cooldownTimeSeconds, float maxSpeed) {
+        yield return new WaitForSeconds(cooldownTimeSeconds);
+        rb.velocity = Vector3.ClampMagnitude(new Vector3(rb.velocity.x, 0, rb.velocity.z), maxSpeed);
+        recentAction = RecentActionType.None;
+        isResetCRRunning = false;
+    }
 
 
     public static Vector3 GetForwardRelativeToCamera() {
@@ -160,7 +183,9 @@ public class GlobalPlayerController : MonoBehaviour
                 lastWallTouched = other.collider.gameObject;
                 wallPlayerController.wallNormal = other.GetContact(0).normal;
                 //Debug.Log("OnWall");   
+                IncreaseSpeedMultiplier(0.1f);
                 EnableWallControls();
+
             }
         }
     }
@@ -184,5 +209,12 @@ public class GlobalPlayerController : MonoBehaviour
     public void ResetJumpsAndDashes() {
         currentJumps = extraJumps; 
         currentDashes = numberOfDashes;
+    }
+
+    public void IncreaseSpeedMultiplier(float speedIncrease) {
+        currentSpeedMultiplier += speedIncrease;
+        if(currentSpeedMultiplier > maxSpeedMultiplier) {
+            currentSpeedMultiplier = maxSpeedMultiplier;
+        }
     }
 }
