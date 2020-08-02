@@ -183,7 +183,7 @@ public class GlobalPlayerController : MonoBehaviour
                 lastWallTouched = other.collider.gameObject;
                 wallPlayerController.wallNormal = other.GetContact(0).normal;
                 //Debug.Log("OnWall");   
-                IncreaseSpeedMultiplier(0.1f);
+                wallPlayerController.currentWallRunDuration += 0.1f;
                 EnableWallControls();
 
             }
@@ -199,7 +199,7 @@ public class GlobalPlayerController : MonoBehaviour
         bool correctRunSpeed = currentHorizontalVelocity.magnitude > 0.4f * defaultPlayerController.defaultRunSpeed;
         bool correctDotProduct = angleAsDotProduct < 0.76f;
 
-        if(correctRunSpeed && correctDotProduct) {
+        if((wallPlayerController.isWallRunning || correctRunSpeed) && correctDotProduct) {
             return true;
         }
         

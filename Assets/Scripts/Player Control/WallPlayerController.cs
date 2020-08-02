@@ -18,7 +18,7 @@ public class WallPlayerController : MonoBehaviour
 
     public float defaultWallRunSpeed = 7.5f;
     public float wallRunDuration = 2f;
-    float currentWallRunDuration;
+    public float currentWallRunDuration;
 
     public bool isWallRunning;
 
@@ -78,6 +78,7 @@ public class WallPlayerController : MonoBehaviour
 
         if (InputController.jumpPressed && canAct) {
 
+            globalPlayerController.IncreaseSpeedMultiplier(0.1f);
             if (isWallRunning) {
                 rb.velocity = new Vector3(
                     rb.velocity.normalized.x + wallNormal.normalized.x + (InputController.moveDirection.x * 0.4f), 
@@ -119,7 +120,7 @@ public class WallPlayerController : MonoBehaviour
             }
 
             if (0.966f < Vector3.Dot(wallNormal, other.GetContact(0).normal)) { //can transition the wall run
-                Vector3 currentHorizontalVelocity = rb.velocity;
+                Vector3 currentHorizontalVelocity = rb.velocity * 1.25f;
                 currentHorizontalVelocity.y = 0;
                 Debug.Log("New Wall");
                 wallRunDirection = currentHorizontalVelocity.normalized;

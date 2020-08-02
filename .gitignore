@@ -3,7 +3,7 @@
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
 #
 /[Ll]ibrary/
-/[Ll]ibrary/Assets/TextMesh Pro/*
+[Aa]ssets/TextMesh*Pro/
 /[Tt]emp/
 /[Oo]bj/
 /[Bb]uild/
