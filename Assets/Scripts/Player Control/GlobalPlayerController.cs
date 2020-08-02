@@ -96,7 +96,9 @@ public class GlobalPlayerController : MonoBehaviour
         RaycastHit hit;
 
         if(Physics.Raycast(rb.position, -Vector3.up, out hit, 1.1f)) {
-            if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
+            if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Parkour") || 
+                hit.collider.gameObject.layer == LayerMask.NameToLayer("Floor")) {
+
                 isGrounded = true;
                 floorNormal = hit.normal;
             
