@@ -57,7 +57,7 @@ public class DefaultPlayerController : MonoBehaviour
     void FixedUpdate() {
 
         if (gpc.recentAction != RecentActionType.Dash) { //custom gravity, turn off while dashing
-            rb.AddForce(Physics.gravity * gravityScale);
+            rb.AddForce(Physics.gravity * gravityScale * Time.fixedDeltaTime * 60);
         }
         
         if(gpc.isGrounded) {
@@ -76,6 +76,7 @@ public class DefaultPlayerController : MonoBehaviour
             //running is always locked at a default speed to encourage air movement
             if (InputController.crouchPressed && currentHorizontalVelocity.magnitude > 0.9f * defaultRunSpeed
                 && gpc.recentAction == RecentActionType.None) { //slide if you're moving fast enough on the ground
+                Debug.Log("first crouch");
                 ShrinkPlayer();
                 gpc.recentAction = RecentActionType.Slide;
                 rb.velocity = new Vector3(
@@ -86,13 +87,15 @@ public class DefaultPlayerController : MonoBehaviour
 
             } else if (gpc.recentAction == RecentActionType.Slide && currentHorizontalVelocity.magnitude < defaultRunSpeed * 0.25f) {
                 UnshrinkPlayer();
+                Debug.Log("slide is ending");
                 gpc.recentAction = RecentActionType.None;
                 
             } else if (InputController.crouchPressed && gpc.recentAction == RecentActionType.None) { //move with crouched speed
                 ShrinkPlayer();
                 rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * currentMaxSpeed * crouchSpeedMultiplier;
-
+                Debug.Log("crouch walk");
             } else if (InputController.crouchPressed && gpc.recentAction == RecentActionType.Slide && gpc.floorNormal != new Vector3(0, 1, 0)) { //slide time
+                Debug.Log("slide");
                 ShrinkPlayer();
                 Vector3 slideDir = gpc.floorNormal;
                 slideDir.y = 0;
@@ -100,6 +103,8 @@ public class DefaultPlayerController : MonoBehaviour
                 gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
 
             } else if (gpc.recentAction == RecentActionType.Slide) { //getting up from slide
+                Debug.Log("slide getup");
+                ShrinkPlayer();
                 rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z) * 0.95f;
 
             } else if (gpc.recentAction != RecentActionType.SlideJump) { //move normally
@@ -157,19 +162,21 @@ public class DefaultPlayerController : MonoBehaviour
     }    
 
     void ShrinkPlayer() {
-        col.height = 0f;
-        col.radius = 0.4f;
+        col.height = Mathf.Lerp(col.height, 0f, 0.15f);
+        col.radius = Mathf.Lerp(col.radius, 0.4f, 0.15f); 
     }
 
     void UnshrinkPlayer() {
-        col.height = 1.5f;
-        col.radius = 0.5f;
+        RaycastHit hit;
+        //only try to unshrink if you have free space above so player doesn't get stuck
+        if(!Physics.SphereCast(transform.position + (Vector3.up * col.height / 2), col.radius, Vector3.up, out hit, 1.1f)) {
+            col.height = Mathf.Lerp(col.height, 1.5f, 0.15f);
+            col.radius = Mathf.Lerp(col.radius, 0.5f, 0.15f);
+        }
     }
 
     IEnumerator SlideActCooldown(float cooldownTimeSeconds) {
         yield return new WaitForSeconds(cooldownTimeSeconds);
-        
     }
-
 }
             

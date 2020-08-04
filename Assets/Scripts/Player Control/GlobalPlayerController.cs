@@ -24,6 +24,7 @@ public class GlobalPlayerController : MonoBehaviour
     public RecentActionType recentAction;
 
     Rigidbody rb;
+    CapsuleCollider cc;
 
     bool isResetCRRunning;
 
@@ -43,11 +44,12 @@ public class GlobalPlayerController : MonoBehaviour
         currentDashes = 0;
         isResetCRRunning = false;
         dotProductOfNearestWall = 0f;
+        cc = GetComponent<CapsuleCollider>();
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
+        CheckFloorNormal();
         CheckIfGrounded();
 
         if(isGrounded) {
@@ -93,25 +95,42 @@ public class GlobalPlayerController : MonoBehaviour
     }
 
     bool CheckIfGrounded() {
+
         RaycastHit hit;
+        Debug.DrawLine(rb.position, rb.position + (-Vector3.up * 1.1f), Color.white, 0.01f);
+        if (Physics.SphereCast(transform.position, cc.radius, -Vector3.up, out hit, 1.1f)) {
+            int layerTag = hit.collider.gameObject.layer;
+            if (layerTag == LayerMask.NameToLayer("Parkour") ||layerTag == LayerMask.NameToLayer("Floor")) {
+                Debug.Log("ground dot: " + Vector3.Dot(hit.normal, Vector3.up));
+                if (Vector3.Dot(hit.normal, Vector3.up) > 0.5f) {
+                    isGrounded = true;
 
-        if(Physics.Raycast(rb.position, -Vector3.up, out hit, 1.1f)) {
-            if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Parkour") || 
-                hit.collider.gameObject.layer == LayerMask.NameToLayer("Floor")) {
+                    if (recentAction == RecentActionType.None) {
+                        currentSpeedMultiplier = 1.0f;
+                    }
 
-                isGrounded = true;
-                floorNormal = hit.normal;
-            
-                if(recentAction == RecentActionType.None) {
-                    currentSpeedMultiplier = 1.0f;
+                    return isGrounded;
                 }
             } 
-        } else {
-            isGrounded = false;
-            floorNormal = new Vector3(0, 0, 0);
         }
 
+        Debug.Log("please");
+        isGrounded = false;
+        
         return isGrounded;
+    }
+
+
+    void CheckFloorNormal() {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, -Vector3.up, out hit, 1.1f)) {
+            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Parkour") ||
+               hit.collider.gameObject.layer == LayerMask.NameToLayer("Floor")) {
+                floorNormal = hit.normal;
+            }
+        } else {
+            floorNormal = new Vector3(0, 0, 0);
+        }
     }
 
     //Basically controls the boolean that see if you've jumped in the last split second

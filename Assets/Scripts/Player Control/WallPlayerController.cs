@@ -66,6 +66,8 @@ public class WallPlayerController : MonoBehaviour
         if (isWallRunning) { //regular wall running
             rb.velocity = wallRunDirection * ((defaultWallRunSpeed * currentWallRunDuration * 0.5f) + 4f);
             gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
+           // Vector3 temp = Vector3.Cross(transform.up, wallNormal);
+            //gameObject.transform.rotation = Quaternion.LookRotation(temp);
         }
         else if (currentWallRunDuration < 0 && wallRunDirection != new Vector3(0, 0, 0)) { //stopped wall running, detach from wall
             rb.velocity = new Vector3(rb.velocity.normalized.x + wallNormal.normalized.x, 0f, rb.velocity.normalized.z + wallNormal.normalized.z);
@@ -109,20 +111,23 @@ public class WallPlayerController : MonoBehaviour
         canAct = true;
     }
 
-    void OnCollisionEnter(Collision other)
+    void OnCollisionStay(Collision other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Parkour") && this.enabled)
         {
             //Debug.DrawRay(other.GetContact(0).point, other.GetContact(0).normal ,Color.white, 1f);
-
             if (other.GetContact(0).normal == wallNormal) {
                 return;
             }
 
-            if (0.966f < Vector3.Dot(wallNormal, other.GetContact(0).normal)) { //can transition the wall run
-                Vector3 currentHorizontalVelocity = rb.velocity * 1.25f;
+
+            Debug.Log("new wall Dot: " + Vector3.Dot(wallNormal, other.GetContact(0).normal));
+            if (0.966f > Vector3.Dot(wallNormal, other.GetContact(0).normal)) { //can transition the wall run
+                Debug.Log("are you tho");
+                wallNormal = other.GetContact(0).normal;
+                currentWallRunDuration += 0.15f;
+                Vector3 currentHorizontalVelocity = rb.velocity;
                 currentHorizontalVelocity.y = 0;
-                Debug.Log("New Wall");
                 wallRunDirection = currentHorizontalVelocity.normalized;
             }
         }

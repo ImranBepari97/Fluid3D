@@ -33,10 +33,11 @@ public class CameraRig : MonoBehaviour
         } else {
             isManuallyMovingCamera = false;
         }
-        
 
-        gameObject.transform.Rotate(0, Input.GetAxis("Mouse X") * mouseSensitivity, 0);
-        gameObject.transform.Rotate(-Input.GetAxis("Mouse Y")* mouseSensitivity, 0, 0);
+        if (Cursor.lockState == CursorLockMode.Locked) {
+            gameObject.transform.Rotate(0, Input.GetAxis("Mouse X") * mouseSensitivity, 0);
+            gameObject.transform.Rotate(-Input.GetAxis("Mouse Y") * mouseSensitivity, 0, 0);
+        }
 
         gameObject.transform.Rotate(0, Input.GetAxis("RStick X") * stickXSensitivity, 0);
         gameObject.transform.Rotate(-Input.GetAxis("RStick Y") * stickYSensitivity, 0, 0);
@@ -51,7 +52,7 @@ public class CameraRig : MonoBehaviour
         }
          
         transform.rotation = Quaternion.Euler(clampedX, eulerRotation.y, 0); //cancel z 
-
+        
         //gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position, 1f);
         gameObject.transform.position = target.transform.position;
 
@@ -73,6 +74,10 @@ public class CameraRig : MonoBehaviour
 
         if (Input.GetKeyDown("escape")) {
             Cursor.lockState = CursorLockMode.None;
+        }
+
+        if(Input.GetKeyDown("mouse 0")) {
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
     }
