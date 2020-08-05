@@ -101,7 +101,7 @@ public class GlobalPlayerController : MonoBehaviour
         if (Physics.SphereCast(transform.position, cc.radius, -Vector3.up, out hit, 1.1f)) {
             int layerTag = hit.collider.gameObject.layer;
             if (layerTag == LayerMask.NameToLayer("Parkour") ||layerTag == LayerMask.NameToLayer("Floor")) {
-                Debug.Log("ground dot: " + Vector3.Dot(hit.normal, Vector3.up));
+                //Debug.Log("ground dot: " + Vector3.Dot(hit.normal, Vector3.up));
                 if (Vector3.Dot(hit.normal, Vector3.up) > 0.5f) {
                     isGrounded = true;
 
@@ -114,7 +114,6 @@ public class GlobalPlayerController : MonoBehaviour
             } 
         }
 
-        Debug.Log("please");
         isGrounded = false;
         
         return isGrounded;
@@ -215,7 +214,7 @@ public class GlobalPlayerController : MonoBehaviour
         Vector3 currentHorizontalVelocity = rb.velocity;
         currentHorizontalVelocity.y = 0;
 
-        Debug.Log("DOT: " + angleAsDotProduct + " VelXz =" +  currentHorizontalVelocity.magnitude);
+        //Debug.Log("DOT: " + angleAsDotProduct + " VelXz =" +  currentHorizontalVelocity.magnitude);
 
         bool correctRunSpeed = currentHorizontalVelocity.magnitude > 0.4f * defaultPlayerController.defaultRunSpeed;
         bool correctDotProduct = angleAsDotProduct < 0.76f;

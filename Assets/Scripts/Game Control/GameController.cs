@@ -12,6 +12,7 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        scoreboard = new Dictionary<GameObject, int>();
         scoreboard.Clear();
         destinations = Object.FindObjectsOfType<DestinationPoint>();
         currentSelectedPoint = Random.Range(0, destinations.Length);
@@ -32,6 +33,10 @@ public class GameController : MonoBehaviour
     }
 
     public void SetNewDestination() {
+
+        if (destinations.Length < 2) return; 
+
+
         int newChoose = currentSelectedPoint;
         
         while(newChoose == currentSelectedPoint) {

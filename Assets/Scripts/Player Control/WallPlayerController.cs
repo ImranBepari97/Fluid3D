@@ -123,7 +123,6 @@ public class WallPlayerController : MonoBehaviour
 
             Debug.Log("new wall Dot: " + Vector3.Dot(wallNormal, other.GetContact(0).normal));
             if (0.966f > Vector3.Dot(wallNormal, other.GetContact(0).normal)) { //can transition the wall run
-                Debug.Log("are you tho");
                 wallNormal = other.GetContact(0).normal;
                 currentWallRunDuration += 0.15f;
                 Vector3 currentHorizontalVelocity = rb.velocity;

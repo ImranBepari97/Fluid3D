@@ -21,6 +21,10 @@ public class DestinationPoint : MonoBehaviour {
         if(this.enabled && coll.gameObject.GetComponent<GlobalPlayerController>()) {
             gc.AddPoint(coll.gameObject, 1);
             gc.SetNewDestination();
+
+            Debug.Log("+1 for :" + coll.gameObject);
+            
+            
         }
     }
 }

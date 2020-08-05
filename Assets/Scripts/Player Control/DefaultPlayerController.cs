@@ -169,7 +169,7 @@ public class DefaultPlayerController : MonoBehaviour
     void UnshrinkPlayer() {
         RaycastHit hit;
         //only try to unshrink if you have free space above so player doesn't get stuck
-        if(!Physics.SphereCast(transform.position + (Vector3.up * col.height / 2), col.radius, Vector3.up, out hit, 1.1f)) {
+        if(!Physics.SphereCast(transform.position + (Vector3.up * col.height / 2), col.radius + 0.1f, Vector3.up, out hit, 1.1f)) {
             col.height = Mathf.Lerp(col.height, 1.5f, 0.15f);
             col.radius = Mathf.Lerp(col.radius, 0.5f, 0.15f);
         }
