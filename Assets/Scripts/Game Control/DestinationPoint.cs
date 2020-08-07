@@ -18,8 +18,8 @@ public class DestinationPoint : MonoBehaviour {
 
 
     void OnTriggerEnter(Collider coll) {
-        if(this.enabled && coll.gameObject.GetComponent<GlobalPlayerController>()) {
-            gc.AddPoint(coll.gameObject, 1);
+        if(coll.gameObject.GetComponent<GlobalPlayerController>()) {
+            gc.AddPoint(coll.gameObject.GetComponent<GlobalPlayerController>(), 1);
             gc.SetNewDestination();
 
             Debug.Log("+1 for :" + coll.gameObject);
