@@ -7,6 +7,8 @@ public class GameController : MonoBehaviour
 
     public float timeLeftSeconds;
     public Dictionary<GlobalPlayerController, int> scoreboard;
+
+    public bool isGameOver;
     [SerializeField]
     DestinationPoint[] destinations;
     int currentSelectedPoint;
@@ -16,6 +18,7 @@ public class GameController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        isGameOver = false;
         wp = Object.FindObjectOfType<Waypoint>();
         scoreboard = new Dictionary<GlobalPlayerController, int>();
         scoreboard.Clear();
@@ -40,7 +43,14 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timeLeftSeconds -= Time.deltaTime;
+
+        if(!isGameOver) {
+            timeLeftSeconds -= Time.deltaTime;
+        }
+
+        if(timeLeftSeconds < 0) {
+            isGameOver = true;
+        }
     }
 
     public void AddPoint(GlobalPlayerController player, int pointCount) {

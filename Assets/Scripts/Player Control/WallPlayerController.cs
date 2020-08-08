@@ -80,7 +80,7 @@ public class WallPlayerController : MonoBehaviour
 
         if (InputController.jumpPressed && canAct) {
 
-            globalPlayerController.IncreaseSpeedMultiplier(0.1f);
+            globalPlayerController.IncreaseSpeedMultiplier(0.2f);
             if (isWallRunning) {
                 rb.velocity = new Vector3(
                     rb.velocity.normalized.x + wallNormal.normalized.x + (InputController.moveDirection.x * 0.4f), 
