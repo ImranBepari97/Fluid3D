@@ -13,11 +13,20 @@ public class GameController : MonoBehaviour
     DestinationPoint[] destinations;
     int currentSelectedPoint;
 
+    public static GameController instance;
+
     Waypoint wp;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        if(instance != null ) {
+            Debug.Log("Another GameController already exists, deleting this one.");
+            Destroy(this.gameObject);
+        } else {
+            instance = this;
+        }
+        
         isGameOver = false;
         wp = Object.FindObjectOfType<Waypoint>();
         scoreboard = new Dictionary<GlobalPlayerController, int>();

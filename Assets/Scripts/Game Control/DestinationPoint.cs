@@ -8,7 +8,7 @@ public class DestinationPoint : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        gc = GameObject.FindObjectOfType<GameController>();
+        gc = GameController.instance;
     }
 
     // Update is called once per frame

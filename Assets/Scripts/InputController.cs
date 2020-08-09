@@ -6,7 +6,6 @@ public class InputController : MonoBehaviour
 {
     // Start is called before the first frame update
 
-    GlobalPlayerController gpc;
 
     public static bool jumpPressed;
     public static Vector3 moveDirection;
@@ -16,7 +15,6 @@ public class InputController : MonoBehaviour
 
     void Start()
     {   
-        gpc = GetComponent<GlobalPlayerController>();
     }
 
     // Update is called once per frame
