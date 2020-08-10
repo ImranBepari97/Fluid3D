@@ -5,30 +5,47 @@ using UnityEngine;
 public class PlayerSound : MonoBehaviour
 {
 
-    AudioSource au;
     public AudioClip jumpSound;
     public AudioClip dashSound;
     GlobalPlayerController gpc;
+
+    bool canPlaySound;
 
 
     // Start is called before the first frame update
     void Start() {
         gpc = transform.parent.GetComponent<GlobalPlayerController>();
-        au = GetComponent<AudioSource>();
+
+        canPlaySound = true;
     }
 
     // Update is called once per frame
-    void Update() {
+    void Update() { 
 
-        switch(gpc.recentAction) {
+
+
+        switch (gpc.recentAction) {
+            case RecentActionType.None:
+                canPlaySound = true;
+                break;
             case RecentActionType.Dash:
-                au.clip = dashSound;
-                au.Play();
+                if (canPlaySound) { 
+                    AudioSource.PlayClipAtPoint(dashSound, transform.position);
+                    canPlaySound = false;
+                }
                 break;
             case RecentActionType.RegularJump:
+                if (canPlaySound) {
+                    AudioSource.PlayClipAtPoint(jumpSound, transform.position);
+                    canPlaySound = false;
+                }
+                break;
+            case RecentActionType.SlideJump:
             case RecentActionType.WallJump:
-                au.clip = jumpSound;
-                au.Play();
+                if (canPlaySound) {
+                    AudioSource.PlayClipAtPoint(jumpSound, transform.position);
+                    canPlaySound = false;
+                }
                 break;
         }
     }

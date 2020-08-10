@@ -80,7 +80,7 @@ public class DefaultPlayerController : MonoBehaviour
                 ShrinkPlayer();
                 gpc.recentAction = RecentActionType.Slide;
                 rb.velocity = new Vector3(
-                    Mathf.Clamp(rb.velocity.x * 2f, 2f *-currentMaxSpeed, 2f * currentMaxSpeed),
+                    Mathf.Clamp(rb.velocity.x * 2f, 2f * -currentMaxSpeed, 2f * currentMaxSpeed),
                     rb.velocity.y,
                     Mathf.Clamp(rb.velocity.z * 2f, 2f * -currentMaxSpeed, 2f * currentMaxSpeed)
                 );
@@ -89,7 +89,7 @@ public class DefaultPlayerController : MonoBehaviour
                 UnshrinkPlayer();
                 Debug.Log("slide is ending");
                 gpc.recentAction = RecentActionType.None;
-                
+
             } else if (InputController.crouchPressed && gpc.recentAction == RecentActionType.None) { //move with crouched speed
                 ShrinkPlayer();
                 rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * currentMaxSpeed * crouchSpeedMultiplier;
@@ -110,7 +110,12 @@ public class DefaultPlayerController : MonoBehaviour
             } else if (gpc.recentAction != RecentActionType.SlideJump) { //move normally
                 UnshrinkPlayer();
                 rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * currentMaxSpeed;
-                
+
+                //if we're clearly not moving and grounded, then dont move on the Y axis
+                //stops slopes
+                //if (rb.velocity.magnitude < 2f) {
+                //    yVel = 0f;
+                //}
             } 
         } else {
             UnshrinkPlayer();

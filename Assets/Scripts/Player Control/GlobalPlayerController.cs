@@ -98,7 +98,7 @@ public class GlobalPlayerController : MonoBehaviour
 
         RaycastHit hit;
         Debug.DrawLine(rb.position, rb.position + (-Vector3.up * 1.1f), Color.white, 0.01f);
-        if (Physics.SphereCast(transform.position, cc.radius, -Vector3.up, out hit, 1.1f)) {
+        if (Physics.SphereCast(transform.position, cc.radius, -Vector3.up, out hit, 0.5f)) {
             int layerTag = hit.collider.gameObject.layer;
             if (layerTag == LayerMask.NameToLayer("Parkour") ||layerTag == LayerMask.NameToLayer("Floor")) {
                 //Debug.Log("ground dot: " + Vector3.Dot(hit.normal, Vector3.up));
@@ -122,7 +122,7 @@ public class GlobalPlayerController : MonoBehaviour
 
     void CheckFloorNormal() {
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, -Vector3.up, out hit, 1.1f)) {
+        if (Physics.Raycast(transform.position, -Vector3.up, out hit, 0.5f)) {
             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Parkour") ||
                hit.collider.gameObject.layer == LayerMask.NameToLayer("Floor")) {
                 floorNormal = hit.normal;
