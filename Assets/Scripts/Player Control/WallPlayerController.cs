@@ -120,8 +120,6 @@ public class WallPlayerController : MonoBehaviour
                 return;
             }
 
-
-            Debug.Log("new wall Dot: " + Vector3.Dot(wallNormal, other.GetContact(0).normal));
             if (0.966f > Vector3.Dot(wallNormal, other.GetContact(0).normal)) { //can transition the wall run
                 wallNormal = other.GetContact(0).normal;
                 currentWallRunDuration += 0.15f;

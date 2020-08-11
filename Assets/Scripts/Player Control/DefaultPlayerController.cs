@@ -117,6 +117,7 @@ public class DefaultPlayerController : MonoBehaviour
 
                 //if we're clearly not moving and grounded, then dont move on the Y axis
                 //stops slopes 
+
                 if (new Vector3(rb.velocity.x, 0, rb.velocity.z).magnitude < 1f && gpc.recentAction == RecentActionType.None) {
                     rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                     rb.isKinematic = true;
