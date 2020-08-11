@@ -56,7 +56,11 @@ public class DefaultPlayerController : MonoBehaviour
 
     void FixedUpdate() {
 
+        rb.isKinematic = false;
+        rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+
         if (gpc.recentAction != RecentActionType.Dash) { //custom gravity, turn off while dashing
+            
             rb.AddForce(Physics.gravity * gravityScale * Time.fixedDeltaTime * 60);
         }
         
@@ -112,10 +116,11 @@ public class DefaultPlayerController : MonoBehaviour
                 rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * currentMaxSpeed;
 
                 //if we're clearly not moving and grounded, then dont move on the Y axis
-                //stops slopes
-                //if (rb.velocity.magnitude < 2f) {
-                //    yVel = 0f;
-                //}
+                //stops slopes 
+                if (new Vector3(rb.velocity.x, 0, rb.velocity.z).magnitude < 1f && gpc.recentAction == RecentActionType.None) {
+                    rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+                    rb.isKinematic = true;
+                }
             } 
         } else {
             UnshrinkPlayer();
