@@ -1,12 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PathCreation;
+using PathCreation.Examples;
 
 public class GlobalPlayerController : MonoBehaviour
 {
 
     DefaultPlayerController defaultPlayerController;
     WallPlayerController wallPlayerController;
+
+    GrindPlayerController grindPlayerController;
 
     public GameObject lastWallTouched;
 
@@ -28,7 +32,7 @@ public class GlobalPlayerController : MonoBehaviour
 
     bool isResetCRRunning;
 
-    float dotProductOfNearestWall;
+    public float dotProductOfNearestWall;
 
     public Vector3 floorNormal;
 
@@ -39,6 +43,7 @@ public class GlobalPlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         defaultPlayerController = GetComponent<DefaultPlayerController>();
         wallPlayerController = GetComponent<WallPlayerController>();
+        grindPlayerController = GetComponent<GrindPlayerController>();
         recentAction = RecentActionType.None;
         currentJumps = 0;
         currentDashes = 0;
@@ -64,6 +69,8 @@ public class GlobalPlayerController : MonoBehaviour
         Debug.DrawRay(rb.position, xzVelocity.normalized, Color.white, 0.01f);
         if (Physics.Raycast(rb.position, xzVelocity.normalized, out hit, 5f)) {
             dotProductOfNearestWall = Mathf.Abs(Vector3.Dot(hit.normal, xzVelocity.normalized));
+        } else {
+            dotProductOfNearestWall = 1f;
         }
 
         if (!isResetCRRunning) {
@@ -160,15 +167,23 @@ public class GlobalPlayerController : MonoBehaviour
     public void EnableDefaultControls() {
         defaultPlayerController.enabled = true;
         wallPlayerController.enabled = false;
+        grindPlayerController.enabled = false;
     }
 
     public void EnableWallControls() {
         defaultPlayerController.enabled = false;
         wallPlayerController.enabled = true;
+        grindPlayerController.enabled = false;
+    }
+
+    public void EnableGrindControls() {
+        defaultPlayerController.enabled = false;
+        wallPlayerController.enabled = false;
+        grindPlayerController.enabled = true;
     }
 
     void OnCollisionExit(Collision other) {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Parkour") || other.gameObject.tag == "Grind") {
             // Debug.Log("OffWall");
             if (wallPlayerController.wallsCollidingWith.Contains(other.gameObject)) {
                 wallPlayerController.wallsCollidingWith.Remove(other.gameObject);
@@ -181,6 +196,31 @@ public class GlobalPlayerController : MonoBehaviour
     }
 
     void OnCollisionEnter(Collision other) {
+
+        if(other.gameObject.tag == "Grind") {
+            wallPlayerController.wallsCollidingWith.Add(other.gameObject);
+            
+            if(other.GetContact(0).normal.y > 0) {
+                PathCreator pc;
+                if(pc = other.gameObject.transform.parent.gameObject.GetComponent<PathCreator>())  {
+                    grindPlayerController.currentRail = pc;
+                    grindPlayerController.dstTravelled = pc.path.GetClosestDistanceAlongPath(other.GetContact(0).point);
+                    grindPlayerController.roadMeshCreator = pc.gameObject.GetComponent<RoadMeshCreator>();
+
+                    Vector3 horVel = rb.velocity;
+                    horVel.y = 0; 
+
+                    Debug.Log(Vector3.Dot(horVel.normalized, pc.path.GetDirectionAtDistance(grindPlayerController.dstTravelled)));
+                    grindPlayerController.isReversed = Vector3.Dot(horVel.normalized, pc.path.GetDirectionAtDistance(grindPlayerController.dstTravelled)) > 0 ? false : true;
+
+                    ResetJumpsAndDashes();
+                    EnableGrindControls();
+                    
+                }
+            }
+        }
+
+
         if (other.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
             //Debug.DrawRay(other.GetContact(0).point, other.GetContact(0).normal ,Color.white, 1f);
             wallPlayerController.wallsCollidingWith.Add(other.gameObject);

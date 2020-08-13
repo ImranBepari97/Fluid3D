@@ -27,7 +27,8 @@ public class CameraCollision : MonoBehaviour
 
         Debug.DrawLine(transform.parent.position, desiredCameraPos, Color.black, 0.01f);
         if(Physics.Linecast(transform.parent.position, desiredCameraPos, out hit)) {
-            if(hit.collider.gameObject.tag != "Player") {
+            if(hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Grind") {
+                //Debug.Log(hit.collider.gameObject);
                 distance = Mathf.Clamp(hit.distance * 0.9f, minDistance, maxDistance);
             }
         } else {

@@ -4,6 +4,8 @@ public enum RecentActionType {
     WallRunning,
     Slide,
     SlideJump,
+
+    Grind,
     Dash,
     None //No recent jump
 }
