@@ -49,7 +49,8 @@ public class GrindPlayerController : MonoBehaviour
             transform.rotation =  Quaternion.LookRotation(-currentRail.path.GetDirectionAtDistance (dstTravelled,  EndOfPathInstruction.Stop));
         }
 
-        rb.position = currentRail.path.GetPointAtDistance(dstTravelled, EndOfPathInstruction.Stop) + new Vector3(0,  (cc.height / 2) + roadMeshCreator.thickness / 2 + 0.01f , 0);
+        rb.position = currentRail.path.GetPointAtDistance(dstTravelled, EndOfPathInstruction.Stop) + 
+            (currentRail.path.GetNormalAtDistance(dstTravelled) * (0.02f + roadMeshCreator.thickness + (cc.height / 2f)));
 
         float curTime = currentRail.path.GetClosestTimeOnPath (rb.position);
         if(curTime > 0.99f || curTime < 0.01f) {

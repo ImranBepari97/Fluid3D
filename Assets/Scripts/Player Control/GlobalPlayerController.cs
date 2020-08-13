@@ -189,7 +189,7 @@ public class GlobalPlayerController : MonoBehaviour
                 wallPlayerController.wallsCollidingWith.Remove(other.gameObject);
             }
 
-            if(wallPlayerController.wallsCollidingWith.Count == 0) {
+            if(wallPlayerController.wallsCollidingWith.Count == 0 && recentAction != RecentActionType.Grind) {
                 EnableDefaultControls();
             }
         }
@@ -197,7 +197,7 @@ public class GlobalPlayerController : MonoBehaviour
 
     void OnCollisionEnter(Collision other) {
 
-        if(other.gameObject.tag == "Grind") {
+        if(other.gameObject.tag == "Grind" && recentAction != RecentActionType.Grind) {
             wallPlayerController.wallsCollidingWith.Add(other.gameObject);
             
             if(other.GetContact(0).normal.y > 0) {
