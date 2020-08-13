@@ -36,16 +36,20 @@ public class GrindPlayerController : MonoBehaviour
         currentGrindSpeed = grindSpeed * globalPlayerController.currentSpeedMultiplier;
         globalPlayerController.recentAction = RecentActionType.Grind;
 
+        Debug.DrawRay(rb.position, currentRail.path.GetDirectionAtDistance (dstTravelled,  EndOfPathInstruction.Stop), Color.black, 0.01f);
+
+        Debug.DrawRay(rb.position, -currentRail.path.GetDirectionAtDistance (dstTravelled,  EndOfPathInstruction.Stop), Color.red, 0.01f);
+
         if(!isReversed) {
             dstTravelled += currentGrindSpeed * Time.fixedDeltaTime;
-            rb.rotation = currentRail.path.GetRotationAtDistance(dstTravelled,  EndOfPathInstruction.Stop);
+            rb.rotation = Quaternion.LookRotation(currentRail.path.GetDirectionAtDistance (dstTravelled,  EndOfPathInstruction.Stop));
         } else {
             dstTravelled -= currentGrindSpeed * Time.fixedDeltaTime;
             transform.rotation = currentRail.path.GetRotationAtDistance(dstTravelled,  EndOfPathInstruction.Stop);
-            transform.rotation =  Quaternion.Inverse(transform.rotation);
+            transform.rotation =  Quaternion.LookRotation(-currentRail.path.GetDirectionAtDistance (dstTravelled,  EndOfPathInstruction.Stop));
         }
 
-        rb.position = currentRail.path.GetPointAtDistance(dstTravelled, EndOfPathInstruction.Stop) + new Vector3(0,  (cc.height / 2) + roadMeshCreator.thickness + 0.01f , 0);
+        rb.position = currentRail.path.GetPointAtDistance(dstTravelled, EndOfPathInstruction.Stop) + new Vector3(0,  (cc.height / 2) + roadMeshCreator.thickness / 2 + 0.01f , 0);
 
         float curTime = currentRail.path.GetClosestTimeOnPath (rb.position);
         if(curTime > 0.99f || curTime < 0.01f) {

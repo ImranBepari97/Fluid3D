@@ -212,6 +212,7 @@ public class GlobalPlayerController : MonoBehaviour
 
                     Debug.Log(Vector3.Dot(horVel.normalized, pc.path.GetDirectionAtDistance(grindPlayerController.dstTravelled)));
                     grindPlayerController.isReversed = Vector3.Dot(horVel.normalized, pc.path.GetDirectionAtDistance(grindPlayerController.dstTravelled)) > 0 ? false : true;
+                    lastWallTouched = null;
 
                     ResetJumpsAndDashes();
                     EnableGrindControls();

@@ -158,8 +158,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b829c0142c5ddd243a393cbd0e9ac1c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roadMeshCreator: {fileID: 0}
   currentRail: {fileID: 0}
-  grindSpeed: 0
+  grindSpeed: 15
+  isReversed: 0
   dstTravelled: 0
 --- !u!1 &3330766735992438977
 GameObject:
@@ -187,12 +189,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3330766735992438977}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 69.76679, y: 2.433, z: -10.864874}
-  m_LocalScale: {x: 0.0254, y: 1, z: 0.2}
+  m_LocalRotation: {x: -0.5511755, y: 0.44295105, z: 0.5511755, w: 0.44295105}
+  m_LocalPosition: {x: 0.183, y: -0.614, z: 0}
+  m_LocalScale: {x: 0.01, y: 1, z: 0.1}
   m_Children: []
-  m_Father: {fileID: 6240752508704505651}
-  m_RootOrder: 2
+  m_Father: {fileID: 7284660166964610758}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3330766735992438981
 MeshFilter:
@@ -555,13 +557,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3330766737822651446}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 69.76679, y: 2.377, z: -9.504873}
-  m_LocalScale: {x: 0.65, y: 0.24, z: 0.73}
+  m_LocalRotation: {x: -0.63401204, y: 0.678539, z: 0.25326613, w: 0.2710533}
+  m_LocalPosition: {x: 0.048, y: 0.022, z: 0}
+  m_LocalScale: {x: 0.25487766, y: 0.10262573, z: 0.2586081}
   m_Children: []
-  m_Father: {fileID: 6240752508704505651}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Father: {fileID: 7284660166964610758}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: -136.575, y: -3.6860046, z: 95.354}
 --- !u!33 &3330766737822651434
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -825,6 +827,12 @@ PrefabInstance:
 --- !u!4 &6240752508704505651 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 320b1c2af77554f99a1658df4a6d3d5c,
+    type: 3}
+  m_PrefabInstance: {fileID: 1432478494917137449}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7284660166964610758 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -650382798008282385, guid: 320b1c2af77554f99a1658df4a6d3d5c,
     type: 3}
   m_PrefabInstance: {fileID: 1432478494917137449}
   m_PrefabAsset: {fileID: 0}
