@@ -2,6 +2,8 @@ public enum RecentActionType {
     RegularJump,
     WallJump,
     WallRunning,
+
+    OnWall,
     Slide,
     SlideJump,
 

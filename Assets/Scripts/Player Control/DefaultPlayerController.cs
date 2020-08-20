@@ -80,7 +80,7 @@ public class DefaultPlayerController : MonoBehaviour
             //running is always locked at a default speed to encourage air movement
             if (InputController.crouchPressed && currentHorizontalVelocity.magnitude > 0.9f * defaultRunSpeed
                 && gpc.recentAction == RecentActionType.None) { //slide if you're moving fast enough on the ground
-                Debug.Log("first crouch");
+                //Debug.Log("first crouch");
                 ShrinkPlayer();
                 gpc.recentAction = RecentActionType.Slide;
                 rb.velocity = new Vector3(
@@ -91,15 +91,15 @@ public class DefaultPlayerController : MonoBehaviour
 
             } else if (gpc.recentAction == RecentActionType.Slide && currentHorizontalVelocity.magnitude < defaultRunSpeed * 0.25f) {
                 UnshrinkPlayer();
-                Debug.Log("slide is ending");
+                //Debug.Log("slide is ending");
                 gpc.recentAction = RecentActionType.None;
 
             } else if (InputController.crouchPressed && gpc.recentAction == RecentActionType.None) { //move with crouched speed
                 ShrinkPlayer();
                 rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * currentMaxSpeed * crouchSpeedMultiplier;
-                Debug.Log("crouch walk");
+                //Debug.Log("crouch walk");
             } else if (InputController.crouchPressed && gpc.recentAction == RecentActionType.Slide && gpc.floorNormal != new Vector3(0, 1, 0)) { //slide time
-                Debug.Log("slide");
+                //Debug.Log("slide");
                 ShrinkPlayer();
                 Vector3 slideDir = gpc.floorNormal;
                 slideDir.y = 0;
@@ -107,18 +107,22 @@ public class DefaultPlayerController : MonoBehaviour
                 gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
 
             } else if (gpc.recentAction == RecentActionType.Slide) { //getting up from slide
-                Debug.Log("slide getup");
+                //Debug.Log("slide getup");
                 ShrinkPlayer();
                 rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z) * 0.95f;
 
             } else if (gpc.recentAction != RecentActionType.SlideJump) { //move normally
                 UnshrinkPlayer();
                 rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * currentMaxSpeed;
+                //fine if we're still crouched stay slow
+                if(col.height < 1.4f) {
+                    rb.velocity *= crouchSpeedMultiplier;
+                }
 
                 //if we're clearly not moving and grounded, then dont move on the Y axis
                 //stops slopes 
 
-                if (new Vector3(rb.velocity.x, 0, rb.velocity.z).magnitude < 1f && gpc.recentAction == RecentActionType.None) {
+                if (rb.velocity.magnitude < 1f && gpc.recentAction == RecentActionType.None && gpc.floorNormal != new Vector3(0, 1, 0)) {
                     rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                     rb.isKinematic = true;
                 }
@@ -173,16 +177,19 @@ public class DefaultPlayerController : MonoBehaviour
     }    
 
     void ShrinkPlayer() {
-        col.height = Mathf.Lerp(col.height, 0f, 0.15f);
-        col.radius = Mathf.Lerp(col.radius, 0.4f, 0.15f); 
+        col.height = Mathf.Lerp(col.height, 0f, 0.1f);
+        col.radius = Mathf.Lerp(col.radius, 0.4f, 0.1f); 
     }
 
     void UnshrinkPlayer() {
         RaycastHit hit;
         //only try to unshrink if you have free space above so player doesn't get stuck
-        if(!Physics.SphereCast(transform.position + (Vector3.up * col.height / 2), col.radius + 0.1f, Vector3.up, out hit, 1.1f)) {
-            col.height = Mathf.Lerp(col.height, 1.5f, 0.15f);
-            col.radius = Mathf.Lerp(col.radius, 0.5f, 0.15f);
+        if(Physics.SphereCast(transform.position + (Vector3.up * col.height / 2), col.radius + 0.1f, Vector3.up, out hit, 1.1f) &&
+            hit.collider.gameObject.tag != "Player") {
+            return;
+        } else {
+            col.height = Mathf.Lerp(col.height, 1.5f, 0.1f);
+            col.radius = Mathf.Lerp(col.radius, 0.5f, 0.1f);
         }
     }
 

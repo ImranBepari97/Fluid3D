@@ -52,6 +52,10 @@ public class WallPlayerController : MonoBehaviour
     void OnDisable()
     {
         rb.useGravity = true;
+        if(globalPlayerController.recentAction == RecentActionType.WallRunning || 
+            globalPlayerController.recentAction == RecentActionType.OnWall) {
+            globalPlayerController.recentAction = RecentActionType.None;
+        }
     }
 
     void Update()
@@ -63,19 +67,24 @@ public class WallPlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+
+        globalPlayerController.recentAction = RecentActionType.None;
+
         if (isWallRunning) { //regular wall running
+            globalPlayerController.recentAction = RecentActionType.WallRunning;
             rb.velocity = wallRunDirection * ((defaultWallRunSpeed * currentWallRunDuration * 0.5f) + 4f);
-            gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
-           // Vector3 temp = Vector3.Cross(transform.up, wallNormal);
-            //gameObject.transform.rotation = Quaternion.LookRotation(temp);
+            //gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
+            gameObject.transform.rotation = Quaternion.RotateTowards(rb.rotation, Quaternion.LookRotation(rb.velocity), 540f * Time.deltaTime);
         }
         else if (currentWallRunDuration < 0 && wallRunDirection != new Vector3(0, 0, 0)) { //stopped wall running, detach from wall
+            globalPlayerController.recentAction = RecentActionType.None;
             rb.velocity = new Vector3(rb.velocity.normalized.x + wallNormal.normalized.x, 0f, rb.velocity.normalized.z + wallNormal.normalized.z);
             gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
         }
         else { //sliding down wall
+            globalPlayerController.recentAction = RecentActionType.OnWall;
             rb.AddForce(Physics.gravity * wallSlideDownSpeed);
-            gameObject.transform.rotation = Quaternion.LookRotation(wallNormal);
+            gameObject.transform.rotation = Quaternion.LookRotation(-wallNormal);
         }
 
         if (InputController.jumpPressed && canAct) {
@@ -91,6 +100,8 @@ public class WallPlayerController : MonoBehaviour
                     wallNormal.normalized.x + (InputController.moveDirection.x * 0.4f), 
                     1f, 
                     wallNormal.normalized.z + (InputController.moveDirection.z * 0.4f)) * initialJumpForce;
+
+                    gameObject.transform.rotation = Quaternion.LookRotation(wallNormal);
             }
 
             globalPlayerController.recentAction = RecentActionType.WallJump;
