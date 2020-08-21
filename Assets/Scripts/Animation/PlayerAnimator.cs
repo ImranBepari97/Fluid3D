@@ -17,6 +17,8 @@ public class PlayerAnimator : MonoBehaviour
     public Vector3 wallLeftOffset;
     public Vector3 wallRightOffset;
 
+    public Vector3 wallHoldOffset;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -58,14 +60,20 @@ public class PlayerAnimator : MonoBehaviour
         float crouchYOffset = RangeRemap(cc.height, 0, 1.5f, crouchOffset.y, defaultOffset.y);
 
         Vector3 offset = new Vector3(0, crouchYOffset, 0);
+
+        if(gpc.recentAction == RecentActionType.WallRunning) {
+            if(isRightWall) {
+                offset.x = wallRightOffset.x;
+            } else {
+                offset.x = wallLeftOffset.x;
+            }
+        }
+
+        if(gpc.recentAction == RecentActionType.OnWall) {
+            offset.z = wallHoldOffset.z;
+        }
+
         transform.localPosition = offset;
-        
-        //transform.localPosition = Vector3.Lerp(transform.localPosition, offset, 0.05f);
-
-        // if(cc.height > 1.45f) {
-        //     transform.localPosition = Vector3.Lerp(transform.localPosition, defaultOffset, 0.05f);
-        // }
-
         
     }
 

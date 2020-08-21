@@ -782,10 +782,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da5e3d16e1e22a241aa1e1b1dba52b8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultOffset: {x: 0, y: -0.725, z: 0}
+  defaultOffset: {x: 0, y: -0.76, z: 0}
   crouchOffset: {x: 0, y: -0.4, z: 0}
-  wallLeftOffset: {x: 0, y: 0, z: 0}
-  wallRightOffset: {x: 0, y: 0, z: 0}
+  wallLeftOffset: {x: -0.14, y: 0, z: 0}
+  wallRightOffset: {x: 0.14, y: 0, z: 0}
 --- !u!1001 &5872080991076179539
 PrefabInstance:
   m_ObjectHideFlags: 0
