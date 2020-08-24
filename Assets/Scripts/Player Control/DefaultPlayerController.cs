@@ -19,14 +19,14 @@ public class DefaultPlayerController : MonoBehaviour
     public float airDashSpeed = 25f;
     public float crouchSpeedMultiplier = 0.5f;
     public float slideControl = 10f;
-    float yVel;
 
     //Input management and error correcting variables
     Vector3 moveDirection;
     Vector3 dashDirection;
 
-    //this is a successful jump, where we cannot jump again, yet maintain 100% air control for a split second 
+    float yVel;
     Vector3 currentHorizontalVelocity;
+
 
 
     // Start is called before the first frame update
@@ -41,11 +41,6 @@ public class DefaultPlayerController : MonoBehaviour
 
     // Update is called once per frame, we should get all input as constantly as possible
     void Update() {
-
-        yVel = rb.velocity.y;
-        currentHorizontalVelocity = rb.velocity;
-        currentHorizontalVelocity.y = 0;
-
         currentMaxSpeed = defaultRunSpeed * gpc.currentSpeedMultiplier;
         moveDirection = InputController.moveDirection; //current input left and right, relative to the camera
 
@@ -56,116 +51,22 @@ public class DefaultPlayerController : MonoBehaviour
 
     void FixedUpdate() {
 
+        yVel = rb.velocity.y;
+        currentHorizontalVelocity = rb.velocity;
+        currentHorizontalVelocity.y = 0;
+
         rb.isKinematic = false;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
         if (gpc.recentAction != RecentActionType.Dash) { //custom gravity, turn off while dashing
-            
             rb.AddForce(Physics.gravity * gravityScale * Time.fixedDeltaTime * 60);
         }
         
+        //these methods will edit yVel for the later statement
         if(gpc.isGrounded) {
-
-            if (InputController.jumpPressed) { //initial jump fine
-                yVel = initialJumpForce;
-                if (InputController.crouchPressed && gpc.recentAction == RecentActionType.Slide) {
-                    gpc.recentAction = RecentActionType.SlideJump;
-                    rb.velocity = new Vector3(rb.velocity.x, yVel, rb.velocity.z);
-
-                } else {
-                    gpc.recentAction = RecentActionType.RegularJump;
-                }       
-            }
-
-            //running is always locked at a default speed to encourage air movement
-            if (InputController.crouchPressed && currentHorizontalVelocity.magnitude > 0.9f * defaultRunSpeed
-                && gpc.recentAction == RecentActionType.None) { //slide if you're moving fast enough on the ground
-                //Debug.Log("first crouch");
-                ShrinkPlayer();
-                gpc.recentAction = RecentActionType.Slide;
-                rb.velocity = new Vector3(
-                    Mathf.Clamp(rb.velocity.x * 2f, 2f * -currentMaxSpeed, 2f * currentMaxSpeed),
-                    rb.velocity.y,
-                    Mathf.Clamp(rb.velocity.z * 2f, 2f * -currentMaxSpeed, 2f * currentMaxSpeed)
-                );
-
-            } else if (gpc.recentAction == RecentActionType.Slide && currentHorizontalVelocity.magnitude < defaultRunSpeed * 0.25f) {
-                UnshrinkPlayer();
-                //Debug.Log("slide is ending");
-                gpc.recentAction = RecentActionType.None;
-
-            } else if (InputController.crouchPressed && gpc.recentAction == RecentActionType.None) { //move with crouched speed
-                ShrinkPlayer();
-                rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * currentMaxSpeed * crouchSpeedMultiplier;
-                //Debug.Log("crouch walk");
-            } else if (InputController.crouchPressed && gpc.recentAction == RecentActionType.Slide && gpc.floorNormal != new Vector3(0, 1, 0)) { //slide time
-                //Debug.Log("slide");
-                ShrinkPlayer();
-                Vector3 slideDir = gpc.floorNormal;
-                slideDir.y = 0;
-                rb.AddForce((slideDir * currentMaxSpeed * 1.2f) + (moveDirection * slideControl));
-                gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
-
-            } else if (gpc.recentAction == RecentActionType.Slide) { //getting up from slide
-                //Debug.Log("slide getup");
-                ShrinkPlayer();
-                rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z) * 0.95f;
-
-            } else if (gpc.recentAction != RecentActionType.SlideJump) { //move normally
-                UnshrinkPlayer();
-                rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * currentMaxSpeed;
-                //fine if we're still crouched stay slow
-                if(col.height < 1.4f) {
-                    rb.velocity *= crouchSpeedMultiplier;
-                }
-
-                //if we're clearly not moving and grounded, then dont move on the Y axis
-                //stops slopes 
-
-                if (rb.velocity.magnitude < 1f && gpc.recentAction == RecentActionType.None && gpc.floorNormal != new Vector3(0, 1, 0)) {
-                    rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
-                    rb.isKinematic = true;
-                }
-            } 
+            HandleGrounded();
         } else {
-            UnshrinkPlayer();
-            //check what the players doing
-            if (gpc.recentAction == RecentActionType.None) { //general air drift
-
-                if(currentHorizontalVelocity.magnitude < currentMaxSpeed * 1.1f) {
-                    rb.AddForce(moveDirection * currentMaxSpeed * airControl, ForceMode.Force);
-                    rb.velocity = Vector3.ClampMagnitude(new Vector3(rb.velocity.x, 0, rb.velocity.z), currentMaxSpeed);
-                }
-
-                if(InputController.jumpPressed && gpc.currentJumps > 0) { //multi jump if you can
-                    gpc.recentAction = RecentActionType.RegularJump;
-                    yVel = initialJumpForce;
-                    gpc.currentJumps -= 1;
-                } else if (InputController.dashPressed && gpc.currentDashes > 0) { //dash if you can
-                    gpc.recentAction = RecentActionType.Dash;
-                    yVel = 0;
-                    gpc.currentDashes -= 1;
-                    Debug.DrawRay(rb.position, moveDirection.normalized, Color.cyan, 2f );
-
-                    if (moveDirection.magnitude > 0) { //dash in your current facing direction if you have no directional input 
-                        dashDirection = moveDirection.normalized;
-                    } else {
-                        dashDirection = rb.transform.forward;
-                    }
-                    
-                    rb.velocity = new Vector3(dashDirection.x, 0, dashDirection.z) * airDashSpeed;
-                }
-
-            } else if(gpc.recentAction == RecentActionType.RegularJump) { //if you just jumped, you still have air control for a split second
-                rb.velocity = new Vector3(
-                    moveDirection.x * currentMaxSpeed * 0.5f,
-                    rb.velocity.y,
-                    moveDirection.z * currentMaxSpeed * 0.5f
-                );
-            } else if(gpc.recentAction == RecentActionType.Dash) { //if dashing continue doing that 
-                rb.velocity = new Vector3(dashDirection.x, 0, dashDirection.z) * airDashSpeed;
-                gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
-            }
+            HandleInAir();
         }
         
         //put it all together
@@ -195,6 +96,111 @@ public class DefaultPlayerController : MonoBehaviour
 
     IEnumerator SlideActCooldown(float cooldownTimeSeconds) {
         yield return new WaitForSeconds(cooldownTimeSeconds);
+    }
+
+
+    private void HandleInAir() {
+        UnshrinkPlayer();
+            //check what the players doing
+        if (gpc.recentAction == RecentActionType.None) { //general air drift
+
+            if(currentHorizontalVelocity.magnitude < currentMaxSpeed * 1.1f) {
+                rb.AddForce(moveDirection * currentMaxSpeed * airControl, ForceMode.Force);
+                rb.velocity = Vector3.ClampMagnitude(new Vector3(rb.velocity.x, 0, rb.velocity.z), currentMaxSpeed);
+            }
+
+            if(InputController.jumpPressed && gpc.currentJumps > 0) { //multi jump if you can
+                gpc.recentAction = RecentActionType.RegularJump;
+                yVel = initialJumpForce;
+                gpc.currentJumps -= 1;
+            } else if (InputController.dashPressed && gpc.currentDashes > 0) { //dash if you can
+                gpc.recentAction = RecentActionType.Dash;
+                yVel = 0;
+                gpc.currentDashes -= 1;
+                Debug.DrawRay(rb.position, moveDirection.normalized, Color.cyan, 2f );
+
+                if (moveDirection.magnitude > 0) { //dash in your current facing direction if you have no directional input 
+                    dashDirection = moveDirection.normalized;
+                } else {
+                    dashDirection = rb.transform.forward;
+                }
+    
+                 rb.velocity = new Vector3(dashDirection.x, 0, dashDirection.z) * airDashSpeed;
+            }
+
+        } else if(gpc.recentAction == RecentActionType.RegularJump) { //if you just jumped, you still have air control for a split second
+            rb.velocity = new Vector3(
+                moveDirection.x * currentMaxSpeed * 0.5f,
+                rb.velocity.y,
+                moveDirection.z * currentMaxSpeed * 0.5f
+            );
+        } else if(gpc.recentAction == RecentActionType.Dash) { //if dashing continue doing that 
+            rb.velocity = new Vector3(dashDirection.x, 0, dashDirection.z) * airDashSpeed;
+            gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
+        }
+    }
+
+    private void HandleGrounded() {
+        if (InputController.jumpPressed) { //initial jump fine
+            yVel = initialJumpForce;
+            if (InputController.crouchPressed && gpc.recentAction == RecentActionType.Slide) {
+                gpc.recentAction = RecentActionType.SlideJump;
+                rb.velocity = new Vector3(rb.velocity.x, yVel, rb.velocity.z);
+            } else {
+                gpc.recentAction = RecentActionType.RegularJump;
+            }       
+        }
+
+        //running is always locked at a default speed to encourage air movement
+        if (InputController.crouchPressed && currentHorizontalVelocity.magnitude > 0.9f * defaultRunSpeed
+            && gpc.recentAction == RecentActionType.None) { //slide if you're moving fast enough on the ground
+            //Debug.Log("first crouch");
+            ShrinkPlayer();
+            gpc.recentAction = RecentActionType.Slide;
+            rb.velocity = new Vector3(
+                Mathf.Clamp(rb.velocity.x * 2f, 2f * -currentMaxSpeed, 2f * currentMaxSpeed),
+                rb.velocity.y,
+                Mathf.Clamp(rb.velocity.z * 2f, 2f * -currentMaxSpeed, 2f * currentMaxSpeed)
+            );
+
+        } else if (gpc.recentAction == RecentActionType.Slide && currentHorizontalVelocity.magnitude < defaultRunSpeed * 0.25f) {
+            UnshrinkPlayer();
+            //Debug.Log("slide is ending");
+            gpc.recentAction = RecentActionType.None;
+
+        } else if (InputController.crouchPressed && gpc.recentAction == RecentActionType.None) { //move with crouched speed
+            ShrinkPlayer();
+            rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * currentMaxSpeed * crouchSpeedMultiplier;
+            //Debug.Log("crouch walk");
+        } else if (InputController.crouchPressed && gpc.recentAction == RecentActionType.Slide && gpc.floorNormal != new Vector3(0, 1, 0)) { //slide time
+            //Debug.Log("slide");
+            ShrinkPlayer();
+            Vector3 slideDir = gpc.floorNormal;
+            slideDir.y = 0;
+            rb.AddForce((slideDir * currentMaxSpeed * 1.2f) + (moveDirection * slideControl));
+            gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
+
+        } else if (gpc.recentAction == RecentActionType.Slide) { //getting up from slide
+            //Debug.Log("slide getup");
+            ShrinkPlayer();
+            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z) * 0.97f;
+
+        } else if (gpc.recentAction != RecentActionType.SlideJump) { //move normally
+            UnshrinkPlayer();
+            rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * currentMaxSpeed;
+            //fine if we're still crouched stay slow
+            if(col.height < 1.4f) {
+                rb.velocity *= crouchSpeedMultiplier;
+            }
+
+            //if we're clearly not moving and grounded, then dont move on the Y axis
+            //stops slopes 
+
+            if (rb.velocity.magnitude < 1f && gpc.recentAction == RecentActionType.None && gpc.floorNormal != new Vector3(0, 1, 0)) {
+                rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+                rb.isKinematic = true;
+            }
+        } 
     }
 }
             
