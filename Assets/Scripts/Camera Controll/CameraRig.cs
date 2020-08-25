@@ -27,6 +27,17 @@ public class CameraRig : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
+
+        if (!PauseMenu.isPaused) {
+            Cursor.lockState = CursorLockMode.Locked;
+        } else {
+            Cursor.lockState = CursorLockMode.None;
+        }
+
+        if(Time.deltaTime == 0) {
+            return;
+        }
+
         if(Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0
             || Input.GetAxis("RStick X") != 0 || Input.GetAxis("RStick Y") != 0) {
             isManuallyMovingCamera = true;
@@ -72,13 +83,7 @@ public class CameraRig : MonoBehaviour
             transform.rotation = Quaternion.Euler(oldX, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z); // dont rotate X though
         }
 
-        if (Input.GetKeyDown("escape")) {
-            Cursor.lockState = CursorLockMode.None;
-        }
-
-        if(Input.GetKeyDown("mouse 0")) {
-            Cursor.lockState = CursorLockMode.Locked;
-        }
+        
 
     }
 
