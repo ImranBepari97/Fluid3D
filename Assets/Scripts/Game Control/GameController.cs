@@ -5,10 +5,12 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
 
+
+    public float countdownLeft = 3f;
     public float timeLeftSeconds;
     public Dictionary<GlobalPlayerController, int> scoreboard;
 
-    public bool isGameOver;
+    public GameState gameState;
     [SerializeField]
     DestinationPoint[] destinations;
     int currentSelectedPoint;
@@ -27,12 +29,13 @@ public class GameController : MonoBehaviour
             instance = this;
         }
         
-        isGameOver = false;
+        gameState = GameState.NOT_STARTED;
         wp = Object.FindObjectOfType<Waypoint>();
         scoreboard = new Dictionary<GlobalPlayerController, int>();
         scoreboard.Clear();
 
         foreach (GlobalPlayerController player in Object.FindObjectsOfType<GlobalPlayerController>() ) {
+            DeactivatePlayer(player);
             scoreboard.Add(player, 0);
         }
 
@@ -52,14 +55,25 @@ public class GameController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if(!isGameOver) {
+        if(gameState == GameState.PLAYING) {
             timeLeftSeconds -= Time.deltaTime;
+
+            if(timeLeftSeconds < 0) {
+                gameState = GameState.ENDED;
+                DeactivateAllPlayers();
+            }
         }
 
-        if(timeLeftSeconds < 0) {
-            isGameOver = true;
+        if(gameState == GameState.NOT_STARTED) {
+            countdownLeft -= Time.deltaTime;
+
+            if(countdownLeft < 0) {
+                gameState = GameState.PLAYING;
+                ActivateAllPlayers();
+            }
         }
+
+        
     }
 
     public void AddPoint(GlobalPlayerController player, int pointCount) {
@@ -68,6 +82,30 @@ public class GameController : MonoBehaviour
         } else {
             scoreboard[player] = pointCount;
         }
+    }
+
+    void ActivateAllPlayers() {
+        foreach( GlobalPlayerController gpc in scoreboard.Keys) {
+            ActivatePlayer(gpc);
+        }
+    }
+
+       void DeactivateAllPlayers() {
+        foreach( GlobalPlayerController gpc in scoreboard.Keys) {
+            DeactivatePlayer(gpc);
+        }
+    }
+
+
+    void ActivatePlayer(GlobalPlayerController player) {
+        player.enabled = true;
+        player.EnableDefaultControls();
+    }
+
+    void DeactivatePlayer(GlobalPlayerController player) {
+        player.DisableAllControls();
+        player.enabled = false;
+        
     }
 
     public void SetNewDestination() {

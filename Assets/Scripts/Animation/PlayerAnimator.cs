@@ -32,6 +32,12 @@ public class PlayerAnimator : MonoBehaviour
     // Update is called once per frame
     void Update() {
 
+        bool gameStarted;
+        if(GameController.instance != null) {
+           gameStarted = GameController.instance.gameState == GameState.PLAYING;
+        } else {
+            gameStarted = true;
+        }
 
         FindWallClosest();
 
@@ -44,6 +50,7 @@ public class PlayerAnimator : MonoBehaviour
         animator.SetBool("isGrounded", gpc.isGrounded);
         animator.SetBool("isSlideJumping", gpc.recentAction == RecentActionType.SlideJump);
         animator.SetBool("isOnWall", gpc.recentAction == RecentActionType.OnWall);
+        animator.SetBool("gameStarted", gameStarted);
         animator.SetFloat("playerHeight", cc.height);
 
         Vector3 horVel = rb.velocity;

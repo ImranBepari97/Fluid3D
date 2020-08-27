@@ -15,12 +15,12 @@ public class Waypoint : MonoBehaviour
     public GameObject upElement;
     public GameObject downElement;
 
-    Camera mainCam;
+    public Camera mainCam;
 
     // Start is called before the first frame update
     void Start()
     {
-        mainCam = Camera.main;
+        
     }
 
     // Update is called once per frame

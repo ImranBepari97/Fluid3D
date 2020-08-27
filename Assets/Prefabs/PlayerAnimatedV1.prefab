@@ -786,6 +786,7 @@ MonoBehaviour:
   crouchOffset: {x: 0, y: -0.4, z: 0}
   wallLeftOffset: {x: -0.14, y: 0, z: 0}
   wallRightOffset: {x: 0.14, y: 0, z: 0}
+  wallHoldOffset: {x: 0, y: 0, z: 0.14}
 --- !u!1001 &5872080991076179539
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -36,8 +36,9 @@ public class GlobalPlayerController : MonoBehaviour
 
     public Vector3 floorNormal;
 
+
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         isGrounded = false;
         rb = GetComponent<Rigidbody>();
@@ -185,6 +186,12 @@ public class GlobalPlayerController : MonoBehaviour
         grindPlayerController.enabled = true;
     }
 
+
+    public void DisableAllControls() {
+        defaultPlayerController.enabled = false;
+        wallPlayerController.enabled = false;
+        grindPlayerController.enabled = false;
+    }
     void OnCollisionExit(Collision other) {
         if (other.gameObject.layer == LayerMask.NameToLayer("Parkour") || other.gameObject.tag == "Grind") {
             // Debug.Log("OffWall");
