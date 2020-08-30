@@ -33,8 +33,8 @@ public class PlayerAnimator : MonoBehaviour
     void Update() {
 
         bool gameStarted;
-        if(GameController.instance != null) {
-           gameStarted = GameController.instance.gameState == GameState.PLAYING;
+        if(GameControllerCommon.instance != null) {
+           gameStarted = GameControllerCommon.instance.gameState == GameState.PLAYING;
         } else {
             gameStarted = true;
         }

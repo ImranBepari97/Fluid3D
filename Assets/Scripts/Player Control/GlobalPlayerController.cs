@@ -181,6 +181,7 @@ public class GlobalPlayerController : MonoBehaviour
     }
 
     public void EnableGrindControls() {
+        rb.velocity = new Vector3(0,0,0);
         defaultPlayerController.enabled = false;
         wallPlayerController.enabled = false;
         grindPlayerController.enabled = true;
@@ -188,6 +189,7 @@ public class GlobalPlayerController : MonoBehaviour
 
 
     public void DisableAllControls() {
+        rb.velocity = new Vector3(0,0,0);
         defaultPlayerController.enabled = false;
         wallPlayerController.enabled = false;
         grindPlayerController.enabled = false;
@@ -223,6 +225,7 @@ public class GlobalPlayerController : MonoBehaviour
                     Debug.Log(Vector3.Dot(horVel.normalized, pc.path.GetDirectionAtDistance(grindPlayerController.dstTravelled)));
                     grindPlayerController.isReversed = Vector3.Dot(horVel.normalized, pc.path.GetDirectionAtDistance(grindPlayerController.dstTravelled)) > 0 ? false : true;
                     lastWallTouched = null;
+
 
                     ResetJumpsAndDashes();
                     EnableGrindControls();

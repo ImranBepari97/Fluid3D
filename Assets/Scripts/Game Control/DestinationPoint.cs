@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class DestinationPoint : MonoBehaviour {
 
-    GameController gc;
+    GameControllerArena gc;
 
     // Start is called before the first frame update
     void Start() {
-        gc = GameController.instance;
+        gc = (GameControllerArena) GameControllerCommon.instance;
     }
 
     // Update is called once per frame
@@ -23,8 +23,6 @@ public class DestinationPoint : MonoBehaviour {
             gc.SetNewDestination();
 
             Debug.Log("+1 for :" + coll.gameObject);
-            
-            
         }
     }
 }
