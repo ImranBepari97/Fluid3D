@@ -32,7 +32,7 @@ public class CameraCollision : MonoBehaviour
         if(Physics.SphereCast(transform.parent.position, cameraRadius, desiredCameraPos - transform.parent.position,  out hit, (transform.parent.position - desiredCameraPos).magnitude)) {
         //if(Physics.Linecast(transform.parent.position, desiredCameraPos, out hit)) {
             if(hit.collider.gameObject.tag != "Player" && hit.collider.gameObject.tag != "Grind") {
-                Debug.Log(hit.collider.gameObject);
+                //Debug.Log(hit.collider.gameObject);
                 distance = Mathf.Clamp(hit.distance * 0.9f, minDistance, maxDistance);
             }
         } else {

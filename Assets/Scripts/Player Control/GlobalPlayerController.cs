@@ -15,6 +15,9 @@ public class GlobalPlayerController : MonoBehaviour
     public GameObject lastWallTouched;
 
     public int extraJumps = 1;
+
+    public float currentHealth;
+    public float maxHealth = 100f;
     public int currentJumps;
 
     public int numberOfDashes = 1;
@@ -23,6 +26,8 @@ public class GlobalPlayerController : MonoBehaviour
     public float currentSpeedMultiplier = 1f;
     public float maxSpeedMultiplier = 2f;
 
+    public float fallDamageThresholdVelocity = 40f;
+
     public bool isGrounded;
 
     public RecentActionType recentAction;
@@ -30,11 +35,13 @@ public class GlobalPlayerController : MonoBehaviour
     Rigidbody rb;
     CapsuleCollider cc;
 
-    bool isResetCRRunning;
+    bool isResetCRRunning; //bool for checking if the coroutines for resetting actions is active
+    
+    float floorTouchVelocity; //velocity set when the player touches floor, for fall damage. 
 
-    public float dotProductOfNearestWall;
+    public float dotProductOfNearestWall; //the angle of the players velocity compared to the nearest wall they're facing
 
-    public Vector3 floorNormal;
+    public Vector3 floorNormal; //the normal of the floor the player is standing on 
 
 
     // Start is called before the first frame update
@@ -45,12 +52,13 @@ public class GlobalPlayerController : MonoBehaviour
         defaultPlayerController = GetComponent<DefaultPlayerController>();
         wallPlayerController = GetComponent<WallPlayerController>();
         grindPlayerController = GetComponent<GrindPlayerController>();
+        cc = GetComponent<CapsuleCollider>();
         recentAction = RecentActionType.None;
         currentJumps = 0;
         currentDashes = 0;
         isResetCRRunning = false;
         dotProductOfNearestWall = 0f;
-        cc = GetComponent<CapsuleCollider>();
+        currentHealth = maxHealth;
     }
 
     // Update is called once per frame
@@ -58,7 +66,8 @@ public class GlobalPlayerController : MonoBehaviour
 
         CheckIfGrounded();
         CheckFloorNormal();
-        
+        HandleFallDamage();
+
         if(isGrounded) {
             ResetJumpsAndDashes();
             EnableDefaultControls();
@@ -123,22 +132,39 @@ public class GlobalPlayerController : MonoBehaviour
         }
 
         isGrounded = false;
-        
         return isGrounded;
     }
 
-
     void CheckFloorNormal() {
         RaycastHit hit;
-        Debug.DrawLine(rb.position, rb.position + (-Vector3.up * 0.75f), Color.red, 0.01f);
-        if (Physics.Raycast(rb.position, -Vector3.up, out hit, 0.75f)) {
+        Debug.DrawLine(rb.position, rb.position + (-Vector3.up * 1f), Color.red, 0.01f);
+        if (Physics.Raycast(rb.position, -Vector3.up, out hit, 1f)) {
             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Parkour") ||
                hit.collider.gameObject.layer == LayerMask.NameToLayer("Floor")) {
+                
                 floorNormal = hit.normal;
                 isGrounded = true;
             }
         } else {
             floorNormal = new Vector3(0, 0, 0);
+        }
+    }
+
+    void HandleFallDamage() {
+
+        if(floorTouchVelocity > fallDamageThresholdVelocity) {
+            Debug.Log("fall damage time");
+            StartCoroutine(FallDamageCoroutine(floorTouchVelocity));
+        }
+
+        floorTouchVelocity = 0; 
+    }
+
+    public IEnumerator FallDamageCoroutine(float velocity) {
+        yield return new WaitForSeconds(0.066f);
+        if(!(floorNormal != new Vector3(0,1,0) && recentAction == RecentActionType.Slide)) {
+            Debug.Log("fall damage at " + velocity + " is " + PlayerAnimator.RangeRemap(velocity, 40f, 53f, 0f, 100f));
+            currentHealth -= PlayerAnimator.RangeRemap(velocity, 40f, 53f, 0f, 100f);
         }
     }
 
@@ -157,7 +183,6 @@ public class GlobalPlayerController : MonoBehaviour
         recentAction = RecentActionType.None;
         isResetCRRunning = false;
     }
-
 
     public static Vector3 GetForwardRelativeToCamera() {
         Vector3 camDir = Camera.main.transform.forward;
@@ -194,6 +219,7 @@ public class GlobalPlayerController : MonoBehaviour
         wallPlayerController.enabled = false;
         grindPlayerController.enabled = false;
     }
+
     void OnCollisionExit(Collision other) {
         if (other.gameObject.layer == LayerMask.NameToLayer("Parkour") || other.gameObject.tag == "Grind") {
             // Debug.Log("OffWall");
@@ -209,6 +235,7 @@ public class GlobalPlayerController : MonoBehaviour
 
     void OnCollisionEnter(Collision other) {
 
+        //Grind Detection
         if(other.gameObject.tag == "Grind" && recentAction != RecentActionType.Grind) {
             wallPlayerController.wallsCollidingWith.Add(other.gameObject);
             
@@ -234,7 +261,16 @@ public class GlobalPlayerController : MonoBehaviour
             }
         }
 
+        //Fall Damage Check
+        if(other.gameObject.layer == LayerMask.NameToLayer("Parkour") || 
+            other.gameObject.layer == LayerMask.NameToLayer("Floor")) {
+            if(Vector3.Dot(other.GetContact(0).normal, Vector3.up) > 0.5f) {
+                Debug.Log("fallspeed = " + other.relativeVelocity.y);
+                floorTouchVelocity = other.relativeVelocity.y;
+            }
+        }
 
+        //Wall Running Check
         if (other.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
             //Debug.DrawRay(other.GetContact(0).point, other.GetContact(0).normal ,Color.white, 1f);
             wallPlayerController.wallsCollidingWith.Add(other.gameObject);
@@ -273,6 +309,7 @@ public class GlobalPlayerController : MonoBehaviour
         bool correctRunSpeed = currentHorizontalVelocity.magnitude > 0.4f * defaultPlayerController.defaultRunSpeed;
         bool correctDotProduct = angleAsDotProduct < 0.76f;
 
+        //if we're already wallrunning, then it's okay if we're slower than the threshold
         if((wallPlayerController.isWallRunning || correctRunSpeed) && correctDotProduct) {
             return true;
         }

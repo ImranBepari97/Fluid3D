@@ -77,6 +77,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ParkourFloorDefault Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 982344633537037997, guid: a1c4fe79f5dceda42a2bb1c41f3f53cd,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: 982344633537037998, guid: a1c4fe79f5dceda42a2bb1c41f3f53cd,
         type: 3}
       propertyPath: m_Mesh

@@ -40,6 +40,31 @@ public class AudioOptions : MonoBehaviour
         effectsSlider.value = effectsVol;
     }
 
+    public void SetMasterVolumeFromInput(string volString) {
+        float vol = float.Parse(volString);
+        float trueVol = PlayerAnimator.RangeRemap(vol, 0, 100, -80, 0);
+        mixer.SetFloat("MasterVolume", trueVol);
+        masterSlider.value = trueVol;
+        masterInput.text = vol.ToString("0.00");
+    }  
+
+    public void SetMusicVolumeFromInput(string volString) {
+        float vol = float.Parse(volString);
+        float trueVol = PlayerAnimator.RangeRemap(vol, 0, 100, -80, 0);
+        mixer.SetFloat("MusicVolume", trueVol);
+        musicSlider.value = trueVol;
+        musicInput.text = vol.ToString("0.00");
+    }     
+
+    public void SetEffectsVolumeFromInput(string volString) {
+        float vol = float.Parse(volString);
+        float trueVol = PlayerAnimator.RangeRemap(vol, 0, 100, -80, 0);
+        mixer.SetFloat("EffectsVolume", trueVol);
+        effectsSlider.value = trueVol;
+        effectsInput.text = vol.ToString("0.00");
+    } 
+
+
     public void SetMasterVolume(float vol) {
         mixer.SetFloat("MasterVolume", vol);
         masterSlider.value = vol;
