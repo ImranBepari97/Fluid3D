@@ -14,7 +14,7 @@ public class HealthVignette : MonoBehaviour
 
     public Color vignetteDamageColour;
 
-    public GlobalPlayerController player;
+    public PlayerHealth player;
 
     // Start is called before the first frame update
     void Awake()

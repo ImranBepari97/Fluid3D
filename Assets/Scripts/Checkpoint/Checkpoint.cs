@@ -5,18 +5,12 @@ using UnityEngine;
 public class Checkpoint : MonoBehaviour
 {
 
-    public static Dictionary<GameObject, Transform> playerCheckpointMap = new Dictionary<GameObject, Transform>();
-    Transform checkpointLocation;
+    public static Dictionary<GameObject, Vector3> playerCheckpointMap = new Dictionary<GameObject, Vector3>();
+    Vector3 checkpointLocation;
     // Start is called before the first frame update
     void Start()
     {
-        checkpointLocation = transform.GetChild(0).transform;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        checkpointLocation = transform.GetChild(0).transform.position;
     }
 
     void OnTriggerEnter(Collider other) {

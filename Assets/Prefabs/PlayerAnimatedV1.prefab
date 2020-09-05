@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 1432478493584155335}
   - component: {fileID: 1432478493584155340}
   - component: {fileID: 406202322311510504}
+  - component: {fileID: 1399038271128963814}
   m_Layer: 10
   m_Name: PlayerAnimatedV1
   m_TagString: Player
@@ -53,14 +54,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lastWallTouched: {fileID: 0}
   extraJumps: 1
-  currentHealth: 0
-  maxHealth: 100
   currentJumps: 0
   numberOfDashes: 1
   currentDashes: 0
   currentSpeedMultiplier: 1
   maxSpeedMultiplier: 2
-  fallDamageThresholdVelocity: 40
   isGrounded: 0
   recentAction: 0
   dotProductOfNearestWall: 0
@@ -166,6 +164,26 @@ MonoBehaviour:
   grindSpeed: 15
   isReversed: 0
   dstTravelled: 0
+--- !u!114 &1399038271128963814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432478493584155342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 703579ed04235394997d475a631eebc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  model: {fileID: 6754479550755136258}
+  ragdollPrefab: {fileID: 4468600284673209838, guid: b9f68256388dfe34395a68d4fb0e371e,
+    type: 3}
+  respawnTime: 5
+  currentHealth: 0
+  maxHealth: 100
+  fallDamageThresholdVelocity: 40
+  healthRegenTime: 5
 --- !u!1 &1532400803801231473
 GameObject:
   m_ObjectHideFlags: 0

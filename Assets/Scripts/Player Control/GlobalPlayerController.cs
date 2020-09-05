@@ -12,12 +12,13 @@ public class GlobalPlayerController : MonoBehaviour
 
     GrindPlayerController grindPlayerController;
 
+    PlayerHealth health;
+
     public GameObject lastWallTouched;
 
     public int extraJumps = 1;
 
-    public float currentHealth;
-    public float maxHealth = 100f;
+    
     public int currentJumps;
 
     public int numberOfDashes = 1;
@@ -25,9 +26,6 @@ public class GlobalPlayerController : MonoBehaviour
 
     public float currentSpeedMultiplier = 1f;
     public float maxSpeedMultiplier = 2f;
-
-    public float fallDamageThresholdVelocity = 40f;
-
     public bool isGrounded;
 
     public RecentActionType recentAction;
@@ -41,14 +39,14 @@ public class GlobalPlayerController : MonoBehaviour
 
     public Vector3 floorNormal; //the normal of the floor the player is standing on 
 
-    float timeSinceLastFallDamage;
-    public float healthRegenTime = 5f;
+    
 
 
     // Start is called before the first frame update
     void Awake()
     {
         isGrounded = false;
+        health = GetComponent<PlayerHealth>();
         rb = GetComponent<Rigidbody>();
         defaultPlayerController = GetComponent<DefaultPlayerController>();
         wallPlayerController = GetComponent<WallPlayerController>();
@@ -59,8 +57,6 @@ public class GlobalPlayerController : MonoBehaviour
         currentDashes = 0;
         isResetCRRunning = false;
         dotProductOfNearestWall = 0f;
-        currentHealth = maxHealth;
-        timeSinceLastFallDamage = healthRegenTime;
     }
 
     // Update is called once per frame
@@ -68,14 +64,6 @@ public class GlobalPlayerController : MonoBehaviour
 
         CheckIfGrounded();
         CheckFloorNormal();
-
-        timeSinceLastFallDamage += Time.deltaTime;
-        if(timeSinceLastFallDamage > healthRegenTime && currentHealth < maxHealth) {
-            currentHealth += 25f * Time.deltaTime;
-            if(currentHealth > maxHealth) {
-                currentHealth = maxHealth;
-            }
-        }
 
         if(isGrounded) {
             ResetJumpsAndDashes();
@@ -159,24 +147,7 @@ public class GlobalPlayerController : MonoBehaviour
         }
     }
 
-    void HandleFallDamage(float floorTouchVelocity) {
-
-        if(floorTouchVelocity > fallDamageThresholdVelocity) {
-            Debug.Log("fall damage time");
-            StartCoroutine(FallDamageCoroutine(floorTouchVelocity));
-        }
-
-        floorTouchVelocity = 0; 
-    }
-
-    public IEnumerator FallDamageCoroutine(float velocity) {
-        yield return new WaitForSeconds(0.066f);
-        if(!(floorNormal != new Vector3(0,1,0) && recentAction == RecentActionType.Slide)) {
-            Debug.Log("fall damage at " + velocity + " is " + PlayerAnimator.RangeRemap(velocity, 40f, 53f, 0f, 100f));
-            currentHealth -= PlayerAnimator.RangeRemap(velocity, 40f, 53f, 0f, 100f);
-            timeSinceLastFallDamage = 0f;
-        }
-    }
+    
 
     //Basically controls the boolean that see if you've jumped in the last split second
     //Generally used to give the player absolute control in this short window 
@@ -276,7 +247,8 @@ public class GlobalPlayerController : MonoBehaviour
             other.gameObject.layer == LayerMask.NameToLayer("Floor")) {
             if(Vector3.Dot(other.GetContact(0).normal, Vector3.up) > 0.5f) {
                 Debug.Log("fallspeed = " + other.relativeVelocity.y);
-                HandleFallDamage(other.relativeVelocity.y);
+                health.HandleFallDamage(other.relativeVelocity.y);
+                health.deathVelocity = other.relativeVelocity;
             }
         }
 
