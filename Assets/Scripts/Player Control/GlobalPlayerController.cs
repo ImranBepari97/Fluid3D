@@ -36,12 +36,13 @@ public class GlobalPlayerController : MonoBehaviour
     CapsuleCollider cc;
 
     bool isResetCRRunning; //bool for checking if the coroutines for resetting actions is active
-    
-    float floorTouchVelocity; //velocity set when the player touches floor, for fall damage. 
 
     public float dotProductOfNearestWall; //the angle of the players velocity compared to the nearest wall they're facing
 
     public Vector3 floorNormal; //the normal of the floor the player is standing on 
+
+    float timeSinceLastFallDamage;
+    public float healthRegenTime = 5f;
 
 
     // Start is called before the first frame update
@@ -59,6 +60,7 @@ public class GlobalPlayerController : MonoBehaviour
         isResetCRRunning = false;
         dotProductOfNearestWall = 0f;
         currentHealth = maxHealth;
+        timeSinceLastFallDamage = healthRegenTime;
     }
 
     // Update is called once per frame
@@ -66,7 +68,14 @@ public class GlobalPlayerController : MonoBehaviour
 
         CheckIfGrounded();
         CheckFloorNormal();
-        HandleFallDamage();
+
+        timeSinceLastFallDamage += Time.deltaTime;
+        if(timeSinceLastFallDamage > healthRegenTime && currentHealth < maxHealth) {
+            currentHealth += 25f * Time.deltaTime;
+            if(currentHealth > maxHealth) {
+                currentHealth = maxHealth;
+            }
+        }
 
         if(isGrounded) {
             ResetJumpsAndDashes();
@@ -150,7 +159,7 @@ public class GlobalPlayerController : MonoBehaviour
         }
     }
 
-    void HandleFallDamage() {
+    void HandleFallDamage(float floorTouchVelocity) {
 
         if(floorTouchVelocity > fallDamageThresholdVelocity) {
             Debug.Log("fall damage time");
@@ -165,6 +174,7 @@ public class GlobalPlayerController : MonoBehaviour
         if(!(floorNormal != new Vector3(0,1,0) && recentAction == RecentActionType.Slide)) {
             Debug.Log("fall damage at " + velocity + " is " + PlayerAnimator.RangeRemap(velocity, 40f, 53f, 0f, 100f));
             currentHealth -= PlayerAnimator.RangeRemap(velocity, 40f, 53f, 0f, 100f);
+            timeSinceLastFallDamage = 0f;
         }
     }
 
@@ -266,7 +276,7 @@ public class GlobalPlayerController : MonoBehaviour
             other.gameObject.layer == LayerMask.NameToLayer("Floor")) {
             if(Vector3.Dot(other.GetContact(0).normal, Vector3.up) > 0.5f) {
                 Debug.Log("fallspeed = " + other.relativeVelocity.y);
-                floorTouchVelocity = other.relativeVelocity.y;
+                HandleFallDamage(other.relativeVelocity.y);
             }
         }
 

@@ -53,11 +53,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lastWallTouched: {fileID: 0}
   extraJumps: 1
+  currentHealth: 0
+  maxHealth: 100
   currentJumps: 0
   numberOfDashes: 1
   currentDashes: 0
   currentSpeedMultiplier: 1
   maxSpeedMultiplier: 2
+  fallDamageThresholdVelocity: 40
   isGrounded: 0
   recentAction: 0
   dotProductOfNearestWall: 0
