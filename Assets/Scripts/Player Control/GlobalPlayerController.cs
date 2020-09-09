@@ -138,7 +138,6 @@ public class GlobalPlayerController : MonoBehaviour
         if (Physics.Raycast(rb.position, -Vector3.up, out hit, 1f)) {
             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Parkour") ||
                hit.collider.gameObject.layer == LayerMask.NameToLayer("Floor")) {
-                
                 floorNormal = hit.normal;
                 isGrounded = true;
             }
@@ -147,21 +146,22 @@ public class GlobalPlayerController : MonoBehaviour
         }
     }
 
-    
-
     //Basically controls the boolean that see if you've jumped in the last split second
     //Generally used to give the player absolute control in this short window 
     public IEnumerator JumpControlCoolDown(float cooldownTimeSeconds) {
         yield return new WaitForSeconds(cooldownTimeSeconds);
-        recentAction = RecentActionType.None;
+        if(recentAction != RecentActionType.None) { //check playerstate
+            recentAction = RecentActionType.None;
+        }
         isResetCRRunning = false;
     }
     
-
     public IEnumerator JumpControlCooldownClampSpeed(float cooldownTimeSeconds, float maxSpeed) {
         yield return new WaitForSeconds(cooldownTimeSeconds);
-        rb.velocity = Vector3.ClampMagnitude(new Vector3(rb.velocity.x, 0, rb.velocity.z), maxSpeed);
-        recentAction = RecentActionType.None;
+        if(recentAction != RecentActionType.None) { //check if something else changed the player state
+            rb.velocity = Vector3.ClampMagnitude(new Vector3(rb.velocity.x, 0, rb.velocity.z), maxSpeed);
+            recentAction = RecentActionType.None;
+        }
         isResetCRRunning = false;
     }
 

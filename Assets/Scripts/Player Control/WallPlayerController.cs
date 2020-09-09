@@ -98,15 +98,15 @@ public class WallPlayerController : MonoBehaviour
             } else {
                 rb.velocity = new Vector3(
                     wallNormal.normalized.x + (InputController.moveDirection.x * 0.4f), 
-                    1f, 
-                    wallNormal.normalized.z + (InputController.moveDirection.z * 0.4f)) * initialJumpForce;
+                    2f, 
+                    wallNormal.normalized.z + (InputController.moveDirection.z * 0.4f)).normalized * initialJumpForce * 1.25f;
 
                     gameObject.transform.rotation = Quaternion.LookRotation(wallNormal);
             }
 
             globalPlayerController.recentAction = RecentActionType.WallJump;
 
-            Debug.DrawRay(rb.position, new Vector3(wallNormal.normalized.x, 1f, wallNormal.normalized.z), Color.blue, 2f);
+            Debug.DrawRay(rb.position, rb.velocity, Color.blue, 2f);
             globalPlayerController.EnableDefaultControls();
         }
 

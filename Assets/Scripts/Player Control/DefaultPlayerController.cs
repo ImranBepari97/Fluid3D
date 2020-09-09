@@ -98,7 +98,6 @@ public class DefaultPlayerController : MonoBehaviour
         yield return new WaitForSeconds(cooldownTimeSeconds);
     }
 
-
     private void HandleInAir() {
         UnshrinkPlayer();
             //check what the players doing

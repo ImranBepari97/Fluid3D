@@ -60,7 +60,7 @@ MonoBehaviour:
   currentSpeedMultiplier: 1
   maxSpeedMultiplier: 2
   isGrounded: 0
-  recentAction: 0
+  recentAction: 8
   dotProductOfNearestWall: 0
   floorNormal: {x: 0, y: 0, z: 0}
 --- !u!114 &1432478493584155341
@@ -179,6 +179,7 @@ MonoBehaviour:
   model: {fileID: 6754479550755136258}
   ragdollPrefab: {fileID: 4468600284673209838, guid: b9f68256388dfe34395a68d4fb0e371e,
     type: 3}
+  deathVelocity: {x: 0, y: 0, z: 0}
   respawnTime: 5
   currentHealth: 0
   maxHealth: 100
