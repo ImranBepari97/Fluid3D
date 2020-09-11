@@ -6,14 +6,13 @@ public class PlayerHealth : MonoBehaviour
 {
 
     GlobalPlayerController gpc;
+    WallPlayerController wpc;
     Rigidbody rb;
     CapsuleCollider capsuleCollider;
     public GameObject model;
     public GameObject ragdollPrefab;
 
     public Vector3 deathVelocity;
-
-
 
     public float respawnTime = 5f;
     public float currentHealth;
@@ -26,6 +25,7 @@ public class PlayerHealth : MonoBehaviour
     {
         gpc = GetComponent<GlobalPlayerController>();
         rb = GetComponent<Rigidbody>();
+        wpc = GetComponent<WallPlayerController>();
         capsuleCollider = GetComponent<CapsuleCollider>();
         currentHealth = maxHealth;
         timeSinceLastFallDamage = healthRegenTime;
@@ -50,6 +50,7 @@ public class PlayerHealth : MonoBehaviour
         HandleRagdoll();
         gpc.DisableAllControls();
         gpc.enabled = false;
+        wpc.wallsCollidingWith.Clear();
 
         model.SetActive(false);
 

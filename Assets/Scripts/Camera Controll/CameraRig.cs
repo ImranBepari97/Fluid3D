@@ -5,7 +5,8 @@ using UnityEngine;
 public class CameraRig : MonoBehaviour
 {
 
-    public float mouseSensitivity = 1f;
+    public float mouseXSensitivity = 1f;
+    public float mouseYSensitivity = 1f;
 
     public float stickXSensitivity = 1f;
     public float stickYSensitivity = 1f;
@@ -22,16 +23,16 @@ public class CameraRig : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         targetRb = target.GetComponent<Rigidbody>();
         isManuallyMovingCamera = false;
-
     }
 
     // Update is called once per frame
     void Update() {
 
-        if (!PauseMenu.isPaused) {
-            Cursor.lockState = CursorLockMode.Locked;
+        if (PauseMenu.isPaused) {
+           Cursor.lockState = CursorLockMode.None;
         } else {
-            Cursor.lockState = CursorLockMode.None;
+            Cursor.lockState = CursorLockMode.Locked;
+            
         }
 
         if(Time.deltaTime == 0) {
@@ -46,8 +47,8 @@ public class CameraRig : MonoBehaviour
         }
 
         if (Cursor.lockState == CursorLockMode.Locked) {
-            gameObject.transform.Rotate(0, Input.GetAxis("Mouse X") * mouseSensitivity, 0);
-            gameObject.transform.Rotate(-Input.GetAxis("Mouse Y") * mouseSensitivity, 0, 0);
+            gameObject.transform.Rotate(0, Input.GetAxis("Mouse X") * mouseXSensitivity, 0);
+            gameObject.transform.Rotate(-Input.GetAxis("Mouse Y") * mouseYSensitivity, 0, 0);
         }
 
         gameObject.transform.Rotate(0, Input.GetAxis("RStick X") * stickXSensitivity, 0);
@@ -67,6 +68,7 @@ public class CameraRig : MonoBehaviour
         //gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position, 1f);
         gameObject.transform.position = target.transform.position;
 
+        //Auto camera rotation
         Vector3 xzMovement = targetRb.velocity;
         xzMovement.y = 0;
         if (!isManuallyMovingCamera && xzMovement.magnitude > 4f) {
@@ -82,12 +84,33 @@ public class CameraRig : MonoBehaviour
             transform.rotation = Quaternion.LookRotation(rotated); //rotate to look at the new angle
             transform.rotation = Quaternion.Euler(oldX, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z); // dont rotate X though
         }
-
-        
-
     }
 
-    void FixedUpdate() {
-        
+    void TryLoadPlayerPrefs() {
+        if(PlayerPrefs.HasKey("mouseXInput")) {
+           mouseXSensitivity = PlayerPrefs.GetFloat("mouseXInput");
+        }
+
+        if(PlayerPrefs.HasKey("mouseYInput")) {
+            mouseYSensitivity = PlayerPrefs.GetFloat("mouseYInput");
+        } 
+
+        if(PlayerPrefs.HasKey("stickXInput")) {
+            stickXSensitivity = PlayerPrefs.GetFloat("stickXInput");
+        } 
+
+        if(PlayerPrefs.HasKey("stickYInput")) {
+            stickYSensitivity = PlayerPrefs.GetFloat("stickYInput");
+        } 
+
+        if(PlayerPrefs.HasKey("stickInverted") && PlayerPrefs.GetInt("stickInverted") != 0) {
+            stickXSensitivity *= -1;
+            stickYSensitivity *= -1;
+        }
+
+        if(PlayerPrefs.HasKey("mouseInverted") && PlayerPrefs.GetInt("mouseInverted") != 0) {
+            mouseXSensitivity *= -1;
+            mouseYSensitivity *= -1;
+        }
     }
 }

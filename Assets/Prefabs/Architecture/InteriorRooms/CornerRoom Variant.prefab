@@ -11095,7 +11095,12 @@ PrefabInstance:
     - target: {fileID: 5472982872788290720, guid: 01fa8e75931366b4fbe5620714fa764f,
         type: 3}
       propertyPath: m_Name
-      value: CornerRoom
+      value: CornerRoom Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 5472982872788290720, guid: 01fa8e75931366b4fbe5620714fa764f,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 6270157868043736168, guid: 01fa8e75931366b4fbe5620714fa764f,
         type: 3}

@@ -85,24 +85,24 @@ public class GlobalPlayerController : MonoBehaviour
             switch(recentAction) {
                 case RecentActionType.RegularJump:
                     isResetCRRunning = true;
-                    StartCoroutine(JumpControlCoolDown(0.01f));
+                    StartCoroutine(JumpControlCoolDown(0.01f, recentAction));
                     break;
                 case RecentActionType.SlideJump:
                     isResetCRRunning = true;
-                    StartCoroutine(JumpControlCoolDown(0.35f));
+                    StartCoroutine(JumpControlCoolDown(0.35f, recentAction));
                     break;
                 case RecentActionType.WallJump:
                     isResetCRRunning = true;
-                    StartCoroutine(JumpControlCooldownClampSpeed(0.35f, defaultPlayerController.currentMaxSpeed));
+                    StartCoroutine(JumpControlCooldownClampSpeed(0.35f, defaultPlayerController.currentMaxSpeed, recentAction));
                     break;
                 case RecentActionType.Dash:
                     isResetCRRunning = true;
-                    StartCoroutine(JumpControlCooldownClampSpeed(0.25f, defaultPlayerController.currentMaxSpeed));
+                    StartCoroutine(JumpControlCooldownClampSpeed(0.25f, defaultPlayerController.currentMaxSpeed, recentAction));
                     break;
                 case RecentActionType.Slide:
                     if(!InputController.crouchPressed) {
                         isResetCRRunning = true;
-                        StartCoroutine(JumpControlCoolDown(0.35f));
+                        StartCoroutine(JumpControlCoolDown(0.35f, recentAction));
                     }
                     break;
             }
@@ -148,17 +148,17 @@ public class GlobalPlayerController : MonoBehaviour
 
     //Basically controls the boolean that see if you've jumped in the last split second
     //Generally used to give the player absolute control in this short window 
-    public IEnumerator JumpControlCoolDown(float cooldownTimeSeconds) {
+    public IEnumerator JumpControlCoolDown(float cooldownTimeSeconds, RecentActionType entryAction) {
         yield return new WaitForSeconds(cooldownTimeSeconds);
-        if(recentAction != RecentActionType.None) { //check playerstate
+        if(recentAction == entryAction) { //check playerstate
             recentAction = RecentActionType.None;
         }
         isResetCRRunning = false;
     }
     
-    public IEnumerator JumpControlCooldownClampSpeed(float cooldownTimeSeconds, float maxSpeed) {
+    public IEnumerator JumpControlCooldownClampSpeed(float cooldownTimeSeconds, float maxSpeed, RecentActionType entryAction) {
         yield return new WaitForSeconds(cooldownTimeSeconds);
-        if(recentAction != RecentActionType.None) { //check if something else changed the player state
+        if(recentAction == entryAction) { //check if something else changed the player state
             rb.velocity = Vector3.ClampMagnitude(new Vector3(rb.velocity.x, 0, rb.velocity.z), maxSpeed);
             recentAction = RecentActionType.None;
         }
