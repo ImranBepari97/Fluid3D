@@ -24,6 +24,12 @@ public class AudioOptions : MonoBehaviour
     void Awake() {
         SetSliders();
     }
+
+
+    private void OnEnable() {
+        masterSlider.Select();     
+        masterSlider.OnSelect(null);  
+    }
     
 
     void SetSliders() {

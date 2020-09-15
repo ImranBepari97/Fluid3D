@@ -16,13 +16,20 @@ public class CameraRig : MonoBehaviour
     Rigidbody targetRb;
 
     public bool isManuallyMovingCamera;
-    
+    public static CameraRig instance;
 
     // Start is called before the first frame update
     void Awake() { 
         Cursor.lockState = CursorLockMode.Locked;
         targetRb = target.GetComponent<Rigidbody>();
         isManuallyMovingCamera = false;
+
+        if(instance != null) {
+            Debug.LogWarning("There are two instances of CameraRig in the scene when there shouldn't be. This GameObject will be deleted.");
+            Destroy(this.gameObject);
+        }  else {
+            instance = this;
+        }
     }
 
     // Update is called once per frame

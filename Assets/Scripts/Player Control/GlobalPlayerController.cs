@@ -246,7 +246,7 @@ public class GlobalPlayerController : MonoBehaviour
         if(other.gameObject.layer == LayerMask.NameToLayer("Parkour") || 
             other.gameObject.layer == LayerMask.NameToLayer("Floor")) {
             if(Vector3.Dot(other.GetContact(0).normal, Vector3.up) > 0.5f) {
-                Debug.Log("fallspeed = " + other.relativeVelocity.y);
+                //Debug.Log("fallspeed = " + other.relativeVelocity.y);
                 health.HandleFallDamage(other.relativeVelocity.y);
                 health.deathVelocity = other.relativeVelocity;
             }

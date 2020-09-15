@@ -15,8 +15,6 @@ public class Waypoint : MonoBehaviour
     public GameObject upElement;
     public GameObject downElement;
 
-    public Camera mainCam;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -31,9 +29,9 @@ public class Waypoint : MonoBehaviour
         float minY = img.GetPixelAdjustedRect().height / 2;
         float maxY = Screen.height - minY;
 
-        Vector2 position = mainCam.WorldToScreenPoint(target.position + offset);
+        Vector2 position = Camera.main.WorldToScreenPoint(target.position + offset);
 
-        if (Vector3.Dot(target.position - mainCam.transform.position, mainCam.transform.forward) < 0) {
+        if (Vector3.Dot(target.position - Camera.main.transform.position, Camera.main.transform.forward) < 0) {
             if (position.x < Screen.width / 2) {
                 position.x = maxX;
             } else {
@@ -44,7 +42,7 @@ public class Waypoint : MonoBehaviour
         position.x = Mathf.Clamp(position.x, minX, maxX);
         position.y = Mathf.Clamp(position.y, minY, maxY);
 
-        float yDist = target.position.y - mainCam.transform.position.y;
+        float yDist = target.position.y - Camera.main.transform.position.y;
         if (yDist < downSpaceThreshold) {
             downElement.SetActive(true);
             upElement.SetActive(false);

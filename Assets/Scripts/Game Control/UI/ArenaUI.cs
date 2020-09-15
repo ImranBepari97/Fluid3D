@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+using UnityEngine.UI;
 using TMPro;
 public class ArenaUI : MonoBehaviour
 {
@@ -9,6 +11,10 @@ public class ArenaUI : MonoBehaviour
     public GlobalPlayerController currentPlayer;
     public TMP_Text timer;
     public TMP_Text score;
+
+    public GameObject resultScreen;
+    public TMP_Text resultScore;
+
     
     // Start is called before the first frame update
     void Start()
@@ -21,6 +27,16 @@ public class ArenaUI : MonoBehaviour
     {
         score.text = "Score: " + gc.scoreboard[currentPlayer];
         timer.text = returnTimerAsText(gc.timeLeftSeconds);
+
+        if(gc.gameState == GameState.ENDED && !resultScreen.activeInHierarchy) {
+            resultScreen.SetActive(true);
+            resultScore.text = "" + gc.scoreboard[currentPlayer];
+            gc.ToggleCameraControls(false);
+
+            Button firstButton = resultScreen.GetComponentInChildren<Button>();
+            firstButton.Select();
+            firstButton.OnSelect(null);
+        }
     }
 
 

@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameControllerCommon : MonoBehaviour
 {
 
     public float countdownLeft = 3f;
     public GameState gameState;
+
     // Start is called before the first frame update
 
     public static GameControllerCommon instance;
@@ -36,7 +38,19 @@ public class GameControllerCommon : MonoBehaviour
         }
     }
 
+    public void ToggleCameraControls(bool active) {
+        CameraRig.instance.enabled = active;
+    }
+
     public virtual void StartGame() {
         gameState = GameState.PLAYING;
+    }
+
+    public void RestartLevel() {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void QuitToMenu() {
+        SceneManager.LoadScene("MainMenu");
     }
 }

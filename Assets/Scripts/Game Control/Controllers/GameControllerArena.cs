@@ -6,6 +6,7 @@ public class GameControllerArena : GameControllerCommon
 {
 
     public float timeLeftSeconds;
+    public float minimumDistanceBetweenNewGoals = 40f;
     public Dictionary<GlobalPlayerController, int> scoreboard;
 
     [SerializeField]
@@ -92,14 +93,16 @@ public class GameControllerArena : GameControllerCommon
     public void SetNewDestination() {
 
         if (destinations.Length < 2) return; 
-
-
-        int newChoose = currentSelectedPoint;
         
-        while(newChoose == currentSelectedPoint) {
+        int newChoose = currentSelectedPoint;
+        float newDist = 0f;
+        
+        do {
             newChoose = Random.Range(0, destinations.Length);
-        }
+            newDist = Vector3.Distance(destinations[newChoose].transform.position, destinations[currentSelectedPoint].transform.position);
+        } while(newChoose == currentSelectedPoint || newDist < minimumDistanceBetweenNewGoals);
 
+        Debug.Log("New checkpoint distance: " + newDist);
         destinations[currentSelectedPoint].gameObject.SetActive(false); //disable old point
         currentSelectedPoint = newChoose;
         destinations[currentSelectedPoint].gameObject.SetActive(true); //enable new point 
