@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameControllerTimeTrial : GameControllerCommon
 {
      public float timerSeconds;
 
      GlobalPlayerController gpc;
+
+     public string nameOfNextLevel;
 
     // Start is called before the first frame update
     new void Awake()
@@ -29,11 +32,22 @@ public class GameControllerTimeTrial : GameControllerCommon
         if(gameState == GameState.PLAYING) {
             timerSeconds += Time.deltaTime;
         }
+
+        if(gameState == GameState.ENDED) {
+            gpc.DisableAllControls();
+            gpc.enabled = false;
+        }
     }
 
     public override void StartGame() {
         gameState = GameState.PLAYING;
         gpc.enabled = true;
         gpc.EnableDefaultControls();
+    }
+
+    public void LoadNextLevel() {
+        if(nameOfNextLevel != null && Application.CanStreamedLevelBeLoaded(nameOfNextLevel)) {
+            SceneManager.LoadScene(nameOfNextLevel);
+        }
     }
 }
