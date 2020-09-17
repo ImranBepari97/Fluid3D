@@ -27,6 +27,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 6036212276017502667}
   - {fileID: 8924022723196281631}
   m_Father: {fileID: 5176392799447689621}
   m_RootOrder: 2
@@ -715,10 +716,34 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 771233265019372330}
+        m_TargetAssemblyTypeName: MenuToggler, Assembly-CSharp
+        m_MethodName: EnableMenu
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 2720258869741288821}
         m_TargetAssemblyTypeName: MainMenuUI, Assembly-CSharp
         m_MethodName: ToggleMainMenuButtons
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2720258869741288821}
+        m_TargetAssemblyTypeName: MainMenuUI, Assembly-CSharp
+        m_MethodName: EnableFade
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -903,6 +928,7 @@ GameObject:
   - component: {fileID: 2008808857507736660}
   - component: {fileID: 2008808857507736661}
   - component: {fileID: 2720258869741288821}
+  - component: {fileID: 771233265019372330}
   m_Layer: 5
   m_Name: MainMenuCanvas
   m_TagString: Untagged
@@ -1012,7 +1038,21 @@ MonoBehaviour:
   - {fileID: 2008808858202739761}
   - {fileID: 2008808857991363741}
   - {fileID: 2008808857759647239}
-  optionsMenu: {fileID: 8924022723196281630}
+--- !u!114 &771233265019372330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2008808857507736650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7711bda7f83cac43ad6f8efcb0af36a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuContents:
+  - {fileID: 6036212276017502666}
+  - {fileID: 8924022723196281630}
 --- !u!1 &2008808857654598852
 GameObject:
   m_ObjectHideFlags: 0
@@ -1702,10 +1742,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 771233265019372330}
+        m_TargetAssemblyTypeName: MenuToggler, Assembly-CSharp
+        m_MethodName: EnableMenu
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 2720258869741288821}
         m_TargetAssemblyTypeName: MainMenuUI, Assembly-CSharp
-        m_MethodName: EnableOptionsMenu
-        m_Mode: 1
+        m_MethodName: ToggleMainMenuButtons
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1716,8 +1768,8 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 2720258869741288821}
         m_TargetAssemblyTypeName: MainMenuUI, Assembly-CSharp
-        m_MethodName: ToggleMainMenuButtons
-        m_Mode: 6
+        m_MethodName: EnableFade
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1774,7 +1826,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2008808858202739766
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2089,18 +2141,6 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 2720258869741288821}
           m_TargetAssemblyTypeName: MainMenuUI, Assembly-CSharp
-          m_MethodName: DisableAllMenus
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 2720258869741288821}
-          m_TargetAssemblyTypeName: MainMenuUI, Assembly-CSharp
           m_MethodName: ToggleMainMenuButtons
           m_Mode: 6
           m_Arguments:
@@ -2111,13 +2151,9 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-  - eventID: 16
-    callback:
-      m_PersistentCalls:
-        m_Calls:
         - m_Target: {fileID: 2720258869741288821}
           m_TargetAssemblyTypeName: MainMenuUI, Assembly-CSharp
-          m_MethodName: DisableAllMenus
+          m_MethodName: HighlightMainMenu
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -2125,12 +2161,12 @@ MonoBehaviour:
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
-            m_BoolArgument: 0
+            m_BoolArgument: 1
           m_CallState: 2
-        - m_Target: {fileID: 2720258869741288821}
-          m_TargetAssemblyTypeName: MainMenuUI, Assembly-CSharp
-          m_MethodName: ToggleMainMenuButtons
-          m_Mode: 6
+        - m_Target: {fileID: 771233265019372330}
+          m_TargetAssemblyTypeName: MenuToggler, Assembly-CSharp
+          m_MethodName: DisableAllMenus
+          m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2634,6 +2670,346 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1001 &7656622537900169352
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 637517620}
+    m_Modifications:
+    - target: {fileID: 1426453999354846235, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1426453999354846235, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 771233265019372330}
+    - target: {fileID: 1426453999354846235, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 2720258869741288821}
+    - target: {fileID: 1426453999354846235, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: MainMenuUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1426453999354846235, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1426453999354846235, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1426453999354846235, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1426453999354846235, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 2720258869741288821}
+    - target: {fileID: 1426453999354846235, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: HighlightMainMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 1426453999354846235, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 1426453999354846235, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ToggleMainMenuButtons
+      objectReference: {fileID: 0}
+    - target: {fileID: 1426453999354846235, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911106, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Name
+      value: SinglePlayerOptions
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4491629125147751456, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4491629125147751456, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 771233265019372330}
+    - target: {fileID: 4491629125147751456, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 2720258869741288821}
+    - target: {fileID: 4491629125147751456, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: DisableAllMenus
+      objectReference: {fileID: 0}
+    - target: {fileID: 4491629125147751456, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
+      value: MainMenuUI, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4491629125147751456, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4491629125147751456, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4491629125147751456, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4491629125147751456, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 2720258869741288821}
+    - target: {fileID: 4491629125147751456, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
+      value: HighlightMainMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 4491629125147751456, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[2].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4491629125147751456, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: ToggleMainMenuButtons
+      objectReference: {fileID: 0}
+    - target: {fileID: 4491629125147751456, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5021755947331046777, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: menuContents.Array.data[0]
+      value: 
+      objectReference: {fileID: 6036212275487555987}
+    - target: {fileID: 5021755947331046777, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: menuContents.Array.data[1]
+      value: 
+      objectReference: {fileID: 4531547069156430889}
+    - target: {fileID: 7919766246598077862, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MenuToggler, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7919766246598077862, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: EnableMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 7919766246598077862, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7919766246598077862, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7919766246598077862, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3454566358502954481}
+    - target: {fileID: 7919766246598077864, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_Name
+      value: MPTimeTrialsButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 7919766247384142916, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3454566358502954481}
+    - target: {fileID: 7919766247384142916, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: MenuToggler, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 7919766247384142916, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: EnableMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 7919766247384142916, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: e8b6acf18d3dc3e47ae1ac555e6fc579, type: 3}
+--- !u!1 &6036212275487555987 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4144761590417447195, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+    type: 3}
+  m_PrefabInstance: {fileID: 7656622537900169352}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4531547069156430889 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6098581626256755873, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+    type: 3}
+  m_PrefabInstance: {fileID: 7656622537900169352}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3454566358502954481 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5021755947331046777, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+    type: 3}
+  m_PrefabInstance: {fileID: 7656622537900169352}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6036212276017502666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7711bda7f83cac43ad6f8efcb0af36a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!224 &6036212276017502667 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4144761589857911107, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+    type: 3}
+  m_PrefabInstance: {fileID: 7656622537900169352}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6036212276017502666 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4144761589857911106, guid: e8b6acf18d3dc3e47ae1ac555e6fc579,
+    type: 3}
+  m_PrefabInstance: {fileID: 7656622537900169352}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7756036841485074513
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2729,7 +3105,7 @@ PrefabInstance:
     - target: {fileID: 1187407723825685326, guid: a5c0fa2c56c11d64f8727e53466c8d00,
         type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1187407723825685326, guid: a5c0fa2c56c11d64f8727e53466c8d00,
         type: 3}
@@ -2910,15 +3286,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eee712140c1b11445a4c2f42f80ec885, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &8924022723196281630 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1187407723825685327, guid: a5c0fa2c56c11d64f8727e53466c8d00,
-    type: 3}
-  m_PrefabInstance: {fileID: 7756036841485074513}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &8924022723196281631 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1187407723825685326, guid: a5c0fa2c56c11d64f8727e53466c8d00,
+    type: 3}
+  m_PrefabInstance: {fileID: 7756036841485074513}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8924022723196281630 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1187407723825685327, guid: a5c0fa2c56c11d64f8727e53466c8d00,
     type: 3}
   m_PrefabInstance: {fileID: 7756036841485074513}
   m_PrefabAsset: {fileID: 0}

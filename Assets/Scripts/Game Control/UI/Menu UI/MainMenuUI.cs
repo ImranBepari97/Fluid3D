@@ -11,13 +11,6 @@ public class MainMenuUI : MonoBehaviour
 
     public List<Button> mainMenuButtons;
 
-    public GameObject optionsMenu;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()
@@ -34,14 +27,11 @@ public class MainMenuUI : MonoBehaviour
 
         mainMenuButtons[0].Select();
         mainMenuButtons[0].OnSelect(null);
-
-        Debug.Log("set main");
     }
 
     public void ReturnToTitle() {
         title.SetActive(true);
         mainMenuParentContent.SetActive(false);
-        Debug.Log("set title");
     }
 
     public void QuitGame() {
@@ -54,15 +44,14 @@ public class MainMenuUI : MonoBehaviour
         }
     }
 
-    public void DisableAllMenus() {
+    public void EnableFade() {
+        mainMenuFadedImage.SetActive(true);
+    }
+
+    public void HighlightMainMenu() {
         mainMenuFadedImage.SetActive(false);
-        optionsMenu.SetActive(false);
 
         mainMenuButtons[0].Select();
         mainMenuButtons[0].OnSelect(null);
-    }
-    public void EnableOptionsMenu() {
-        optionsMenu.SetActive(true);
-        mainMenuFadedImage.SetActive(true);
     }
 }
