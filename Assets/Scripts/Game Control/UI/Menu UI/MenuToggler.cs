@@ -7,8 +7,13 @@ public class MenuToggler : MonoBehaviour
 {
 
     public List<GameObject> menuContents;
+    public GameObject parentContent;
 
     public void EnableMenu(int index) {
+        if(parentContent != null) {
+            parentContent.SetActive(false);
+        }
+        
         foreach(GameObject menu in menuContents) {
             menu.SetActive(false);
         }
@@ -24,6 +29,15 @@ public class MenuToggler : MonoBehaviour
     public void DisableAllMenus() {
         foreach(GameObject menu in menuContents) {
             menu.SetActive(false);
+        }
+
+        if(parentContent != null) {
+            parentContent.SetActive(true);
+
+            Selectable first = parentContent.GetComponentInChildren<Selectable>();
+            first.Select();
+            first.OnSelect(null);
+
         }
     }
 }

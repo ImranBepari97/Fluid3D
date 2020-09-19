@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/FullMaps/Sandbox.unity
     guid: aabb525f7f2d6284284777ee49dfe558
   - enabled: 1
+    path: Assets/Scenes/TimeTrials/Tutorial.unity
+    guid: 86291b8912a91af4dbc61ba596f355c2
+  - enabled: 1
     path: Assets/Scenes/TimeTrials/Level1.unity
     guid: f70f4e0f045156341ac7acc3140d2267
   - enabled: 1
