@@ -31,6 +31,7 @@ public class TimeTrialUI : MonoBehaviour
             resultScreen.SetActive(true);
             resultScore.text = returnTimerAsText(gc.timerSeconds);
             gc.ToggleCameraControls(false);
+            Cursor.lockState = CursorLockMode.None;
 
             //disable the next level button if there's no next level set
             if( !(gc.nameOfNextLevel != null && Application.CanStreamedLevelBeLoaded(gc.nameOfNextLevel))) {

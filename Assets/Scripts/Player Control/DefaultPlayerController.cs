@@ -134,11 +134,11 @@ public class DefaultPlayerController : MonoBehaviour
                 moveDirection.normalized
             );
             //Debug.Log(dot);
-            if(dot > 0.75f) {
+            if(dot > 0.85f) {
                 rb.velocity = new Vector3(
-                    moveDirection.x * currentHorizontalVelocity.magnitude,
+                    moveDirection.x * currentHorizontalVelocity.magnitude * 0.85f,
                     rb.velocity.y,
-                    moveDirection.z * currentHorizontalVelocity.magnitude
+                    moveDirection.z * currentHorizontalVelocity.magnitude * 0.85f
                 );
             } else {
                 rb.velocity = new Vector3(

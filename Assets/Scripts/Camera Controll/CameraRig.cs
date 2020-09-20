@@ -36,10 +36,9 @@ public class CameraRig : MonoBehaviour
     void Update() {
 
         if (PauseMenu.isPaused) {
-           Cursor.lockState = CursorLockMode.None;
+            Cursor.lockState = CursorLockMode.None;
         } else {
             Cursor.lockState = CursorLockMode.Locked;
-            
         }
 
         if(Time.deltaTime == 0) {

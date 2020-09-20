@@ -32,6 +32,7 @@ public class ArenaUI : MonoBehaviour
             resultScreen.SetActive(true);
             resultScore.text = "" + gc.scoreboard[currentPlayer];
             gc.ToggleCameraControls(false);
+            Cursor.lockState = CursorLockMode.None;
 
             Button firstButton = resultScreen.GetComponentInChildren<Button>();
             firstButton.Select();
