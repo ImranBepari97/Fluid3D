@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class TabGroup : MonoBehaviour
 {
     public List<TabButton> tabButtons;
@@ -13,9 +13,25 @@ public class TabGroup : MonoBehaviour
 
     TabButton hoveredButton;
 
+    void Awake() {
+        if(tabButtons.Count > 0) {
+            OnTabSelected(tabButtons[0]);
+        }   
+    }
+
     void Update() {
         if(hoveredButton != null) {
             hoveredButton.background.color = Color.Lerp(hoveredButton.background.color, tabHovered, 0.1f);
+        }
+
+        if(Input.GetButtonDown("TabSwitchR")) {
+            int sel = tabButtons.IndexOf(selectedTab);
+            OnTabSelected(tabButtons[(sel + 1) % tabButtons.Count]);
+        }
+        
+        if(Input.GetButtonDown("TabSwitchL")) {
+            int sel = tabButtons.IndexOf(selectedTab);
+            OnTabSelected(tabButtons[(sel - 1) % tabButtons.Count]);
         }
     }
 
@@ -25,6 +41,9 @@ public class TabGroup : MonoBehaviour
             tabButtons.Add(button);
             OnTabSelected(tabButtons[0]);
         } else {
+            if(tabButtons.Contains(button)) {
+                return;
+            }
             tabButtons.Add(button);
         }
 
@@ -60,6 +79,13 @@ public class TabGroup : MonoBehaviour
                 tb.toggleObject.SetActive(false);
             }
         }
+
+        Selectable first = selectedTab.toggleObject.gameObject.GetComponentInChildren<Button>();
+        if(first != null) {
+            first.Select();
+            first.OnSelect(null);
+        }
+        
     }
 
     public void ResetTabs() {

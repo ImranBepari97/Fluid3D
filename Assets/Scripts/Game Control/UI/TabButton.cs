@@ -20,17 +20,13 @@ public class TabButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandl
     
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         background = GetComponent<Image>();
         tabGroup.Subscribe(this);
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void OnPointerClick(PointerEventData eventData) {
         tabGroup.OnTabSelected(this);

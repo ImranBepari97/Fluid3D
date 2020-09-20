@@ -3183,7 +3183,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df7bce5b783c9d04885b822b2c9f1304, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabButtons: []
+  tabButtons:
+  - {fileID: 1187407724557287706}
+  - {fileID: 1187407723821836700}
+  - {fileID: 1187407723660376563}
+  - {fileID: 1187407725136837691}
   tabIdle: {r: 1, g: 1, b: 1, a: 0.039215688}
   tabHovered: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 0.45490196}
   tabActive: {r: 0.21568628, g: 0.21568628, b: 0.21568628, a: 0.54901963}
@@ -7304,12 +7308,12 @@ PrefabInstance:
     - target: {fileID: 2563179848820761778, guid: 1dbc98fa97cac7d4aa5481c2b9ddc2ce,
         type: 3}
       propertyPath: trueValueRange.x
-      value: -80
+      value: -35
       objectReference: {fileID: 0}
     - target: {fileID: 2563179848820761778, guid: 1dbc98fa97cac7d4aa5481c2b9ddc2ce,
         type: 3}
       propertyPath: trueValueRange.y
-      value: 20
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2718588856509983440, guid: 1dbc98fa97cac7d4aa5481c2b9ddc2ce,
         type: 3}
@@ -7581,7 +7585,7 @@ PrefabInstance:
     - target: {fileID: 2563179848820761778, guid: 1dbc98fa97cac7d4aa5481c2b9ddc2ce,
         type: 3}
       propertyPath: trueValueRange.x
-      value: -80
+      value: -35
       objectReference: {fileID: 0}
     - target: {fileID: 2563179848820761778, guid: 1dbc98fa97cac7d4aa5481c2b9ddc2ce,
         type: 3}
@@ -7848,12 +7852,12 @@ PrefabInstance:
     - target: {fileID: 2563179848820761778, guid: 1dbc98fa97cac7d4aa5481c2b9ddc2ce,
         type: 3}
       propertyPath: trueValueRange.x
-      value: -80
+      value: -35
       objectReference: {fileID: 0}
     - target: {fileID: 2563179848820761778, guid: 1dbc98fa97cac7d4aa5481c2b9ddc2ce,
         type: 3}
       propertyPath: trueValueRange.y
-      value: 20
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2718588856509983440, guid: 1dbc98fa97cac7d4aa5481c2b9ddc2ce,
         type: 3}
