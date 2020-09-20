@@ -36,6 +36,10 @@ public class GameControllerCommon : MonoBehaviour
                 StartGame();  
             }
         }
+
+        if(Input.GetButtonDown("Restart")) {
+            RestartLevel();
+        }
     }
 
     public void ToggleCameraControls(bool active) {

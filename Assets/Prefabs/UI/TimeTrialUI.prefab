@@ -704,6 +704,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2677619896222073690}
     m_Modifications:
+    - target: {fileID: 4397570702203376098, guid: 0daac621434569543b0dadc2f935a022,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 8686573569013502595}
+    - target: {fileID: 4397570702203376098, guid: 0daac621434569543b0dadc2f935a022,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ToggleConfirmation
+      objectReference: {fileID: 0}
+    - target: {fileID: 4397570702203376098, guid: 0daac621434569543b0dadc2f935a022,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4397570702203376098, guid: 0daac621434569543b0dadc2f935a022,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_BoolArgument
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4493476328995599609, guid: 0daac621434569543b0dadc2f935a022,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
