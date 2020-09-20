@@ -1266,12 +1266,6 @@ Transform:
   m_Father: {fileID: 544688747}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
---- !u!1 &338704899 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4744920366054302676, guid: 0daac621434569543b0dadc2f935a022,
-    type: 3}
-  m_PrefabInstance: {fileID: 7668046857908287213}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &377542428
 GameObject:
   m_ObjectHideFlags: 0
@@ -8251,10 +8245,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseMenuUIParent: {fileID: 60951770}
-  pauseMenuDefaultInterface: {fileID: 7668046857908287214}
-  areYouSurePanel: {fileID: 338704899}
-  resumeButton: {fileID: 1779821824}
-  dontQuitButton: {fileID: 0}
+  defaultPauseMenu: {fileID: 0}
+  quitConfirmation: {fileID: 0}
 --- !u!1 &900014287
 GameObject:
   m_ObjectHideFlags: 0
@@ -8756,6 +8748,11 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 996200981}
+    - target: {fileID: 2859990228905579239, guid: da4411cd62df8f045aea7886992af9ac,
+        type: 3}
+      propertyPath: m_Volume
+      value: 0.1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: da4411cd62df8f045aea7886992af9ac, type: 3}
 --- !u!43 &1046054163
@@ -11346,18 +11343,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1779821824 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7668046855911101316, guid: 0daac621434569543b0dadc2f935a022,
-    type: 3}
-  m_PrefabInstance: {fileID: 7668046857908287213}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1787372371 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7261407167894152201, guid: 99608154879642a499e55ab19e13af87,
@@ -12529,12 +12514,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0daac621434569543b0dadc2f935a022, type: 3}
---- !u!1 &7668046857908287214 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7242018604685532794, guid: 0daac621434569543b0dadc2f935a022,
-    type: 3}
-  m_PrefabInstance: {fileID: 7668046857908287213}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &9015405706194253492
 PrefabInstance:
   m_ObjectHideFlags: 0

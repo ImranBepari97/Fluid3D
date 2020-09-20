@@ -39,7 +39,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1030989399}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028477, g: 0.22571531, b: 0.30692488, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -32132,7 +32132,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -3754030675223396293, guid: c589f014b07cf7243b0139eb87770a21,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: d0428c12e5a567e42983b06fdceddc24, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 4150cd640f99ca14baa0b0156fa03c6a, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -34330,6 +34330,16 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1473585719591734333, guid: c9f92bd25fe331248b9bbb061c43a299,
+        type: 3}
+      propertyPath: trueValueRange.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1473585719591734333, guid: c9f92bd25fe331248b9bbb061c43a299,
+        type: 3}
+      propertyPath: trueValueRange.x
+      value: -35
+      objectReference: {fileID: 0}
     - target: {fileID: 1782678379438745564, guid: c9f92bd25fe331248b9bbb061c43a299,
         type: 3}
       propertyPath: levelThumbnail
@@ -34457,6 +34467,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2008808857507736663, guid: c9f92bd25fe331248b9bbb061c43a299,
+        type: 3}
+      propertyPath: m_PixelPerfect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2668785854550340184, guid: c9f92bd25fe331248b9bbb061c43a299,
         type: 3}
       propertyPath: m_Delegates.Array.size
@@ -34576,6 +34591,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Delegates.Array.data[2].callback.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4267230599087826094, guid: c9f92bd25fe331248b9bbb061c43a299,
+        type: 3}
+      propertyPath: trueValueRange.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4267230599087826094, guid: c9f92bd25fe331248b9bbb061c43a299,
+        type: 3}
+      propertyPath: trueValueRange.x
+      value: -35
       objectReference: {fileID: 0}
     - target: {fileID: 4417813821823745819, guid: c9f92bd25fe331248b9bbb061c43a299,
         type: 3}
@@ -34763,34 +34788,24 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -0.11743164
       objectReference: {fileID: 0}
+    - target: {fileID: 6837980081333648556, guid: c9f92bd25fe331248b9bbb061c43a299,
+        type: 3}
+      propertyPath: trueValueRange.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6837980081333648556, guid: c9f92bd25fe331248b9bbb061c43a299,
+        type: 3}
+      propertyPath: trueValueRange.x
+      value: -35
+      objectReference: {fileID: 0}
     - target: {fileID: 7031842516925816194, guid: c9f92bd25fe331248b9bbb061c43a299,
         type: 3}
-      propertyPath: m_AnchorMin.x
+      propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7031842516925816194, guid: c9f92bd25fe331248b9bbb061c43a299,
         type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7031842516925816194, guid: c9f92bd25fe331248b9bbb061c43a299,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 220
-      objectReference: {fileID: 0}
-    - target: {fileID: 7031842516925816194, guid: c9f92bd25fe331248b9bbb061c43a299,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 7031842516925816194, guid: c9f92bd25fe331248b9bbb061c43a299,
-        type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7031842516925816194, guid: c9f92bd25fe331248b9bbb061c43a299,
-        type: 3}
-      propertyPath: m_AnchorMax.y
+      propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7272939832991211848, guid: c9f92bd25fe331248b9bbb061c43a299,
@@ -34832,23 +34847,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: DisableAllMenus
-      objectReference: {fileID: 0}
-    - target: {fileID: 8886277443627602597, guid: c9f92bd25fe331248b9bbb061c43a299,
-        type: 3}
-      propertyPath: m_text
-      value: 'Version: (Alpha) 0.0.1
-
-        Programmer: Imran Bepari (theCH33F)
-
-        Menu
-        Music: Peter Bell
-
-        Level Music: Royalty Free'
-      objectReference: {fileID: 0}
-    - target: {fileID: 8886277443627602597, guid: c9f92bd25fe331248b9bbb061c43a299,
-        type: 3}
-      propertyPath: m_HorizontalAlignment
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9f92bd25fe331248b9bbb061c43a299, type: 3}

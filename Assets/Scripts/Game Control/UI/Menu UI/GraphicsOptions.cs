@@ -17,7 +17,6 @@ public class GraphicsOptions : MonoBehaviour
         SetResolutionOptions();
 
         fullscreenToggle.isOn = Screen.fullScreen;
-
     }
 
 
@@ -28,7 +27,7 @@ public class GraphicsOptions : MonoBehaviour
 
         List<string> resOptions = new List<string>();
         for (int i = 0; i < resolutions.Length; i++) {
-            resOptions.Add(resolutions[i].width + " x " + resolutions[i].height);
+            resOptions.Add(resolutions[i].width + " x " + resolutions[i].height + "@" + resolutions[i].refreshRate);
             if(resolutions[i].height == currentResolution.height &&
              resolutions[i].width == currentResolution.width) {
                  resolutionDropdown.value = i;
@@ -40,7 +39,7 @@ public class GraphicsOptions : MonoBehaviour
     }
 
     public void ChangeResolution(int value) {
-        Screen.SetResolution(resolutions[value].width, resolutions[value].height, true, 60);
+        Screen.SetResolution(resolutions[value].width, resolutions[value].height, Screen.fullScreen, resolutions[value].refreshRate);
     }
 
     public void ToggleFullscreen(bool value) {

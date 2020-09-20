@@ -13,7 +13,6 @@ public class TabGroup : MonoBehaviour
 
     TabButton hoveredButton;
 
-
     void Update() {
         if(hoveredButton != null) {
             hoveredButton.background.color = Color.Lerp(hoveredButton.background.color, tabHovered, 0.1f);
@@ -23,9 +22,13 @@ public class TabGroup : MonoBehaviour
     public void Subscribe(TabButton button) {
         if(tabButtons == null) {
             tabButtons = new List<TabButton>();
+            tabButtons.Add(button);
+            OnTabSelected(tabButtons[0]);
+        } else {
+            tabButtons.Add(button);
         }
 
-        tabButtons.Add(button);
+        
     }
 
     public void OnTabEnter(TabButton button) {

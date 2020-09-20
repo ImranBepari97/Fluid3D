@@ -18,6 +18,11 @@ public class MainMenuUI : MonoBehaviour
         if((Input.anyKeyDown || Input.GetButtonDown("Submit")) && !Input.GetButton("Cancel") && title.activeSelf && !mainMenuParentContent.activeSelf) {
             ConfirmToMain();
         }
+
+        //keyboard and mouse escape
+        if(Input.GetKeyDown("escape") || Input.GetKeyDown("mouse 0")) {
+            Cursor.lockState = CursorLockMode.None;
+        }
     }
 
     public void ConfirmToMain() {

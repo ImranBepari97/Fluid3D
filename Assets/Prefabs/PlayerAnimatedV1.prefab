@@ -810,6 +810,24 @@ MonoBehaviour:
   wallLeftOffset: {x: -0.14, y: 0, z: 0}
   wallRightOffset: {x: 0.14, y: 0, z: 0}
   wallHoldOffset: {x: 0, y: 0, z: 0.14}
+--- !u!114 &6415604155958592654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6754479550755136258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c46af8e392b4842a1637503d3fad78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  footsteps:
+  - {fileID: 8300000, guid: 18ae0c79462825b4cb16d783e250a106, type: 3}
+  - {fileID: 8300000, guid: 2bf05567a36476c48baebe003f4a62d9, type: 3}
+  - {fileID: 8300000, guid: d5323bbb118d6fc46ac172d6bf758bb3, type: 3}
+  - {fileID: 8300000, guid: 81adc17555519e247aab73f32131d985, type: 3}
+  - {fileID: 8300000, guid: c4d31361921d3a74fae9d22da49754ca, type: 3}
 --- !u!1001 &5872080991076179539
 PrefabInstance:
   m_ObjectHideFlags: 0

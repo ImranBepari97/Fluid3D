@@ -9,15 +9,10 @@ public class AudioOptions : MonoBehaviour
 {
     public AudioMixer mixer;
 
-    public Slider masterSlider;
-    public Slider musicSlider;
-    public Slider effectsSlider;
+    public InputOptionCombo master;
+    public InputOptionCombo music;
+    public InputOptionCombo effects;
 
-
-    public TMP_InputField masterInput;
-    public TMP_InputField musicInput;
-
-    public TMP_InputField effectsInput;
 
     // Start is called before the first frame update
 
@@ -27,69 +22,42 @@ public class AudioOptions : MonoBehaviour
 
 
     private void OnEnable() {
-        masterSlider.Select();     
-        masterSlider.OnSelect(null);  
+        master.inputField.Select();     
+        master.inputField.OnSelect(null);  
     }
     
 
     void SetSliders() {
         float masterVol;
         mixer.GetFloat("MasterVolume", out masterVol);
-        masterSlider.value = masterVol;
+        master.SetTrueValue(masterVol);
+        master.RefreshPercievedUI();
         
         float musicVol;
         mixer.GetFloat("MusicVolume", out musicVol);
-        musicSlider.value = musicVol;
+        music.SetTrueValue(musicVol);
+        music.RefreshPercievedUI();
 
         float effectsVol;
         mixer.GetFloat("EffectsVolume", out effectsVol);
-        effectsSlider.value = effectsVol;
-
+        effects.SetTrueValue(effectsVol);
+        effects.RefreshPercievedUI();
 
         Debug.Log("Sliders set to correct volumes");
     }
 
-    public void SetMasterVolumeFromInput(string volString) {
-        float vol = float.Parse(volString);
-        float trueVol = PlayerAnimator.RangeRemap(vol, 0, 100, -80, 0);
+    public void SetMasterVolume() {
+        float trueVol = master.GetTrueValue();
         mixer.SetFloat("MasterVolume", trueVol);
-        masterSlider.value = trueVol;
-        masterInput.text = vol.ToString("0.00");
     }  
 
-    public void SetMusicVolumeFromInput(string volString) {
-        float vol = float.Parse(volString);
-        float trueVol = PlayerAnimator.RangeRemap(vol, 0, 100, -80, 0);
+    public void SetMusicVolume() {
+        float trueVol = music.GetTrueValue();
         mixer.SetFloat("MusicVolume", trueVol);
-        musicSlider.value = trueVol;
-        musicInput.text = vol.ToString("0.00");
-    }     
-
-    public void SetEffectsVolumeFromInput(string volString) {
-        float vol = float.Parse(volString);
-        float trueVol = PlayerAnimator.RangeRemap(vol, 0, 100, -80, 0);
-        mixer.SetFloat("EffectsVolume", trueVol);
-        effectsSlider.value = trueVol;
-        effectsInput.text = vol.ToString("0.00");
-    } 
-
-
-    public void SetMasterVolume(float vol) {
-        mixer.SetFloat("MasterVolume", vol);
-        masterSlider.value = vol;
-        masterInput.text = PlayerAnimator.RangeRemap(vol, -80, 0, 0, 100).ToString("0.00");
     }  
 
-    public void SetMusicVolume(float vol) {
-        mixer.SetFloat("MusicVolume", vol);
-        musicSlider.value = vol;
-        musicInput.text = PlayerAnimator.RangeRemap(vol, -80, 0, 0, 100).ToString("0.00");
-    }     
-
-    public void SetEffectsVolume(float vol) {
-        mixer.SetFloat("EffectsVolume", vol);
-        effectsSlider.value = vol;
-        effectsInput.text =  PlayerAnimator.RangeRemap(vol, -80, 0, 0, 100).ToString("0.00");
-    }        
-   
+    public void SetEffectsVolume() {
+        float trueVol = effects.GetTrueValue();
+        mixer.SetFloat("EffectsVolume", trueVol);
+    } 
 }
