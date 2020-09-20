@@ -128,11 +128,26 @@ public class DefaultPlayerController : MonoBehaviour
             }
 
         } else if(gpc.recentAction == RecentActionType.RegularJump) { //if you just jumped, you still have air control for a split second
-            rb.velocity = new Vector3(
-                moveDirection.x * currentMaxSpeed * 0.5f,
-                rb.velocity.y,
-                moveDirection.z * currentMaxSpeed * 0.5f
+
+            float dot = Vector3.Dot(
+                currentHorizontalVelocity.normalized, 
+                moveDirection.normalized
             );
+            //Debug.Log(dot);
+            if(dot > 0.75f) {
+                rb.velocity = new Vector3(
+                    moveDirection.x * currentHorizontalVelocity.magnitude,
+                    rb.velocity.y,
+                    moveDirection.z * currentHorizontalVelocity.magnitude
+                );
+            } else {
+                rb.velocity = new Vector3(
+                    moveDirection.x * currentHorizontalVelocity.magnitude * 0.5f,
+                    rb.velocity.y,
+                    moveDirection.z * currentHorizontalVelocity.magnitude * 0.5f
+                );
+            }
+            
         } else if(gpc.recentAction == RecentActionType.Dash) { //if dashing continue doing that 
             rb.velocity = new Vector3(dashDirection.x, 0, dashDirection.z) * airDashSpeed;
             gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);

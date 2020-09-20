@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class DestinationPoint : MonoBehaviour {
 
+    public AudioClip pointSound;
     GameControllerArena gc;
 
     // Start is called before the first frame update
@@ -22,6 +23,7 @@ public class DestinationPoint : MonoBehaviour {
             gc.AddPoint(coll.gameObject.GetComponent<GlobalPlayerController>(), 1);
             gc.SetNewDestination();
 
+            AudioSource.PlayClipAtPoint(pointSound, transform.position, 0.5f);
             Debug.Log("+1 for :" + coll.gameObject);
         }
     }

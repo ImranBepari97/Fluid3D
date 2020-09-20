@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 999
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -113,7 +113,7 @@ MonoBehaviour:
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 1
+  m_enableKerning: 0
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -357,8 +357,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Your score is: '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -403,7 +403,7 @@ MonoBehaviour:
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 1
+  m_enableKerning: 0
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -491,8 +491,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: GAME OVER
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -537,7 +537,7 @@ MonoBehaviour:
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
   parentLinkedComponent: {fileID: 0}
-  m_enableKerning: 1
+  m_enableKerning: 0
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
   m_isRichText: 1
@@ -584,6 +584,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_characterSpacing
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6083676743632670166, guid: 54f2ddd0574242540bc259dbec3eb6cb,
+        type: 3}
+      propertyPath: m_enableKerning
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6083676744097131347, guid: 54f2ddd0574242540bc259dbec3eb6cb,
         type: 3}
@@ -705,6 +710,21 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 6083676744097131357, guid: 54f2ddd0574242540bc259dbec3eb6cb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6083676744097131357, guid: 54f2ddd0574242540bc259dbec3eb6cb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameControllerCommon, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6083676744097131357, guid: 54f2ddd0574242540bc259dbec3eb6cb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: QuitToMenu
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54f2ddd0574242540bc259dbec3eb6cb, type: 3}
 --- !u!224 &7533235112552318277 stripped
@@ -739,6 +759,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_characterSpacing
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6083676743632670166, guid: 54f2ddd0574242540bc259dbec3eb6cb,
+        type: 3}
+      propertyPath: m_enableKerning
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6083676744097131347, guid: 54f2ddd0574242540bc259dbec3eb6cb,
         type: 3}
@@ -859,6 +884,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.y
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6083676744097131357, guid: 54f2ddd0574242540bc259dbec3eb6cb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6083676744097131357, guid: 54f2ddd0574242540bc259dbec3eb6cb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameControllerCommon, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6083676744097131357, guid: 54f2ddd0574242540bc259dbec3eb6cb,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: RestartLevel
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54f2ddd0574242540bc259dbec3eb6cb, type: 3}
