@@ -8,6 +8,8 @@ public class PauseMenu : MonoBehaviour
 {
 
     public static bool isPaused = false; 
+
+    public bool isPauseView;
     public GameObject pauseMenuUIParent;
 
     public GameObject defaultPauseMenu;
@@ -15,10 +17,15 @@ public class PauseMenu : MonoBehaviour
     public GameObject quitConfirmation;
 
     // Start is called before the first frame update
+    void Awake() {
+        Time.timeScale = 1f;
+        isPaused = false;
+    }
 
     // Update is called once per frame
     void Update()
     {
+        isPauseView = PauseMenu.isPaused;
         if(Input.GetButtonDown("Pause") && GameControllerCommon.instance != null && GameControllerCommon.instance.gameState != GameState.ENDED) {
             if(isPaused) {
                 Unpause();
@@ -53,6 +60,7 @@ public class PauseMenu : MonoBehaviour
     }
 
     public void Pause() {
+        Debug.Log("Pause called");
         pauseMenuUIParent.SetActive(true);
         Time.timeScale = 0f;
         isPaused = true;

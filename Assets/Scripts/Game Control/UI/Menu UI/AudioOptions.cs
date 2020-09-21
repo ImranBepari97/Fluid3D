@@ -29,17 +29,36 @@ public class AudioOptions : MonoBehaviour
 
     void SetSliders() {
         float masterVol;
-        mixer.GetFloat("MasterVolume", out masterVol);
+        float musicVol;
+        float effectsVol;
+
+        if(PlayerPrefs.HasKey("MasterVolume")) {
+            masterVol = PlayerPrefs.GetFloat("MasterVolume");
+        } else {
+            masterVol = 0.5f;
+        }
+
+        if(PlayerPrefs.HasKey("MusicVolume")) {
+            musicVol = PlayerPrefs.GetFloat("MusicVolume");
+        } else {
+            musicVol = 0.5f;
+        }
+
+        if(PlayerPrefs.HasKey("EffectsVolume")) {
+            effectsVol = PlayerPrefs.GetFloat("EffectsVolume");
+        } else {
+            effectsVol = 0.5f;
+        }
+
+        mixer.SetFloat("MasterVolume",  Mathf.Log10(masterVol) * 20f);
         master.SetTrueValue(masterVol);
         master.RefreshPercievedUI();
         
-        float musicVol;
-        mixer.GetFloat("MusicVolume", out musicVol);
+        mixer.SetFloat("MusicVolume",  Mathf.Log10(musicVol) * 20f);
         music.SetTrueValue(musicVol);
         music.RefreshPercievedUI();
 
-        float effectsVol;
-        mixer.GetFloat("EffectsVolume", out effectsVol);
+        mixer.SetFloat("EffectsVolume", Mathf.Log10(effectsVol) * 20f);
         effects.SetTrueValue(effectsVol);
         effects.RefreshPercievedUI();
 
@@ -48,16 +67,22 @@ public class AudioOptions : MonoBehaviour
 
     public void SetMasterVolume() {
         float trueVol = master.GetTrueValue();
-        mixer.SetFloat("MasterVolume", trueVol);
+        mixer.SetFloat("MasterVolume", Mathf.Log10(trueVol) * 20f);
+        PlayerPrefs.SetFloat("MasterVolume", trueVol);
+        PlayerPrefs.Save();
     }  
 
     public void SetMusicVolume() {
         float trueVol = music.GetTrueValue();
-        mixer.SetFloat("MusicVolume", trueVol);
+        mixer.SetFloat("MusicVolume", Mathf.Log10(trueVol) * 20f);
+        PlayerPrefs.SetFloat("MusicVolume", trueVol);
+        PlayerPrefs.Save();
     }  
 
     public void SetEffectsVolume() {
         float trueVol = effects.GetTrueValue();
-        mixer.SetFloat("EffectsVolume", trueVol);
+        mixer.SetFloat("EffectsVolume", Mathf.Log10(trueVol) * 20f);
+        PlayerPrefs.SetFloat("EffectsVolume", trueVol);
+        PlayerPrefs.Save();
     } 
 }

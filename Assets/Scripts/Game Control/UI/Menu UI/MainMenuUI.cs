@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 public class MainMenuUI : MonoBehaviour
 {
 
@@ -11,6 +12,12 @@ public class MainMenuUI : MonoBehaviour
 
     public List<Button> mainMenuButtons;
 
+    public AudioMixer mainMixer;
+
+
+    void Awake() {
+        LoadAudioPrefs();
+    }
 
     // Update is called once per frame
     void Update()
@@ -58,5 +65,28 @@ public class MainMenuUI : MonoBehaviour
 
         mainMenuButtons[0].Select();
         mainMenuButtons[0].OnSelect(null);
+    }
+
+    void LoadAudioPrefs() {
+        if(PlayerPrefs.HasKey("MasterVolume")) {
+            float vol = PlayerPrefs.GetFloat("MasterVolume");
+            mainMixer.SetFloat("MasterVolume",  Mathf.Log10(vol) * 20f);
+        } else {
+            mainMixer.SetFloat("MasterVolume",  Mathf.Log10(0.5f) * 20f);
+        }
+
+        if(PlayerPrefs.HasKey("MusicVolume")) {
+           float vol = PlayerPrefs.GetFloat("MusicVolume");
+            mainMixer.SetFloat("MusicVolume",  Mathf.Log10(vol) * 20f);
+        } else {
+            mainMixer.SetFloat("MusicVolume",  Mathf.Log10(0.5f) * 20f);
+        }
+
+        if(PlayerPrefs.HasKey("EffectsVolume")) {
+            float vol = PlayerPrefs.GetFloat("EffectsVolume");
+            mainMixer.SetFloat("EffectsVolume",  Mathf.Log10(vol) * 20f);
+        } else {
+            mainMixer.SetFloat("EffectsVolume",  Mathf.Log10(0.5f) * 20f);
+        }
     }
 }

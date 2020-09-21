@@ -40,6 +40,11 @@ public class InputOptionCombo : MonoBehaviour
         inputField.text = perceivedValue.ToString("0.00");
     }
 
+    public void SetPerceivedValue(float newPerceivedValue) {
+        perceivedValue = newPerceivedValue;
+        trueValue = PlayerAnimator.RangeRemap(newPerceivedValue, perceivedValueRange.x, perceivedValueRange.y, trueValueRange.x, trueValueRange.y);
+    }
+
     public void SetTrueValue(float newTrueValue) {
         trueValue = newTrueValue;
         perceivedValue = PlayerAnimator.RangeRemap(newTrueValue, trueValueRange.x, trueValueRange.y, perceivedValueRange.x, perceivedValueRange.y);

@@ -34330,6 +34330,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1473585719591734333, guid: c9f92bd25fe331248b9bbb061c43a299,
+        type: 3}
+      propertyPath: trueValueRange.x
+      value: 0.0001
+      objectReference: {fileID: 0}
     - target: {fileID: 1782678379438745564, guid: c9f92bd25fe331248b9bbb061c43a299,
         type: 3}
       propertyPath: levelThumbnail
@@ -34597,6 +34602,11 @@ PrefabInstance:
       propertyPath: m_Delegates.Array.data[2].callback.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4267230599087826094, guid: c9f92bd25fe331248b9bbb061c43a299,
+        type: 3}
+      propertyPath: trueValueRange.x
+      value: 0.0001
+      objectReference: {fileID: 0}
     - target: {fileID: 4417813821823745819, guid: c9f92bd25fe331248b9bbb061c43a299,
         type: 3}
       propertyPath: m_Delegates.Array.size
@@ -34782,6 +34792,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -0.11743164
+      objectReference: {fileID: 0}
+    - target: {fileID: 6837980081333648556, guid: c9f92bd25fe331248b9bbb061c43a299,
+        type: 3}
+      propertyPath: trueValueRange.x
+      value: 0.0001
       objectReference: {fileID: 0}
     - target: {fileID: 7031842516925816194, guid: c9f92bd25fe331248b9bbb061c43a299,
         type: 3}
