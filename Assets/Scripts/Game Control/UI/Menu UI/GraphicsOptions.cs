@@ -9,6 +9,8 @@ public class GraphicsOptions : MonoBehaviour
 
     public TMP_Dropdown resolutionDropdown;
     public Toggle fullscreenToggle;
+
+    public Toggle vsyncToggle;
     Resolution[] resolutions;
 
     // Start is called before the first frame update
@@ -16,6 +18,7 @@ public class GraphicsOptions : MonoBehaviour
     {
         SetResolutionOptions();
 
+        vsyncToggle.isOn = QualitySettings.vSyncCount != 0;
         fullscreenToggle.isOn = Screen.fullScreen;
     }
 
@@ -44,6 +47,15 @@ public class GraphicsOptions : MonoBehaviour
 
     public void ToggleFullscreen(bool value) {
         Screen.fullScreen = value;
+    }
+
+    public void ToggleVSync(bool value) {
+        if(value) {
+            QualitySettings.vSyncCount = 0;
+        } else {
+            QualitySettings.vSyncCount = 1;
+        }
+        
     }
 
     // Update is called once per frame

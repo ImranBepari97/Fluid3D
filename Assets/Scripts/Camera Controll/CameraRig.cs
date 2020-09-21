@@ -30,6 +30,8 @@ public class CameraRig : MonoBehaviour
         }  else {
             instance = this;
         }
+
+        TryLoadPlayerPrefs();
     }
 
     // Update is called once per frame
