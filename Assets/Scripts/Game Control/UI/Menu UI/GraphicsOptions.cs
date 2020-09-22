@@ -51,9 +51,9 @@ public class GraphicsOptions : MonoBehaviour
 
     public void ToggleVSync(bool value) {
         if(value) {
-            QualitySettings.vSyncCount = 0;
-        } else {
             QualitySettings.vSyncCount = 1;
+        } else {
+            QualitySettings.vSyncCount = 0;
         }
         Screen.fullScreen = fullscreenToggle.isOn;
         
