@@ -74,7 +74,6 @@ public class WallPlayerController : MonoBehaviour
             gpc.recentAction = RecentActionType.WallRunning;
             //rb.velocity = wallRunDirection * ((defaultWallRunSpeed * currentWallRunDuration * Mathf.Log10(gpc.currentSpeedMultiplier + 1.2f)) + 7f);
             rb.velocity = wallRunDirection * ((defaultWallRunSpeed * currentWallRunDuration * 0.5f) + 4f);
-            Debug.Log(rb.velocity.magnitude);
             //gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
             gameObject.transform.rotation = Quaternion.RotateTowards(rb.rotation, Quaternion.LookRotation(rb.velocity), 540f * Time.deltaTime);
         }

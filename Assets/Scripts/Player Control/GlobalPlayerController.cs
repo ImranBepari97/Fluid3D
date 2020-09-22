@@ -34,9 +34,12 @@ public class GlobalPlayerController : MonoBehaviour
     CapsuleCollider cc;
 
 
+    public float angleRequire = 45f;
+
+
     bool isResetCRRunning; //bool for checking if the coroutines for resetting actions is active
 
-    public float dotProductOfNearestWall; //the angle of the players velocity compared to the nearest wall they're facing
+    public float angleOfNearestWall; //the angle of the players velocity compared to the nearest wall they're facing
 
     public Vector3 floorNormal; //the normal of the floor the player is standing on 
 
@@ -57,7 +60,7 @@ public class GlobalPlayerController : MonoBehaviour
         currentJumps = 0;
         currentDashes = 0;
         isResetCRRunning = false;
-        dotProductOfNearestWall = 0f;
+        angleOfNearestWall = 0f;
     }
 
     // Update is called once per frame
@@ -77,9 +80,9 @@ public class GlobalPlayerController : MonoBehaviour
         xzVelocity.y = 0f;
         Debug.DrawRay(rb.position, xzVelocity.normalized, Color.white, 0.01f);
         if (Physics.Raycast(rb.position, xzVelocity.normalized, out hit, 5f)) {
-            dotProductOfNearestWall = Mathf.Abs(Vector3.Dot(hit.normal, xzVelocity.normalized));
+            angleOfNearestWall = Vector3.Angle(-hit.normal, xzVelocity.normalized);
         } else {
-            dotProductOfNearestWall = 1f;
+            angleOfNearestWall = 0f;
         }
 
         if (!isResetCRRunning) {
@@ -246,7 +249,7 @@ public class GlobalPlayerController : MonoBehaviour
                 Vector3 currentHorizontalVelocity = rb.velocity;
                 currentHorizontalVelocity.y = 0;
                 //Debug.Log(currentHorizontalVelocity);
-                if (CanWallRun(dotProductOfNearestWall)) {
+                if (CanWallRun(angleOfNearestWall)) {
                     wallPlayerController.wallRunDirection = currentHorizontalVelocity.normalized;
                 } else {
                     wallPlayerController.wallRunDirection = new Vector3(0,0,0);
@@ -284,17 +287,18 @@ public class GlobalPlayerController : MonoBehaviour
         }
     }
 
-    public bool CanWallRun(float angleAsDotProduct) {
+    public bool CanWallRun(float angle) {
         Vector3 currentHorizontalVelocity = rb.velocity;
         currentHorizontalVelocity.y = 0;
 
         //Debug.Log("DOT: " + angleAsDotProduct + " VelXz =" +  currentHorizontalVelocity.magnitude);
 
         bool correctRunSpeed = currentHorizontalVelocity.magnitude > 0.4f * defaultPlayerController.defaultRunSpeed;
-        bool correctDotProduct = angleAsDotProduct < 0.76f;
-
+        //bool correctDotProduct = angleAsDotProduct < 0.76f;
+        bool correctAngle = angle > angleRequire;
+        Debug.Log("angle entry: " + angle + "   " + "angle required: " + angleRequire);
         //if we're already wallrunning, then it's okay if we're slower than the threshold
-        if((wallPlayerController.isWallRunning || correctRunSpeed) && correctDotProduct) {
+        if((wallPlayerController.isWallRunning || correctRunSpeed) && correctAngle) {
             return true;
         }
         
