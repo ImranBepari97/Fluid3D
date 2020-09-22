@@ -55,6 +55,7 @@ public class GraphicsOptions : MonoBehaviour
         } else {
             QualitySettings.vSyncCount = 1;
         }
+        Screen.fullScreen = fullscreenToggle.isOn;
         
     }
 

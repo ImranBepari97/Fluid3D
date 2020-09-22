@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 public class PauseMenu : MonoBehaviour
@@ -15,7 +16,6 @@ public class PauseMenu : MonoBehaviour
     public GameObject defaultPauseMenu;
     
     public GameObject quitConfirmation;
-
     // Start is called before the first frame update
     void Awake() {
         Time.timeScale = 1f;
@@ -26,12 +26,20 @@ public class PauseMenu : MonoBehaviour
     void Update()
     {
         isPauseView = PauseMenu.isPaused;
-        if(Input.GetButtonDown("Pause") && GameControllerCommon.instance != null && GameControllerCommon.instance.gameState != GameState.ENDED) {
-            if(isPaused) {
-                Unpause();
-            } else {
-                Pause();
+        if(Input.GetButtonDown("Pause")) {
+            if(GameControllerCommon.instance == null) {
+                CheckPause();
+            } else if(GameControllerCommon.instance.gameState != GameState.ENDED) {
+                CheckPause();
             }
+        }
+    }
+
+    void CheckPause() {
+        if(isPaused) {
+            Unpause();
+        } else {
+            Pause();
         }
     }
 
@@ -68,5 +76,9 @@ public class PauseMenu : MonoBehaviour
         Selectable first = pauseMenuUIParent.GetComponentInChildren<Selectable>();
         first.Select();
         first.OnSelect(null);
+    }
+
+    public void QuitToMenu() {
+        SceneManager.LoadScene("MainMenu");
     }
 }

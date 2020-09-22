@@ -34320,14 +34320,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 95b1717569702b94cb731a13f7f172c9,
         type: 3}
-    - target: {fileID: 552078881197116621, guid: c9f92bd25fe331248b9bbb061c43a299,
+    - target: {fileID: 1393138600105088507, guid: c9f92bd25fe331248b9bbb061c43a299,
         type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ToggleVSync
       objectReference: {fileID: 0}
-    - target: {fileID: 552078882213295407, guid: c9f92bd25fe331248b9bbb061c43a299,
+    - target: {fileID: 1393138600105088507, guid: c9f92bd25fe331248b9bbb061c43a299,
         type: 3}
-      propertyPath: m_LocalPosition.x
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1473585719591734333, guid: c9f92bd25fe331248b9bbb061c43a299,
@@ -34788,11 +34788,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6036212276017502667, guid: c9f92bd25fe331248b9bbb061c43a299,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -0.11743164
-      objectReference: {fileID: 0}
     - target: {fileID: 6837980081333648556, guid: c9f92bd25fe331248b9bbb061c43a299,
         type: 3}
       propertyPath: trueValueRange.x
@@ -34828,30 +34823,10 @@ PrefabInstance:
       propertyPath: levelThumbnail
       value: 
       objectReference: {fileID: 1391683237}
-    - target: {fileID: 8754469277524932946, guid: c9f92bd25fe331248b9bbb061c43a299,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8757814604957025427, guid: c9f92bd25fe331248b9bbb061c43a299,
-        type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1111878288}
-    - target: {fileID: 8757814604957025427, guid: c9f92bd25fe331248b9bbb061c43a299,
-        type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Target
-      value: 
-      objectReference: {fileID: 861453822}
-    - target: {fileID: 8757814604957025427, guid: c9f92bd25fe331248b9bbb061c43a299,
-        type: 3}
-      propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: DisableAllMenus
-      objectReference: {fileID: 0}
     - target: {fileID: 8886277443627602597, guid: c9f92bd25fe331248b9bbb061c43a299,
         type: 3}
       propertyPath: m_text
-      value: 'Version: (Alpha) 0.0.3
+      value: 'Version: (Alpha) 0.0.4
 
         Programmer: Imran Bepari (theCH33F)
 
@@ -34862,18 +34837,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9f92bd25fe331248b9bbb061c43a299, type: 3}
---- !u!114 &861453822 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2720258869741288821, guid: c9f92bd25fe331248b9bbb061c43a299,
-    type: 3}
-  m_PrefabInstance: {fileID: 861453821}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 55542269e0f54db4c847f4c5923062a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &870896699 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1467664082585591332, guid: c9f92bd25fe331248b9bbb061c43a299,
@@ -43077,18 +43040,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1100974338}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1111878288 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 771233265019372330, guid: c9f92bd25fe331248b9bbb061c43a299,
-    type: 3}
-  m_PrefabInstance: {fileID: 861453821}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7711bda7f83cac43ad6f8efcb0af36a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!43 &1128915122
 Mesh:
   m_ObjectHideFlags: 0

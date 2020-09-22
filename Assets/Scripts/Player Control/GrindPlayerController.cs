@@ -14,7 +14,10 @@ public class GrindPlayerController : MonoBehaviour
 
     float currentGrindSpeed;
 
+    public bool grindCooldownActive;
+
     public float dstTravelled;
+    public float timeOnPath;
     GlobalPlayerController globalPlayerController;
     Rigidbody rb;
     CapsuleCollider cc;
@@ -28,6 +31,7 @@ public class GrindPlayerController : MonoBehaviour
         cc = GetComponent<CapsuleCollider>();
         isReversed = false;
         currentGrindSpeed = grindSpeed;
+        grindCooldownActive = false;
     }
 
     // Update is called once per frame
@@ -36,9 +40,8 @@ public class GrindPlayerController : MonoBehaviour
         currentGrindSpeed = grindSpeed * globalPlayerController.currentSpeedMultiplier;
         globalPlayerController.recentAction = RecentActionType.Grind;
 
-        Debug.DrawRay(rb.position, currentRail.path.GetDirectionAtDistance (dstTravelled,  EndOfPathInstruction.Stop), Color.black, 0.01f);
-
-        Debug.DrawRay(rb.position, -currentRail.path.GetDirectionAtDistance (dstTravelled,  EndOfPathInstruction.Stop), Color.red, 0.01f);
+        // Debug.DrawRay(rb.position, currentRail.path.GetDirectionAtDistance (dstTravelled,  EndOfPathInstruction.Stop), Color.black, 0.01f);
+        // Debug.DrawRay(rb.position, -currentRail.path.GetDirectionAtDistance (dstTravelled,  EndOfPathInstruction.Stop), Color.red, 0.01f);
 
         if(!isReversed) {
             dstTravelled += currentGrindSpeed * Time.fixedDeltaTime;
@@ -46,17 +49,19 @@ public class GrindPlayerController : MonoBehaviour
         } else {
             dstTravelled -= currentGrindSpeed * Time.fixedDeltaTime;
             transform.rotation = currentRail.path.GetRotationAtDistance(dstTravelled,  EndOfPathInstruction.Stop);
-            transform.rotation =  Quaternion.LookRotation(-currentRail.path.GetDirectionAtDistance (dstTravelled,  EndOfPathInstruction.Stop));
+            transform.rotation = Quaternion.LookRotation(-currentRail.path.GetDirectionAtDistance (dstTravelled,  EndOfPathInstruction.Stop));
         }
 
         rb.position = currentRail.path.GetPointAtDistance(dstTravelled, EndOfPathInstruction.Stop) + 
             (currentRail.path.GetNormalAtDistance(dstTravelled) * (0.02f + roadMeshCreator.thickness + (cc.height / 2f)));
 
         float curTime = currentRail.path.GetClosestTimeOnPath (rb.position);
+        timeOnPath = curTime;
         if(curTime > 0.99f || curTime < 0.01f) {
             globalPlayerController.EnableDefaultControls();
             rb.velocity = transform.forward * currentGrindSpeed;
             globalPlayerController.recentAction = RecentActionType.None;
+            StartCoroutine(CoolDownTimer(0.1f));
         }
 
 
@@ -65,12 +70,24 @@ public class GrindPlayerController : MonoBehaviour
             rb.velocity = (transform.forward + new Vector3(0, 1, 0) + (InputController.moveDirection * 0.4f)) * grindSpeed * 1.05f;
             globalPlayerController.IncreaseSpeedMultiplier(0.2f);
             globalPlayerController.recentAction = RecentActionType.SlideJump;
+            StartCoroutine(CoolDownTimer(0.1f));
         }
         //Debug.Log(currentRail.path.GetClosestTimeOnPath (rb.position));
 
         InputController.jumpPressed = false;
         InputController.dashPressed = false;
 
+    }
+
+    public IEnumerator CoolDownTimer(float cooldownTimeSeconds) {
+        grindCooldownActive = true;
+        yield return new WaitForSeconds(cooldownTimeSeconds);
+        grindCooldownActive = false;
+
+    }
+
+    public float GetCurrentGrindSpeed() {
+        return currentGrindSpeed;
     }
 
     // void Update()

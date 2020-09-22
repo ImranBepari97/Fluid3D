@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 public class MainMenuUI : MonoBehaviour
 {
 
@@ -88,5 +89,9 @@ public class MainMenuUI : MonoBehaviour
         } else {
             mainMixer.SetFloat("EffectsVolume",  Mathf.Log10(0.5f) * 20f);
         }
+    }
+
+    public void LoadTrainingScene() {
+        SceneManager.LoadScene("Lab");
     }
 }

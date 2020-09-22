@@ -33,6 +33,7 @@ public class GlobalPlayerController : MonoBehaviour
     Rigidbody rb;
     CapsuleCollider cc;
 
+
     bool isResetCRRunning; //bool for checking if the coroutines for resetting actions is active
 
     public float dotProductOfNearestWall; //the angle of the players velocity compared to the nearest wall they're facing
@@ -214,34 +215,13 @@ public class GlobalPlayerController : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collision other) {
-
+    void OnCollisionStay(Collision other) {
         //Grind Detection
-        if(other.gameObject.tag == "Grind" && recentAction != RecentActionType.Grind) {
-            wallPlayerController.wallsCollidingWith.Add(other.gameObject);
-            
-            if(other.GetContact(0).normal.y > 0) {
-                PathCreator pc;
-                if(pc = other.gameObject.transform.parent.gameObject.GetComponent<PathCreator>())  {
-                    grindPlayerController.currentRail = pc;
-                    grindPlayerController.dstTravelled = pc.path.GetClosestDistanceAlongPath(other.GetContact(0).point);
-                    grindPlayerController.roadMeshCreator = pc.gameObject.GetComponent<RoadMeshCreator>();
-
-                    Vector3 horVel = rb.velocity;
-                    horVel.y = 0; 
-
-                    Debug.Log(Vector3.Dot(horVel.normalized, pc.path.GetDirectionAtDistance(grindPlayerController.dstTravelled)));
-                    grindPlayerController.isReversed = Vector3.Dot(horVel.normalized, pc.path.GetDirectionAtDistance(grindPlayerController.dstTravelled)) > 0 ? false : true;
-                    lastWallTouched = null;
-
-
-                    ResetJumpsAndDashes();
-                    EnableGrindControls();
-                    
-                }
-            }
+        if(other.gameObject.tag == "Grind" && recentAction != RecentActionType.Grind && !grindPlayerController.grindCooldownActive) {
+            TryTransitionToGrinding(other);
         }
-
+    } 
+    void OnCollisionEnter(Collision other) {
         //Fall Damage Check
         if(other.gameObject.layer == LayerMask.NameToLayer("Parkour") || 
             other.gameObject.layer == LayerMask.NameToLayer("Floor")) {
@@ -278,6 +258,28 @@ public class GlobalPlayerController : MonoBehaviour
                 wallPlayerController.currentWallRunDuration += 0.1f;
                 EnableWallControls();
 
+            }
+        }
+    }
+
+    void TryTransitionToGrinding(Collision other) {
+        if(other.GetContact(0).normal.y > 0) {
+            PathCreator pc;
+            if(pc = other.gameObject.transform.parent.gameObject.GetComponent<PathCreator>())  {
+                grindPlayerController.currentRail = pc;
+                grindPlayerController.dstTravelled = pc.path.GetClosestDistanceAlongPath(other.GetContact(0).point);
+                grindPlayerController.roadMeshCreator = pc.gameObject.GetComponent<RoadMeshCreator>();
+
+                Vector3 horVel = rb.velocity;
+                horVel.y = 0; 
+
+                Debug.Log(Vector3.Dot(horVel.normalized, pc.path.GetDirectionAtDistance(grindPlayerController.dstTravelled)));
+                grindPlayerController.isReversed = Vector3.Dot(horVel.normalized, pc.path.GetDirectionAtDistance(grindPlayerController.dstTravelled)) > 0 ? false : true;
+                lastWallTouched = null;
+
+
+                ResetJumpsAndDashes();
+                EnableGrindControls();
             }
         }
     }
