@@ -44,7 +44,8 @@ public class DefaultPlayerController : MonoBehaviour
         currentMaxSpeed = defaultRunSpeed * gpc.currentSpeedMultiplier;
         moveDirection = InputController.moveDirection; //current input left and right, relative to the camera
 
-        if(moveDirection.magnitude > 0.1f && gpc.recentAction != RecentActionType.Dash && gpc.recentAction != RecentActionType.Slide) {
+        if(moveDirection.magnitude > 0.1f && gpc.recentAction != RecentActionType.Dash 
+            && gpc.recentAction != RecentActionType.Slide && gpc.recentAction != RecentActionType.SlideJump) {
             gameObject.transform.rotation = Quaternion.LookRotation(moveDirection);
         }
     }
@@ -210,7 +211,8 @@ public class DefaultPlayerController : MonoBehaviour
             //if we're clearly not moving and grounded, then dont move on the Y axis
             //stops slopes 
 
-            if (rb.velocity.magnitude < 1f && gpc.recentAction == RecentActionType.None && gpc.floorNormal != new Vector3(0, 1, 0)) {
+            if (moveDirection.magnitude < 0.15f && rb.velocity.magnitude < 2f && 
+            gpc.recentAction == RecentActionType.None && gpc.floorNormal != new Vector3(0, 1, 0)) {
                 rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                 rb.isKinematic = true;
             }

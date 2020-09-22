@@ -37,12 +37,6 @@ public class CameraRig : MonoBehaviour
     // Update is called once per frame
     void Update() {
 
-        if (PauseMenu.isPaused) {
-            Cursor.lockState = CursorLockMode.None;
-        } else {
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-
         if(Time.deltaTime == 0) {
             return;
         }

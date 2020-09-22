@@ -25,13 +25,19 @@ public class PauseMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        isPauseView = PauseMenu.isPaused;
+        isPauseView = isPaused;
         if(Input.GetButtonDown("Pause")) {
             if(GameControllerCommon.instance == null) {
                 CheckPause();
             } else if(GameControllerCommon.instance.gameState != GameState.ENDED) {
                 CheckPause();
             }
+        }
+
+        if (isPaused) {
+            Cursor.lockState = CursorLockMode.None;
+        } else {
+            Cursor.lockState = CursorLockMode.Locked;
         }
     }
 
