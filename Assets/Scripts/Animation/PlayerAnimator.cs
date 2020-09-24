@@ -19,6 +19,9 @@ public class PlayerAnimator : MonoBehaviour
 
     public Vector3 wallHoldOffset;
 
+    public Vector3 dashOffset;
+    bool gameStarted;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,7 +35,6 @@ public class PlayerAnimator : MonoBehaviour
     // Update is called once per frame
     void Update() {
 
-        bool gameStarted;
         if(GameControllerCommon.instance != null) {
            gameStarted = GameControllerCommon.instance.gameState == GameState.PLAYING;
         } else {
@@ -60,28 +62,42 @@ public class PlayerAnimator : MonoBehaviour
         animator.SetFloat("verticalVelocity", rb.velocity.y);
 
         InterpToLocation();
+
     }
 
     void InterpToLocation() {
 
+        bool shouldInterp = true;
         float crouchYOffset = RangeRemap(cc.height, 0, 1.5f, crouchOffset.y, defaultOffset.y);
 
         Vector3 offset = new Vector3(0, crouchYOffset, 0);
 
-        if(gpc.recentAction == RecentActionType.WallRunning) {
+        
+
+        Debug.Log(animator.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.AirDash"));
+
+        if((gpc.recentAction == RecentActionType.None || gpc.recentAction == RecentActionType.Dash) && !(gpc.isGrounded) && gameStarted) {
+            offset.y = dashOffset.y;
+        } else if(gpc.recentAction == RecentActionType.OnWall) {
+            offset.z = wallHoldOffset.z;
+            shouldInterp = false;
+        } else if(gpc.recentAction == RecentActionType.Grind) {
+            shouldInterp = false;
+        } else if(gpc.recentAction == RecentActionType.WallRunning) {
             if(isRightWall) {
                 offset.x = wallRightOffset.x;
             } else {
                 offset.x = wallLeftOffset.x;
             }
+            offset.y = wallLeftOffset.y;
+            shouldInterp = false;
         }
 
-        if(gpc.recentAction == RecentActionType.OnWall) {
-            offset.z = wallHoldOffset.z;
+        if(shouldInterp) {
+            transform.localPosition = Vector3.Lerp(transform.localPosition, offset, 0.1f);
+        } else {
+            transform.localPosition = offset;
         }
-
-        transform.localPosition = offset;
-        
     }
 
     void FindWallClosest() {

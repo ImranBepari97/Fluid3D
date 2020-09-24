@@ -26,6 +26,10 @@ public class GameControllerCommon : MonoBehaviour
     public void Update()
     {
         StartCountdown();
+
+        if(gameState == GameState.ENDED) {
+            Cursor.lockState = CursorLockMode.None;
+        }
     }
 
     void StartCountdown() {
