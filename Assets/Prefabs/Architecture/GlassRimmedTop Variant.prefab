@@ -85,7 +85,7 @@ PrefabInstance:
     - target: {fileID: 5108459036136128012, guid: 1d6ec814a5cdd314cb7c389ceb947bb8,
         type: 3}
       propertyPath: m_Name
-      value: GlassRimmedTop
+      value: GlassRimmedTop Variant
       objectReference: {fileID: 0}
     - target: {fileID: 5108459036136128012, guid: 1d6ec814a5cdd314cb7c389ceb947bb8,
         type: 3}

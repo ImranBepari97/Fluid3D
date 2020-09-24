@@ -76,7 +76,8 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Material
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 13400000, guid: d3bf0146b07059743b14e9ba89559b80,
+        type: 2}
     - target: {fileID: 4078236069572194262, guid: e71625c5ad77b5248af359847c266c17,
         type: 3}
       propertyPath: m_SelectedFaces.Array.size

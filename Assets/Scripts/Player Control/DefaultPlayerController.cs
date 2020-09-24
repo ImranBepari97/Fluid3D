@@ -173,14 +173,15 @@ public class DefaultPlayerController : MonoBehaviour
             ShrinkPlayer();
             gpc.recentAction = RecentActionType.Slide;
             rb.velocity = new Vector3(
-                Mathf.Clamp(rb.velocity.x * 2f, 2f * -currentMaxSpeed, 2f * currentMaxSpeed),
+                Mathf.Clamp(rb.velocity.x * 1.8f, 1.8f * -currentMaxSpeed, 1.8f * currentMaxSpeed),
                 rb.velocity.y,
-                Mathf.Clamp(rb.velocity.z * 2f, 2f * -currentMaxSpeed, 2f * currentMaxSpeed)
+                Mathf.Clamp(rb.velocity.z * 1.8f, 1.8f * -currentMaxSpeed, 1.8f * currentMaxSpeed)
             );
-
+            gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
         } else if (gpc.recentAction == RecentActionType.Slide && currentHorizontalVelocity.magnitude < defaultRunSpeed * 0.25f) {
             UnshrinkPlayer();
             //Debug.Log("slide is ending");
+            gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
             gpc.recentAction = RecentActionType.None;
 
         } else if (InputController.crouchPressed && gpc.recentAction == RecentActionType.None) { //move with crouched speed
@@ -198,7 +199,8 @@ public class DefaultPlayerController : MonoBehaviour
         } else if (gpc.recentAction == RecentActionType.Slide) { //getting up from slide
             //Debug.Log("slide getup");
             ShrinkPlayer();
-            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z) * 0.97f;
+            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z) * 0.975f;
+            gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
 
         } else if (gpc.recentAction != RecentActionType.SlideJump) { //move normally
             UnshrinkPlayer();

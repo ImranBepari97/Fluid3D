@@ -186,7 +186,7 @@ MonoBehaviour:
   initialJumpForce: 17.5
   wallRunInitialJumpForce: 12.5
   wallSlideDownSpeed: 0.75
-  defaultWallRunSpeed: 14
+  defaultWallRunSpeed: 12.5
   wallRunDuration: 2
   currentWallRunDuration: 0
   isWallRunning: 0
@@ -334,7 +334,7 @@ SkinnedMeshRenderer:
   m_RootBone: {fileID: 0}
   m_AABB:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.12699996, y: 0.000000047148205, z: 1}
+    m_Extent: {x: 0.05000004, y: 0.000000033105607, z: 0.7500002}
   m_DirtyAABB: 0
 --- !u!183 &6293121715656894021
 Cloth:

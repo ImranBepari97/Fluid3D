@@ -62,6 +62,24 @@ public class WallPlayerController : MonoBehaviour
     {
         currentWallRunDuration -= Time.deltaTime;
         isWallRunning = wallRunDirection != new Vector3(0, 0, 0) && currentWallRunDuration > 0 && gpc.recentAction != RecentActionType.WallJump;
+
+        /*
+        We have an inital wallNormal and wallRunDirection
+        We raycast left and right, to determine if we can wall run
+        If the left/right raycast is the same as wallNormal, then we're fine 
+            if it doesnt meet, we've come off the wall, dismount
+            if the angle is of difference to the normal, we're at a turning wall sooo
+                check the angle of the new normal
+                if the angle is good angle
+                    change wallnormal, change wallRunDirection to be perpendicular somehow
+                if the angle is bad outwards
+                    dismount?
+                if angle is bad inwards
+                    wall cling?
+
+
+        */
+
     }
 
     // Update is called once per frame
@@ -72,8 +90,8 @@ public class WallPlayerController : MonoBehaviour
 
         if (isWallRunning) { //regular wall running
             gpc.recentAction = RecentActionType.WallRunning;
-            //rb.velocity = wallRunDirection * ((defaultWallRunSpeed * currentWallRunDuration * Mathf.Log10(gpc.currentSpeedMultiplier + 1.2f)) + 7f);
-            rb.velocity = wallRunDirection * ((defaultWallRunSpeed * currentWallRunDuration * 0.5f) + 4f);
+            rb.velocity = wallRunDirection * ((defaultWallRunSpeed * currentWallRunDuration * Mathf.Log10(gpc.currentSpeedMultiplier + 1.64f)) + 8f);
+            //rb.velocity = wallRunDirection * ((defaultWallRunSpeed * currentWallRunDuration * 0.5f) + 4f);
             //gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
             gameObject.transform.rotation = Quaternion.RotateTowards(rb.rotation, Quaternion.LookRotation(rb.velocity), 540f * Time.deltaTime);
         }
