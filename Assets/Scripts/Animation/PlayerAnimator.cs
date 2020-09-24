@@ -19,6 +19,8 @@ public class PlayerAnimator : MonoBehaviour
 
     public Vector3 wallHoldOffset;
 
+    public Vector3 dashOffset;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -60,6 +62,7 @@ public class PlayerAnimator : MonoBehaviour
         animator.SetFloat("verticalVelocity", rb.velocity.y);
 
         InterpToLocation();
+
     }
 
     void InterpToLocation() {
@@ -76,11 +79,19 @@ public class PlayerAnimator : MonoBehaviour
             }
         }
 
+        Debug.Log(animator.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.AirDash"));
+
+        if(gpc.recentAction == RecentActionType.Dash) {
+            offset.y = dashOffset.y;
+        }
+
         if(gpc.recentAction == RecentActionType.OnWall) {
             offset.z = wallHoldOffset.z;
         }
 
-        transform.localPosition = offset;
+        
+        
+        transform.localPosition = Vector3.Lerp(transform.localPosition, offset, 0.1f);
         
     }
 
