@@ -186,8 +186,10 @@ MonoBehaviour:
   initialJumpForce: 17.5
   wallRunInitialJumpForce: 12.5
   wallSlideDownSpeed: 0.75
-  defaultWallRunSpeed: 12.5
+  defaultWallRunSpeed: 12.3
   wallRunDuration: 2
+  wallRunLogScale: 1.55
+  wallRunEndSpeed: 8
   currentWallRunDuration: 0
   isWallRunning: 0
   wallRunDirection: {x: 0, y: 0, z: 0}
@@ -238,11 +240,11 @@ MonoBehaviour:
   ragdollPrefab: {fileID: 4468600284673209838, guid: b9f68256388dfe34395a68d4fb0e371e,
     type: 3}
   deathVelocity: {x: 0, y: 0, z: 0}
-  respawnTime: 5
+  respawnTime: 1
   currentHealth: 0
   maxHealth: 100
   fallDamageThresholdVelocity: 40
-  healthRegenTime: 5
+  healthRegenTime: 3
 --- !u!1 &4381873715457731116
 GameObject:
   m_ObjectHideFlags: 0

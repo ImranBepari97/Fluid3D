@@ -158,7 +158,7 @@ public class DefaultPlayerController : MonoBehaviour
     private void HandleGrounded() {
         if (InputController.jumpPressed) { //initial jump fine
             yVel = initialJumpForce;
-            if (InputController.crouchPressed && gpc.recentAction == RecentActionType.Slide) {
+            if (gpc.recentAction == RecentActionType.Slide) {
                 gpc.recentAction = RecentActionType.SlideJump;
                 rb.velocity = new Vector3(rb.velocity.x, yVel, rb.velocity.z);
             } else {

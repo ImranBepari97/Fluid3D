@@ -72,10 +72,6 @@ public class PlayerAnimator : MonoBehaviour
 
         Vector3 offset = new Vector3(0, crouchYOffset, 0);
 
-        
-
-        Debug.Log(animator.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.AirDash"));
-
         if((gpc.recentAction == RecentActionType.None || gpc.recentAction == RecentActionType.Dash) && !(gpc.isGrounded) && gameStarted) {
             offset.y = dashOffset.y;
         } else if(gpc.recentAction == RecentActionType.OnWall) {

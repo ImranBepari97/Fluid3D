@@ -11,18 +11,24 @@ public class WallPlayerController : MonoBehaviour
     public List<GameObject> wallsCollidingWith;
 
     bool canAct = true;
+    
+    public GameObject lastWallTouched;
 
     public float initialJumpForce = 17.5f;
     public float wallRunInitialJumpForce = 12.5f;
     public float wallSlideDownSpeed = 1f;
 
-    public float defaultWallRunSpeed = 7.5f;
+    public float defaultWallRunSpeed = 12.3f;
     public float wallRunDuration = 2f;
+    public float wallRunLogScale = 1.55f;
+    public float wallRunEndSpeed = 8f;
     public float currentWallRunDuration;
 
     public bool isWallRunning;
 
     public Vector3 wallRunDirection;
+    
+    bool isRunningOnRightWall;
 
     Rigidbody rb;
 
@@ -36,6 +42,7 @@ public class WallPlayerController : MonoBehaviour
         currentWallRunDuration = wallRunDuration;
         isWallRunning = false;
         wallsCollidingWith = new List<GameObject>();
+        isRunningOnRightWall = false;
     }
 
     void OnEnable()
@@ -45,6 +52,7 @@ public class WallPlayerController : MonoBehaviour
         canAct = false;
         currentWallRunDuration = wallRunDuration;
         StartCoroutine(CanActCoolDown(0.15f));
+        CalculateWallNormalAndDirection();
 
         gpc.ResetJumpsAndDashes();
     }
@@ -61,46 +69,43 @@ public class WallPlayerController : MonoBehaviour
     void Update()
     {
         currentWallRunDuration -= Time.deltaTime;
-        isWallRunning = wallRunDirection != new Vector3(0, 0, 0) && currentWallRunDuration > 0 && gpc.recentAction != RecentActionType.WallJump;
-
-        /*
-        We have an inital wallNormal and wallRunDirection
-        We raycast left and right, to determine if we can wall run
-        If the left/right raycast is the same as wallNormal, then we're fine 
-            if it doesnt meet, we've come off the wall, dismount
-            if the angle is of difference to the normal, we're at a turning wall sooo
-                check the angle of the new normal
-                if the angle is good angle
-                    change wallnormal, change wallRunDirection to be perpendicular somehow
-                if the angle is bad outwards
-                    dismount?
-                if angle is bad inwards
-                    wall cling?
-
-
-        */
 
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        //preparation from last physics frame
+        if(gpc.recentAction != RecentActionType.OnWall) {
+            CalculateWallNormalAndDirection();
+        //cast a 45 degree angle downwards from the torso to check wall cling?
+        } else if(!(Physics.Raycast(transform.position + (transform.up * 0.65f), transform.forward + -transform.up, 0.75f))) {
+            DismountFromWall(true);
+        }
 
+        //wall calculations have determined we're not on a wall, and should cease
+        if(!this.enabled) {
+            return;
+        }
+
+        isWallRunning = wallRunDirection != new Vector3(0, 0, 0) && currentWallRunDuration > 0; //  && gpc.recentAction != RecentActionType.WallJump;
+
+        //stuff to do this physics frame
         gpc.recentAction = RecentActionType.None;
 
         if (isWallRunning) { //regular wall running
             gpc.recentAction = RecentActionType.WallRunning;
-            rb.velocity = wallRunDirection * ((defaultWallRunSpeed * currentWallRunDuration * Mathf.Log10(gpc.currentSpeedMultiplier + 1.64f)) + 8f);
-            //rb.velocity = wallRunDirection * ((defaultWallRunSpeed * currentWallRunDuration * 0.5f) + 4f);
-            //gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
+            rb.velocity = wallRunDirection * ((defaultWallRunSpeed * currentWallRunDuration * Mathf.Log10(gpc.currentSpeedMultiplier + wallRunLogScale)) + wallRunEndSpeed);
             gameObject.transform.rotation = Quaternion.RotateTowards(rb.rotation, Quaternion.LookRotation(rb.velocity), 540f * Time.deltaTime);
-        }
-        else if (currentWallRunDuration < 0 && wallRunDirection != new Vector3(0, 0, 0)) { //stopped wall running, detach from wall
-            gpc.recentAction = RecentActionType.None;
-            rb.velocity = new Vector3(rb.velocity.normalized.x + wallNormal.normalized.x, 0f, rb.velocity.normalized.z + wallNormal.normalized.z);
-            gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
-        }
-        else { //sliding down wall
+
+        } else if (wallRunDirection != new Vector3(0, 0, 0)) { //ran out of running, detach from wall
+            Debug.Log("dismount as ran out of wall run time");
+            Debug.Log("wallRunDir: " + wallRunDirection);
+            Debug.Log("wallRunDuration: " + currentWallRunDuration);
+            Debug.Log("wallNormal: " +  wallNormal);
+            DismountFromWall(true);
+
+        } else { //sliding down wall
             gpc.recentAction = RecentActionType.OnWall;
             rb.AddForce(Physics.gravity * wallSlideDownSpeed);
             gameObject.transform.rotation = Quaternion.LookRotation(-wallNormal);
@@ -120,18 +125,109 @@ public class WallPlayerController : MonoBehaviour
                     2f, 
                     wallNormal.normalized.z + (InputController.moveDirection.z * 0.4f)).normalized * initialJumpForce * 1.25f;
 
-                    gameObject.transform.rotation = Quaternion.LookRotation(wallNormal);
+                gameObject.transform.rotation = Quaternion.LookRotation(wallNormal);
             }
 
             gpc.recentAction = RecentActionType.WallJump;
 
             Debug.DrawRay(rb.position, rb.velocity, Color.blue, 2f);
             gpc.EnableDefaultControls();
+        } else if(InputController.crouchPressed) {
+                InputController.crouchPressed = false;
+                DismountFromWall(false);
         }
 
 
         InputController.jumpPressed = false;
         InputController.dashPressed = false;
+    }
+
+    void DismountFromWall(bool maintainMomentum = false) {
+        gpc.recentAction = RecentActionType.None;
+        if(maintainMomentum) {
+            rb.velocity = new Vector3(rb.velocity.x + wallNormal.x, 0f, rb.velocity.z + wallNormal.z).normalized * rb.velocity.magnitude * 0.9f;
+        } else {
+            rb.velocity = new Vector3(rb.velocity.x + wallNormal.x, 0f, rb.velocity.z + wallNormal.z).normalized * 5f;
+        }
+        
+        gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
+        gpc.EnableDefaultControls();
+    }
+
+    void CalculateWallNormalAndDirection() {
+
+        Vector3 horVel; 
+        if(rb.velocity.magnitude > 0) {
+            horVel = rb.velocity.normalized;
+            horVel.y = 0;
+        } else {
+            horVel = transform.forward;
+        }
+
+        float rightWallDist = float.MaxValue;
+        RaycastHit rightHit;
+        if(Physics.Raycast(rb.position, Quaternion.AngleAxis(90f, Vector3.up) * horVel, out rightHit, 3f)) {
+            if(rightHit.collider.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
+                //Debug.Log("right wall");
+                rightWallDist = Vector3.Distance(transform.position, rightHit.point);
+                isRunningOnRightWall = true;
+                //Debug.Log("closer to right wall");
+            }
+        }
+        
+        float leftWallDist = float.MaxValue;
+        RaycastHit leftHit;
+        if(Physics.Raycast(rb.position, Quaternion.AngleAxis(-90f, Vector3.up) * horVel, out leftHit, 3f)) {
+            if(leftHit.collider.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
+                leftWallDist = Vector3.Distance(transform.position, leftHit.point);
+
+                if (leftWallDist < rightWallDist) {
+                    isRunningOnRightWall = false;
+                    //Debug.Log("closer to left wall");
+                }
+            }
+        } 
+        
+        if(rightWallDist == float.MaxValue && leftWallDist == float.MaxValue) {
+            wallRunDirection = new Vector3(0,0,0);
+
+            RaycastHit lastHit;
+            if(Physics.Raycast(transform.position, transform.forward, out lastHit, 3f)) {
+                Debug.Log("wall in front, cling");
+                return;
+            }
+
+            Debug.Log("no wall");
+            DismountFromWall(true);
+            return;
+        }
+
+        if(isRunningOnRightWall) {
+            ApplyWallNormalFromHit(rightHit, false);
+        } else {
+            ApplyWallNormalFromHit(leftHit, true);
+        }
+        Debug.DrawRay(transform.position, wallRunDirection, Color.gray, 0.01f);
+
+    }
+
+    void ApplyWallNormalFromHit(RaycastHit hit, bool reverseCross) {
+        if(hit.normal == wallNormal) {
+            return;
+        }
+
+        float ang = Vector3.Angle(wallNormal, hit.normal);
+        if(Vector3.Angle(wallNormal, hit.normal) < 39f) {
+            wallNormal = hit.normal;
+            Debug.Log("change normal: " + ang);
+            if(reverseCross) {
+                wallRunDirection = -Vector3.Cross(transform.up, wallNormal);
+            } else {
+                wallRunDirection = Vector3.Cross(transform.up, wallNormal);
+            }
+        } else {
+            Debug.Log("on wall but too big angle: " + ang);
+        }
     }
 
 
@@ -141,22 +237,10 @@ public class WallPlayerController : MonoBehaviour
         canAct = true;
     }
 
-    void OnCollisionStay(Collision other)
-    {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Parkour") && this.enabled)
-        {
-            //Debug.DrawRay(other.GetContact(0).point, other.GetContact(0).normal ,Color.white, 1f);
-            if (other.GetContact(0).normal == wallNormal) {
-                return;
-            }
-
-            if (0.966f > Vector3.Dot(wallNormal, other.GetContact(0).normal)) { //can transition the wall run
-                wallNormal = other.GetContact(0).normal;
-                currentWallRunDuration += 0.15f;
-                Vector3 currentHorizontalVelocity = rb.velocity;
-                currentHorizontalVelocity.y = 0;
-                wallRunDirection = currentHorizontalVelocity.normalized;
-            }
+    void OnCollisionStay(Collision other) {
+        if (this.enabled && rb.velocity.magnitude < 1f 
+        && gpc.recentAction != RecentActionType.OnWall && canAct) {
+            DismountFromWall();
         }
     }
 }

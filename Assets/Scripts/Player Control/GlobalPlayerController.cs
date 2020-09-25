@@ -14,8 +14,6 @@ public class GlobalPlayerController : MonoBehaviour
 
     PlayerHealth health;
 
-    public GameObject lastWallTouched;
-
     public int extraJumps = 1;
 
     
@@ -78,11 +76,14 @@ public class GlobalPlayerController : MonoBehaviour
         RaycastHit hit;
         Vector3 xzVelocity = rb.velocity;
         xzVelocity.y = 0f;
-        Debug.DrawRay(rb.position, xzVelocity.normalized, Color.white, 0.01f);
-        if (Physics.Raycast(rb.position, xzVelocity.normalized, out hit, 5f)) {
+
+        if(Physics.SphereCast(transform.position, cc.radius, xzVelocity, out hit, 5f)) {
             angleOfNearestWall = Vector3.Angle(-hit.normal, xzVelocity.normalized);
-        } else {
-            angleOfNearestWall = 0f;
+        }        
+
+        Debug.DrawRay(transform.position, xzVelocity.normalized, Color.white, 0.01f);
+        if (Physics.Raycast(transform.position, xzVelocity.normalized, out hit, 5f)) {
+            angleOfNearestWall = Vector3.Angle(-hit.normal, xzVelocity.normalized);
         }
 
         if (!isResetCRRunning) {
@@ -197,7 +198,6 @@ public class GlobalPlayerController : MonoBehaviour
         grindPlayerController.enabled = true;
     }
 
-
     public void DisableAllControls() {
         rb.velocity = new Vector3(0,0,0);
         defaultPlayerController.enabled = false;
@@ -212,16 +212,18 @@ public class GlobalPlayerController : MonoBehaviour
                 wallPlayerController.wallsCollidingWith.Remove(other.gameObject);
             }
 
-            if(wallPlayerController.wallsCollidingWith.Count == 0 && recentAction != RecentActionType.Grind) {
-                EnableDefaultControls();
-            }
+            // if(wallPlayerController.wallsCollidingWith.Count == 0 && recentAction != RecentActionType.Grind) {
+            //     EnableDefaultControls();
+            // }
         }
     }
 
     void OnCollisionStay(Collision other) {
         //Grind Detection
         if(other.gameObject.tag == "Grind" && recentAction != RecentActionType.Grind && !grindPlayerController.grindCooldownActive) {
-            TryTransitionToGrinding(other);
+            if(other.GetContact(0).normal.y > 0) {
+                TryTransitionToGrinding(other);
+            }
         }
     } 
     void OnCollisionEnter(Collision other) {
@@ -243,7 +245,7 @@ public class GlobalPlayerController : MonoBehaviour
             //Are you actually touching a wall?
             bool isCorrectAngle = other.GetContact(0).normal.y > -0.3f && other.GetContact(0).normal.y < 0.5f; // range for tilted walls
             if(!isGrounded && isCorrectAngle && 
-            (other.gameObject != lastWallTouched || other.GetContact(0).normal != wallPlayerController.wallNormal)) {
+            (other.gameObject != wallPlayerController.lastWallTouched || other.GetContact(0).normal != wallPlayerController.wallNormal)) {
                 Debug.DrawRay(rb.position, -(rb.position - other.GetContact(0).point), Color.yellow, 2f);
                 
                 Vector3 currentHorizontalVelocity = rb.velocity;
@@ -251,11 +253,16 @@ public class GlobalPlayerController : MonoBehaviour
                 //Debug.Log(currentHorizontalVelocity);
                 if (CanWallRun(angleOfNearestWall)) {
                     wallPlayerController.wallRunDirection = currentHorizontalVelocity.normalized;
+
+                    gameObject.transform.rotation = Quaternion.RotateTowards(gameObject.transform.rotation, Quaternion.LookRotation(rb.velocity), 540f * Time.deltaTime);
+                    //gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
+                    Debug.Log("starting with wall run");
                 } else {
                     wallPlayerController.wallRunDirection = new Vector3(0,0,0);
+                    Debug.Log("starting with wall cling");
                 }
 
-                lastWallTouched = other.collider.gameObject;
+                wallPlayerController.lastWallTouched = other.collider.gameObject;
                 wallPlayerController.wallNormal = other.GetContact(0).normal;
                 //Debug.Log("OnWall");   
                 wallPlayerController.currentWallRunDuration += 0.1f;
@@ -266,24 +273,23 @@ public class GlobalPlayerController : MonoBehaviour
     }
 
     void TryTransitionToGrinding(Collision other) {
-        if(other.GetContact(0).normal.y > 0) {
-            PathCreator pc;
-            if(pc = other.gameObject.transform.parent.gameObject.GetComponent<PathCreator>())  {
-                grindPlayerController.currentRail = pc;
-                grindPlayerController.dstTravelled = pc.path.GetClosestDistanceAlongPath(other.GetContact(0).point);
-                grindPlayerController.roadMeshCreator = pc.gameObject.GetComponent<RoadMeshCreator>();
+        PathCreator pc;
+        if(pc = other.gameObject.transform.parent.gameObject.GetComponent<PathCreator>())  {
+            grindPlayerController.currentRail = pc;
+            grindPlayerController.dstTravelled = pc.path.GetClosestDistanceAlongPath(other.GetContact(0).point);
+            grindPlayerController.roadMeshCreator = pc.gameObject.GetComponent<RoadMeshCreator>();
 
-                Vector3 horVel = rb.velocity;
-                horVel.y = 0; 
+            Vector3 horVel = rb.velocity;
+            horVel.y = 0; 
 
-                Debug.Log(Vector3.Dot(horVel.normalized, pc.path.GetDirectionAtDistance(grindPlayerController.dstTravelled)));
-                grindPlayerController.isReversed = Vector3.Dot(horVel.normalized, pc.path.GetDirectionAtDistance(grindPlayerController.dstTravelled)) > 0 ? false : true;
-                lastWallTouched = null;
+            //Debug.Log(Vector3.Dot(horVel.normalized, pc.path.GetDirectionAtDistance(grindPlayerController.dstTravelled)));
+            
+            grindPlayerController.isReversed = Vector3.Dot(horVel.normalized, pc.path.GetDirectionAtDistance(grindPlayerController.dstTravelled)) > 0 ? false : true;
+            wallPlayerController.lastWallTouched = null;
 
 
-                ResetJumpsAndDashes();
-                EnableGrindControls();
-            }
+            ResetJumpsAndDashes();
+            EnableGrindControls();
         }
     }
 
@@ -291,17 +297,19 @@ public class GlobalPlayerController : MonoBehaviour
         Vector3 currentHorizontalVelocity = rb.velocity;
         currentHorizontalVelocity.y = 0;
 
-        //Debug.Log("DOT: " + angleAsDotProduct + " VelXz =" +  currentHorizontalVelocity.magnitude);
-
         bool correctRunSpeed = currentHorizontalVelocity.magnitude > 0.4f * defaultPlayerController.defaultRunSpeed;
-        //bool correctDotProduct = angleAsDotProduct < 0.76f;
         bool correctAngle = angle > angleRequire;
-        Debug.Log("angle entry: " + angle + "   " + "angle required: " + angleRequire);
+        
+        // Debug.Log("angle entry from wall normal: " + angle + "   " + "angle required: " + angleRequire);
+        // Debug.Log("cur vel: " + currentHorizontalVelocity.magnitude + "   " + "vel required: " + 0.4f * defaultPlayerController.defaultRunSpeed);
+        
         //if we're already wallrunning, then it's okay if we're slower than the threshold
         if((wallPlayerController.isWallRunning || correctRunSpeed) && correctAngle) {
+            //Debug.Log("can wall run");
             return true;
         }
-        
+
+        //Debug.Log("cant wall run");
         return false;
     }
 
