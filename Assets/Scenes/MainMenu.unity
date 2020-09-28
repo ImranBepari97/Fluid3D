@@ -34823,18 +34823,6 @@ PrefabInstance:
       propertyPath: levelThumbnail
       value: 
       objectReference: {fileID: 1391683237}
-    - target: {fileID: 8886277443627602597, guid: c9f92bd25fe331248b9bbb061c43a299,
-        type: 3}
-      propertyPath: m_text
-      value: 'Version: (Alpha) 0.0.4
-
-        Programmer: Imran Bepari (theCH33F)
-
-        Menu
-        Music: Peter Bell
-
-        Level Music: Royalty Free'
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c9f92bd25fe331248b9bbb061c43a299, type: 3}
 --- !u!114 &870896699 stripped
