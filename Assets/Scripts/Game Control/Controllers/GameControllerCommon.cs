@@ -20,12 +20,21 @@ public class GameControllerCommon : MonoBehaviour
         } else {
             instance = this;
         }
+
+        PauseMenu.isPaused = false;
     }
 
     // Update is called once per frame
     public void Update()
     {
         StartCountdown();
+
+
+        if(PauseMenu.isPaused) {
+            Cursor.lockState = CursorLockMode.None;
+        } else {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
 
         if(gameState == GameState.ENDED) {
             Cursor.lockState = CursorLockMode.None;

@@ -16,10 +16,13 @@ public class PauseMenu : MonoBehaviour
     public GameObject defaultPauseMenu;
     
     public GameObject quitConfirmation;
+    GameControllerCommon gc;
     // Start is called before the first frame update
     void Awake() {
         Time.timeScale = 1f;
         isPaused = false;
+
+        gc = GameControllerCommon.instance;
     }
 
     // Update is called once per frame
@@ -34,11 +37,14 @@ public class PauseMenu : MonoBehaviour
             }
         }
 
-        if (isPaused) {
-            Cursor.lockState = CursorLockMode.None;
-        } else {
-            Cursor.lockState = CursorLockMode.Locked;
+        if(gc == null) {
+            if (isPaused) {
+                Cursor.lockState = CursorLockMode.None;
+            } else {
+                Cursor.lockState = CursorLockMode.Locked;
+            }
         }
+        
     }
 
     void CheckPause() {

@@ -166,7 +166,7 @@ public class WallPlayerController : MonoBehaviour
 
         float rightWallDist = float.MaxValue;
         RaycastHit rightHit;
-        if(Physics.Raycast(rb.position, Quaternion.AngleAxis(90f, Vector3.up) * horVel, out rightHit, 3f)) {
+        if(Physics.Raycast(rb.position, Quaternion.AngleAxis(90f, Vector3.up) * horVel, out rightHit, 1f)) {
             if(rightHit.collider.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
                 //Debug.Log("right wall");
                 rightWallDist = Vector3.Distance(transform.position, rightHit.point);
@@ -177,7 +177,7 @@ public class WallPlayerController : MonoBehaviour
         
         float leftWallDist = float.MaxValue;
         RaycastHit leftHit;
-        if(Physics.Raycast(rb.position, Quaternion.AngleAxis(-90f, Vector3.up) * horVel, out leftHit, 3f)) {
+        if(Physics.Raycast(rb.position, Quaternion.AngleAxis(-90f, Vector3.up) * horVel, out leftHit, 1f)) {
             if(leftHit.collider.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
                 leftWallDist = Vector3.Distance(transform.position, leftHit.point);
 
@@ -192,7 +192,7 @@ public class WallPlayerController : MonoBehaviour
             wallRunDirection = new Vector3(0,0,0);
 
             RaycastHit lastHit;
-            if(Physics.Raycast(transform.position, transform.forward, out lastHit, 3f)) {
+            if(Physics.Raycast(transform.position, transform.forward, out lastHit, 1f)) {
                 Debug.Log("wall in front, cling");
                 return;
             }
