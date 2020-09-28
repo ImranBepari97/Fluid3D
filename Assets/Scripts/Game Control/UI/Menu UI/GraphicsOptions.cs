@@ -8,6 +8,7 @@ public class GraphicsOptions : MonoBehaviour
 {
 
     public TMP_Dropdown resolutionDropdown;
+    public TMP_Dropdown qualityDropdown;
     public Toggle fullscreenToggle;
 
     public Toggle vsyncToggle;
@@ -20,6 +21,8 @@ public class GraphicsOptions : MonoBehaviour
 
         vsyncToggle.isOn = QualitySettings.vSyncCount != 0;
         fullscreenToggle.isOn = Screen.fullScreen;
+
+        qualityDropdown.value = QualitySettings.GetQualityLevel();
     }
 
 
@@ -28,16 +31,20 @@ public class GraphicsOptions : MonoBehaviour
         resolutions = Screen.resolutions;
         resolutionDropdown.ClearOptions();
 
+        int currentResIndex = 0;
+
         List<string> resOptions = new List<string>();
         for (int i = 0; i < resolutions.Length; i++) {
             resOptions.Add(resolutions[i].width + " x " + resolutions[i].height + "@" + resolutions[i].refreshRate);
+            
             if(resolutions[i].height == currentResolution.height &&
-             resolutions[i].width == currentResolution.width) {
-                 resolutionDropdown.value = i;
+             resolutions[i].width == currentResolution.width && currentResolution.refreshRate == resolutions[i].refreshRate) {
+                currentResIndex = i;
             }
         }
 
         resolutionDropdown.AddOptions(resOptions);
+        resolutionDropdown.value = currentResIndex;
         resolutionDropdown.RefreshShownValue();
     }
 
@@ -60,8 +67,7 @@ public class GraphicsOptions : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
+    public void SetQualitySettings(int qualityIndex) {
+        QualitySettings.SetQualityLevel(qualityIndex);
     }
 }
