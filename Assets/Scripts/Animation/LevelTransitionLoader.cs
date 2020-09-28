@@ -25,7 +25,6 @@ public class LevelTransitionLoader : MonoBehaviour
     }
 
     void Start() {
-        Debug.Log("Start called for animatio");
         transition.Rebind();
     }
 
@@ -39,13 +38,25 @@ public class LevelTransitionLoader : MonoBehaviour
 
         yield return new WaitForSeconds(transitionTime);
 
-        AsyncOperation async = SceneManager.LoadSceneAsync(sceneName);
-        
-        while(!async.isDone) {
-            progressBar.value = async.progress;
+        List<AsyncOperation> scenesToLoad = new List<AsyncOperation>();
+        float totalProgress = 0;
 
-            yield return null;
+        scenesToLoad.Add(SceneManager.LoadSceneAsync(sceneName));
+
+        string[] sceneDefaultName = sceneName.Split('_');
+
+        if(Application.CanStreamedLevelBeLoaded(sceneDefaultName[0] + "_Geometry")) {
+            scenesToLoad.Add(SceneManager.LoadSceneAsync(sceneDefaultName[0] + "_Geometry", LoadSceneMode.Additive));
         }
+        
+        for(int i = 0; i < scenesToLoad.Count; ++i) {
+            while(!scenesToLoad[i].isDone) {
+                totalProgress += scenesToLoad[i].progress;
+                progressBar.value = totalProgress / scenesToLoad.Count;
+                yield return null;
+            } 
+        }
+        
         instance.transition.SetTrigger("End");
 
     }
