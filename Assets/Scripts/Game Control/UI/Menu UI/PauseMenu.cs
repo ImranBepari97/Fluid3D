@@ -91,6 +91,6 @@ public class PauseMenu : MonoBehaviour
     }
 
     public void QuitToMenu() {
-        SceneManager.LoadScene("MainMenu");
+        LevelTransitionLoader.instance.LoadSceneWithTransition("MainMenu");
     }
 }

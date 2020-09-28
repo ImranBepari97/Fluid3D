@@ -47,7 +47,7 @@ public class GameControllerTimeTrial : GameControllerCommon
 
     public void LoadNextLevel() {
         if(nameOfNextLevel != null && Application.CanStreamedLevelBeLoaded(nameOfNextLevel)) {
-            SceneManager.LoadScene(nameOfNextLevel);
+            LevelTransitionLoader.instance.LoadSceneWithTransition(nameOfNextLevel);
         }
     }
 }

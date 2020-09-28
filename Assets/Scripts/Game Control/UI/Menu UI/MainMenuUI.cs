@@ -92,6 +92,7 @@ public class MainMenuUI : MonoBehaviour
     }
 
     public void LoadTrainingScene() {
-        SceneManager.LoadScene("Lab");
+        //SceneManager.LoadScene("Lab");
+        LevelTransitionLoader.instance.LoadSceneWithTransition("Lab");
     }
 }

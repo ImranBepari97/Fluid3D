@@ -37,6 +37,6 @@ public class LevelContentPane : MonoBehaviour
 
 
     public void StartLevel() {
-        SceneManager.LoadScene(sceneName);
+        LevelTransitionLoader.instance.LoadSceneWithTransition(sceneName);
     }
 }
