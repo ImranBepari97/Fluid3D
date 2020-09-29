@@ -64,7 +64,7 @@ public class GameControllerCommon : MonoBehaviour
     }
 
     public void RestartLevel() {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        LevelTransitionLoader.instance.LoadSceneWithTransition(SceneManager.GetActiveScene().name);
     }
 
     public void QuitToMenu() {
