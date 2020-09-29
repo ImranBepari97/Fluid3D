@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
 public class DestinationPoint : MonoBehaviour {
 
@@ -19,12 +20,16 @@ public class DestinationPoint : MonoBehaviour {
 
 
     void OnTriggerEnter(Collider coll) {
-        if(coll.gameObject.GetComponent<GlobalPlayerController>()) {
-            gc.AddPoint(coll.gameObject.GetComponent<GlobalPlayerController>(), 1);
+
+        NetworkIdentity ni;
+        if((ni = coll.gameObject.GetComponent<NetworkIdentity>()) && coll.gameObject.GetComponent<GlobalPlayerController>()) {
+            gc.AddPoint(ni, 1);
             gc.SetNewDestination();
 
-            AudioSource.PlayClipAtPoint(pointSound, transform.position, 0.5f);
-            Debug.Log("+1 for :" + coll.gameObject);
+            if(ni.isLocalPlayer) {
+                AudioSource.PlayClipAtPoint(pointSound, Camera.main.transform.position, 0.2f);
+                Debug.Log("+1 for :" + coll.gameObject);
+            }   
         }
     }
 }

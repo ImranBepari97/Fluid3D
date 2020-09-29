@@ -1,17 +1,29 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
+using UnityEngine.Playables;
 
 public class GameControllerArena : GameControllerCommon
 {
 
+    [SyncVar]    
     public float timeLeftSeconds;
     public float minimumDistanceBetweenNewGoals = 40f;
-    public Dictionary<GlobalPlayerController, int> scoreboard;
+
+    public int minimumPlayersToStart = 1;
+
+    [System.Serializable]
+    public class SyncDictionaryScoreboard : SyncDictionary<NetworkIdentity, int> {}
+    public SyncDictionaryScoreboard scoreboard;
 
     [SerializeField]
     DestinationPoint[] destinations;
     int currentSelectedPoint;
+
+    public PlayableDirector localAnimatorCutscene; 
+
+    NetworkManager nm; 
 
     Waypoint wp;
 
@@ -20,17 +32,16 @@ public class GameControllerArena : GameControllerCommon
     {
         base.Awake();
         
-        gameState = GameState.NOT_STARTED;
-        wp = Object.FindObjectOfType<Waypoint>();
-        scoreboard = new Dictionary<GlobalPlayerController, int>();
-        scoreboard.Clear();
 
-        foreach (GlobalPlayerController player in Object.FindObjectsOfType<GlobalPlayerController>() ) {
-            DeactivatePlayer(player);
-            scoreboard.Add(player, 0);
-        }
-
+        gameState = GameState.WAITING_FOR_PLAYERS;
         
+        scoreboard = new SyncDictionaryScoreboard();
+        scoreboard.Clear();
+    }
+
+    void Start() {
+        nm = NetworkManager.singleton;
+        wp = Object.FindObjectOfType<Waypoint>();
         destinations = Object.FindObjectsOfType<DestinationPoint>();
         currentSelectedPoint = Random.Range(0, destinations.Length);
 
@@ -40,12 +51,33 @@ public class GameControllerArena : GameControllerCommon
 
         destinations[currentSelectedPoint].gameObject.SetActive(true);
         wp.target = destinations[currentSelectedPoint].transform;
-
     }
 
     // Update is called once per frame
     new void Update()
     {
+        if(!NetworkServer.dontListen) {
+            if(nm.numPlayers > minimumPlayersToStart && gameState == GameState.WAITING_FOR_PLAYERS) {
+                gameState = GameState.NOT_STARTED; //begin countdown since we have enough players
+            }
+
+            if(!(nm.numPlayers > minimumPlayersToStart) && gameState == GameState.WAITING_FOR_PLAYERS ) { //&& condition to enforce that the game hasnt started yet
+                return;
+            }
+        } else {
+            if(GlobalPlayerController.localInstance != null && gameState == GameState.WAITING_FOR_PLAYERS) {
+                gameState = GameState.NOT_STARTED;
+                scoreboard.Add(GlobalPlayerController.localInstance.gameObject.GetComponent<NetworkIdentity>(), 0);
+                DeactivateAllPlayers();
+                localAnimatorCutscene.Play();
+                Debug.Log("Only player has joined game offline, starting");
+            }
+        }
+
+        if(gameState == GameState.WAITING_FOR_PLAYERS) {
+            return;
+        }
+
         base.Update();
 
         if(gameState == GameState.PLAYING) {
@@ -58,7 +90,7 @@ public class GameControllerArena : GameControllerCommon
         }
     }
 
-    public void AddPoint(GlobalPlayerController player, int pointCount) {
+    public void AddPoint(NetworkIdentity player, int pointCount) {
         if (scoreboard.ContainsKey(player)) {
             scoreboard[player] = scoreboard[player] + pointCount;
         } else {
@@ -66,25 +98,27 @@ public class GameControllerArena : GameControllerCommon
         }
     }
 
-    void ActivateAllPlayers() {
-        foreach( GlobalPlayerController gpc in scoreboard.Keys) {
+    public void ActivateAllPlayers() {
+        foreach( NetworkIdentity player in scoreboard.Keys) {
+            GlobalPlayerController gpc = player.gameObject.GetComponent<GlobalPlayerController>();
             ActivatePlayer(gpc);
         }
     }
 
-       void DeactivateAllPlayers() {
-        foreach( GlobalPlayerController gpc in scoreboard.Keys) {
+    public void DeactivateAllPlayers() {
+        foreach( NetworkIdentity player in scoreboard.Keys) {
+            GlobalPlayerController gpc = player.gameObject.GetComponent<GlobalPlayerController>();
             DeactivatePlayer(gpc);
         }
     }
 
 
-    void ActivatePlayer(GlobalPlayerController player) {
+    public void ActivatePlayer(GlobalPlayerController player) {
         player.enabled = true;
         player.EnableDefaultControls();
     }
 
-    void DeactivatePlayer(GlobalPlayerController player) {
+    public void DeactivatePlayer(GlobalPlayerController player) {
         player.DisableAllControls();
         player.enabled = false;
         

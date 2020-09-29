@@ -7,13 +7,13 @@ using UnityEngine.Playables;
 
 public class GameControllerTimeTrial : GameControllerCommon
 {
-     public float timerSeconds;
+    public float timerSeconds;
 
-     GlobalPlayerController gpc;
+    GlobalPlayerController gpc;
 
-     public string nameOfNextLevel;
+    public string nameOfNextLevel;
 
-     public PlayableDirector localAnimatorCutscene; 
+    public PlayableDirector localAnimatorCutscene; 
 
     // Start is called before the first frame update
     new void Awake()

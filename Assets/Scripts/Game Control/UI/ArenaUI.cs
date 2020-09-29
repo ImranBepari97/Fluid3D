@@ -4,11 +4,13 @@ using UnityEngine;
 
 using UnityEngine.UI;
 using TMPro;
+using Mirror;
+
 public class ArenaUI : MonoBehaviour
 {
     GameControllerArena gc;
 
-    public GlobalPlayerController currentPlayer;
+    NetworkIdentity localPlayer;
     public TMP_Text timer;
     public TMP_Text score;
 
@@ -20,26 +22,33 @@ public class ArenaUI : MonoBehaviour
     void Start()
     {
         gc = (GameControllerArena) GameControllerCommon.instance;
+        timer.text = returnTimerAsText(gc.timeLeftSeconds);
     }
 
     // Update is called once per frame
     void Update()
     {
-        score.text = "Score: " + gc.scoreboard[currentPlayer];
-        timer.text = returnTimerAsText(gc.timeLeftSeconds);
 
-        if(gc.gameState == GameState.ENDED && !resultScreen.activeInHierarchy) {
-            resultScreen.SetActive(true);
-            resultScore.text = "" + gc.scoreboard[currentPlayer];
-            gc.ToggleCameraControls(false);
-            Cursor.lockState = CursorLockMode.None;
+        if(localPlayer == null) {
+            if(NetworkClient.isConnected && GlobalPlayerController.localInstance != null) {
+                localPlayer = GlobalPlayerController.localInstance.gameObject.GetComponent<NetworkIdentity>();
+            }
+        } else if(gc.scoreboard.ContainsKey(localPlayer)) {
+            score.text = "Score: " + gc.scoreboard[localPlayer];
+            timer.text = returnTimerAsText(gc.timeLeftSeconds);
 
-            Button firstButton = resultScreen.GetComponentInChildren<Button>();
-            firstButton.Select();
-            firstButton.OnSelect(null);
+            if(gc.gameState == GameState.ENDED && !resultScreen.activeInHierarchy) {
+                resultScreen.SetActive(true);
+                resultScore.text = "" + gc.scoreboard[localPlayer];
+                gc.ToggleCameraControls(false);
+                Cursor.lockState = CursorLockMode.None;
+
+                Button firstButton = resultScreen.GetComponentInChildren<Button>();
+                firstButton.Select();
+                firstButton.OnSelect(null);
+            }   
         }
     }
-
 
     string returnTimerAsText(float timeInSeconds) {
 
