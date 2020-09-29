@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : NetworkBehaviour
 {
 
     GlobalPlayerController gpc;
@@ -15,8 +16,12 @@ public class PlayerHealth : MonoBehaviour
     public Vector3 deathVelocity;
 
     public float respawnTime = 5f;
+
+    [SyncVar]
     public float currentHealth;
     public float maxHealth = 100f;
+
+    [SyncVar]
     float timeSinceLastFallDamage;
     public float fallDamageThresholdVelocity = 40f;
     public float healthRegenTime = 5f;

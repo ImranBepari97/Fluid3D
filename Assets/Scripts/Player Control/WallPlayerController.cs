@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class WallPlayerController : MonoBehaviour
+public class WallPlayerController : NetworkBehaviour
 {
 
     public Vector3 wallNormal;
@@ -22,12 +23,17 @@ public class WallPlayerController : MonoBehaviour
     public float wallRunDuration = 2f;
     public float wallRunLogScale = 1.55f;
     public float wallRunEndSpeed = 8f;
+
+    [SyncVar]
     public float currentWallRunDuration;
 
+    [SyncVar]
     public bool isWallRunning;
 
+    [SyncVar]
     public Vector3 wallRunDirection;
     
+    [SyncVar]
     bool isRunningOnRightWall;
 
     Rigidbody rb;
@@ -111,7 +117,7 @@ public class WallPlayerController : MonoBehaviour
             gameObject.transform.rotation = Quaternion.LookRotation(-wallNormal);
         }
 
-        if (InputController.jumpPressed && canAct) {
+        if (InputController.jumpPressed && canAct && isLocalPlayer) {
 
             gpc.IncreaseSpeedMultiplier(0.2f);
             if (isWallRunning) {
@@ -132,9 +138,9 @@ public class WallPlayerController : MonoBehaviour
 
             Debug.DrawRay(rb.position, rb.velocity, Color.blue, 2f);
             gpc.EnableDefaultControls();
-        } else if(InputController.crouchPressed) {
-                InputController.crouchPressed = false;
-                DismountFromWall(false);
+        } else if(InputController.crouchPressed && isLocalPlayer) {
+            InputController.crouchPressed = false;
+            DismountFromWall(false);
         }
 
 
@@ -192,7 +198,7 @@ public class WallPlayerController : MonoBehaviour
             wallRunDirection = new Vector3(0,0,0);
 
             RaycastHit lastHit;
-            if(Physics.Raycast(transform.position, transform.forward, out lastHit, 1f)) {
+            if(Physics.Raycast(transform.position, horVel.normalized, out lastHit, 1f)) {
                 Debug.Log("wall in front, cling");
                 return;
             }

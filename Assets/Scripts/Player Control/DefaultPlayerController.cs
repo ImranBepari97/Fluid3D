@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class DefaultPlayerController : MonoBehaviour
+public class DefaultPlayerController : NetworkBehaviour
 {
     //general variables
     GlobalPlayerController gpc;
@@ -41,6 +42,11 @@ public class DefaultPlayerController : MonoBehaviour
 
     // Update is called once per frame, we should get all input as constantly as possible
     void Update() {
+        if (!isLocalPlayer) {
+            // exit from update if this is not the local player
+            return;
+        }
+
         currentMaxSpeed = defaultRunSpeed * gpc.currentSpeedMultiplier;
         moveDirection = InputController.moveDirection; //current input left and right, relative to the camera
 
@@ -51,6 +57,11 @@ public class DefaultPlayerController : MonoBehaviour
     }
 
     void FixedUpdate() {
+
+        if (!isLocalPlayer) {
+            // exit from update if this is not the local player
+            return;
+        }
 
         yVel = rb.velocity.y;
         currentHorizontalVelocity = rb.velocity;
@@ -114,18 +125,7 @@ public class DefaultPlayerController : MonoBehaviour
                 yVel = initialJumpForce;
                 gpc.currentJumps -= 1;
             } else if (InputController.dashPressed && gpc.currentDashes > 0) { //dash if you can
-                gpc.recentAction = RecentActionType.Dash;
-                yVel = 0;
-                gpc.currentDashes -= 1;
-                Debug.DrawRay(rb.position, moveDirection.normalized, Color.cyan, 2f );
-
-                if (moveDirection.magnitude > 0) { //dash in your current facing direction if you have no directional input 
-                    dashDirection = moveDirection.normalized;
-                } else {
-                    dashDirection = rb.transform.forward;
-                }
-    
-                 rb.velocity = new Vector3(dashDirection.x, 0, dashDirection.z) * airDashSpeed;
+                CmdStartDash();
             }
 
         } else if(gpc.recentAction == RecentActionType.RegularJump) { //if you just jumped, you still have air control for a split second
@@ -219,6 +219,22 @@ public class DefaultPlayerController : MonoBehaviour
                 rb.isKinematic = true;
             }
         } 
+    }
+
+    [Command]
+    private void CmdStartDash() {
+        gpc.recentAction = RecentActionType.Dash;
+        yVel = 0;
+        gpc.currentDashes -= 1;
+                //Debug.DrawRay(rb.position, moveDirection.normalized, Color.cyan, 2f );
+
+        if (moveDirection.magnitude > 0) { //dash in your current facing direction if you have no directional input 
+            dashDirection = moveDirection.normalized;
+        } else {
+            dashDirection = rb.transform.forward;
+        }
+    
+        rb.velocity = new Vector3(dashDirection.x, 0, dashDirection.z) * airDashSpeed;
     }
 }
             

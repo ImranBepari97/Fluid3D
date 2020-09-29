@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Mirror;
 
-public class GameControllerCommon : MonoBehaviour
+public class GameControllerCommon : NetworkBehaviour
 {
 
     public float countdownLeft = 3f;
@@ -65,9 +66,17 @@ public class GameControllerCommon : MonoBehaviour
 
     public void RestartLevel() {
         LevelTransitionLoader.instance.LoadSceneWithTransition(SceneManager.GetActiveScene().name);
+
+        if(OfflineNetworkManager.instance != null) {
+            OfflineNetworkManager.instance.StopHost();
+        }
     }
 
     public void QuitToMenu() {
         LevelTransitionLoader.instance.LoadSceneWithTransition("MainMenu");
+
+        if(OfflineNetworkManager.instance != null) {
+            OfflineNetworkManager.instance.StopHost();
+        }
     }
 }

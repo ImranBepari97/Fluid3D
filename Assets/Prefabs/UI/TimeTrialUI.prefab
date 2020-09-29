@@ -183,6 +183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63e1e2ccbb2010144b1ba550cd14c24c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPauseView: 0
   pauseMenuUIParent: {fileID: 4398086212812496387}
   defaultPauseMenu: {fileID: 3739019495108786766}
   quitConfirmation: {fileID: 1637669828734732256}

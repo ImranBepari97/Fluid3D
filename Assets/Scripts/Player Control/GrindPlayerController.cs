@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using PathCreation;
 using PathCreation.Examples;
+using Mirror;
 
-public class GrindPlayerController : MonoBehaviour
+public class GrindPlayerController : NetworkBehaviour
 {
 
     public RoadMeshCreator roadMeshCreator;
@@ -65,7 +66,7 @@ public class GrindPlayerController : MonoBehaviour
         }
 
 
-        if(InputController.jumpPressed) {
+        if(InputController.jumpPressed && isLocalPlayer) {
             globalPlayerController.EnableDefaultControls();
             rb.velocity = (transform.forward + new Vector3(0, 1, 0) + (InputController.moveDirection * 0.4f)) * grindSpeed * 1.05f;
             globalPlayerController.IncreaseSpeedMultiplier(0.2f);

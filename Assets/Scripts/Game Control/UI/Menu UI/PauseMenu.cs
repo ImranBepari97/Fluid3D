@@ -91,6 +91,11 @@ public class PauseMenu : MonoBehaviour
     }
 
     public void QuitToMenu() {
+
+        if(OfflineNetworkManager.instance != null) {
+            OfflineNetworkManager.instance.StopHost();
+        }
+
         LevelTransitionLoader.instance.LoadSceneWithTransition("MainMenu");
     }
 }

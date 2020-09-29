@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using PathCreation;
 using PathCreation.Examples;
+using Mirror;
 
-public class GlobalPlayerController : MonoBehaviour
+public class GlobalPlayerController : NetworkBehaviour
 {
-
     DefaultPlayerController defaultPlayerController;
     WallPlayerController wallPlayerController;
 
@@ -14,35 +14,47 @@ public class GlobalPlayerController : MonoBehaviour
 
     PlayerHealth health;
 
+    [SyncVar]
     public int extraJumps = 1;
 
     
+    [SyncVar]
     public int currentJumps;
 
+    [SyncVar]
     public int numberOfDashes = 1;
+
+    [SyncVar]
     public int currentDashes;
 
+    [SyncVar]
     public float currentSpeedMultiplier = 1f;
+
+    [SyncVar]
     public float maxSpeedMultiplier = 2f;
+
+    [SyncVar]
     public bool isGrounded;
 
+    [SyncVar]
     public RecentActionType recentAction;
 
     Rigidbody rb;
     CapsuleCollider cc;
-
 
     public float angleRequire = 45f;
 
 
     bool isResetCRRunning; //bool for checking if the coroutines for resetting actions is active
 
+    [SyncVar]
     public float angleOfNearestWall; //the angle of the players velocity compared to the nearest wall they're facing
 
+    [SyncVar]
     public Vector3 floorNormal; //the normal of the floor the player is standing on 
 
-    
 
+    public static GlobalPlayerController localInstance;
 
     // Start is called before the first frame update
     void Awake()
@@ -59,6 +71,25 @@ public class GlobalPlayerController : MonoBehaviour
         currentDashes = 0;
         isResetCRRunning = false;
         angleOfNearestWall = 0f;
+
+        
+        
+    }
+
+    public override void OnStartLocalPlayer() {
+        base.OnStartLocalPlayer();
+
+        Debug.Log("local player spawned?:" + this.isLocalPlayer);
+        if(localInstance == null && this.isLocalPlayer) {
+            localInstance = this;
+        }
+        
+        //Somehow another player is the localplayer on the same client
+        if(localInstance != null && localInstance.isLocalPlayer 
+        && this.isLocalPlayer && this != localInstance) {
+            Debug.Log("Something went wrong, deleting this player.");
+            Destroy(this.gameObject);
+        }
     }
 
     // Update is called once per frame

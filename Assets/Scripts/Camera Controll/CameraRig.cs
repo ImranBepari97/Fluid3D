@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class CameraRig : MonoBehaviour
 {
@@ -11,7 +12,6 @@ public class CameraRig : MonoBehaviour
     public float stickXSensitivity = 1f;
     public float stickYSensitivity = 1f;
 
-
     public GameObject target;
     Rigidbody targetRb;
 
@@ -21,7 +21,6 @@ public class CameraRig : MonoBehaviour
     // Start is called before the first frame update
     void Awake() { 
         Cursor.lockState = CursorLockMode.Locked;
-        targetRb = target.GetComponent<Rigidbody>();
         isManuallyMovingCamera = false;
 
         if(instance != null) {
@@ -34,11 +33,21 @@ public class CameraRig : MonoBehaviour
         TryLoadPlayerPrefs();
     }
 
+    void Start() {
+        
+        
+    }
+
     // Update is called once per frame
     void Update() {
 
         if(Time.deltaTime == 0) {
             return;
+        }
+
+        if(target == null) {
+            Debug.Log("Targt null, finding player");
+            TryFindDefaultPlayerTarget();
         }
 
         if(Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0
@@ -67,24 +76,36 @@ public class CameraRig : MonoBehaviour
          
         transform.rotation = Quaternion.Euler(clampedX, eulerRotation.y, 0); //cancel z 
         
-        //gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position, 1f);
-        gameObject.transform.position = target.transform.position;
 
-        //Auto camera rotation
-        Vector3 xzMovement = targetRb.velocity;
-        xzMovement.y = 0;
-        if (!isManuallyMovingCamera && xzMovement.magnitude > 4f) {
+        if(target != null) {
+            gameObject.transform.position = target.transform.position;
+        
+            //gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position, 1f);
+            
+            //Auto camera rotation
+            Vector3 xzMovement = targetRb.velocity;
+            xzMovement.y = 0;
+            if (!isManuallyMovingCamera && xzMovement.magnitude > 4f) {
 
-            Vector3 camDirection = gameObject.transform.forward;
-            camDirection.y = 0;
+                Vector3 camDirection = gameObject.transform.forward;
+                camDirection.y = 0;
 
-            //Debug.Log("DOT camera: " + Vector3.Dot(camDirection.normalized , xzMovement.normalized));
-            float camMoveDot = Vector3.Dot(camDirection.normalized, xzMovement.normalized);
+                //Debug.Log("DOT camera: " + Vector3.Dot(camDirection.normalized , xzMovement.normalized));
+                float camMoveDot = Vector3.Dot(camDirection.normalized, xzMovement.normalized);
 
-            float oldX = transform.rotation.eulerAngles.x;
-            Vector3 rotated = Vector3.RotateTowards(camDirection, xzMovement, Mathf.Pow(xzMovement.magnitude, 1.5f) * Time.deltaTime * 0.01f / Mathf.Clamp(Mathf.Abs(camMoveDot), 0.25f, 1f), 2f);
-            transform.rotation = Quaternion.LookRotation(rotated); //rotate to look at the new angle
-            transform.rotation = Quaternion.Euler(oldX, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z); // dont rotate X though
+                float oldX = transform.rotation.eulerAngles.x;
+                Vector3 rotated = Vector3.RotateTowards(camDirection, xzMovement, Mathf.Pow(xzMovement.magnitude, 1.5f) * Time.deltaTime * 0.01f / Mathf.Clamp(Mathf.Abs(camMoveDot), 0.25f, 1f), 2f);
+                transform.rotation = Quaternion.LookRotation(rotated); //rotate to look at the new angle
+                transform.rotation = Quaternion.Euler(oldX, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z); // dont rotate X though
+            }
+        }
+    }
+
+    void TryFindDefaultPlayerTarget() {
+        Debug.Log(GlobalPlayerController.localInstance);
+        if(target == null && GlobalPlayerController.localInstance != null) {
+            target = GlobalPlayerController.localInstance.gameObject;
+            targetRb = target.GetComponent<Rigidbody>();
         }
     }
 

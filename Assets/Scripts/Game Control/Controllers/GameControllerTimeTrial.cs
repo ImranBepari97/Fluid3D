@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Playables;
+
 
 public class GameControllerTimeTrial : GameControllerCommon
 {
@@ -11,6 +13,8 @@ public class GameControllerTimeTrial : GameControllerCommon
 
      public string nameOfNextLevel;
 
+     public PlayableDirector localAnimatorCutscene; 
+
     // Start is called before the first frame update
     new void Awake()
     {
@@ -18,15 +22,23 @@ public class GameControllerTimeTrial : GameControllerCommon
 
         timerSeconds = 0f;
         gameState = GameState.NOT_STARTED;
-        gpc = GameObject.FindObjectOfType<GlobalPlayerController>();
-
-        gpc.DisableAllControls();
-        gpc.enabled = false;
     }
 
     // Update is called once per frame
     new void Update()
     {
+        if(gpc == null) {
+            if(GlobalPlayerController.localInstance != null) {
+                gpc = GlobalPlayerController.localInstance;
+                gpc.DisableAllControls();
+                gpc.enabled = false;
+                localAnimatorCutscene.Play();
+            } else {
+                //This should not move until the player exists
+                return;
+            }
+        }
+
         base.Update();
 
         if(gameState == GameState.PLAYING) {
@@ -48,6 +60,10 @@ public class GameControllerTimeTrial : GameControllerCommon
     public void LoadNextLevel() {
         if(nameOfNextLevel != null) {
             LevelTransitionLoader.instance.LoadSceneWithTransition(nameOfNextLevel);
+
+            if(OfflineNetworkManager.instance != null) {
+                OfflineNetworkManager.instance.StopHost();
+            }
         }
     }
 }

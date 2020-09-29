@@ -12,10 +12,10 @@ EditorBuildSettings:
     path: Assets/Scenes/TestScenes/Lab.unity
     guid: 7fc60de9320fc4d46a6484aedf77a1e0
   - enabled: 1
-    path: Assets/Scenes/FullMaps/Sandbox.unity
+    path: Assets/Scenes/FullMaps/ConstructionZone/Sandbox.unity
     guid: aabb525f7f2d6284284777ee49dfe558
   - enabled: 1
-    path: Assets/Scenes/FullMaps/Sandbox_Geometry.unity
+    path: Assets/Scenes/FullMaps/ConstructionZone/Sandbox_Geometry.unity
     guid: 88e0e869b70a6894e863c881f7f583be
   - enabled: 1
     path: Assets/Scenes/TimeTrials/Tutorial.unity

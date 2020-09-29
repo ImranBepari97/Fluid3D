@@ -29,13 +29,22 @@ public class HealthVignette : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        if(player.currentHealth < player.maxHealth) {
+        if(player != null) {
+            if(player.currentHealth < player.maxHealth) {
             vignette.color.value = Color.Lerp(vignetteStartColour, vignetteDamageColour, 1 - (player.currentHealth / player.maxHealth));
             vignette.intensity.value = PlayerAnimator.RangeRemap(player.currentHealth, 0f, player.maxHealth, vignetteStartIntensity + 0.25f, vignetteStartIntensity);
+            } else {
+                vignette.color.value = Color.Lerp(vignette.color.value, vignetteStartColour, 1f);
+                vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, vignetteStartIntensity, 1f);
+            }
         } else {
-            vignette.color.value = Color.Lerp(vignette.color.value, vignetteStartColour, 1f);
-            vignette.intensity.value = Mathf.Lerp(vignette.intensity.value, vignetteStartIntensity, 1f);
+            TryFindDefaultPlayerTarget();
+        }
+    }
+
+    void TryFindDefaultPlayerTarget() {
+        if(GlobalPlayerController.localInstance != null) {
+            player = GlobalPlayerController.localInstance.gameObject.GetComponent<PlayerHealth>();
         }
     }
 }
