@@ -107,7 +107,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23372dfa91d581747b53f3a02fde8648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lastWallTouched: {fileID: 0}
   extraJumps: 1
   currentJumps: 0
   numberOfDashes: 1
@@ -183,6 +182,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallNormal: {x: 0, y: 0, z: 0}
   wallsCollidingWith: []
+  lastWallTouched: {fileID: 0}
   initialJumpForce: 17.5
   wallRunInitialJumpForce: 12.5
   wallSlideDownSpeed: 0.75
@@ -305,7 +305,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 71034748e86f29f42bf9d7fd95ac3890, type: 2}
+  - {fileID: 2100000, guid: 2ca1ff463cd798b4dbf9c56d69c3a4c8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -336,7 +336,7 @@ SkinnedMeshRenderer:
   m_RootBone: {fileID: 0}
   m_AABB:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.05000004, y: 0.000000033105607, z: 0.7500002}
+    m_Extent: {x: 0.05000002, y: 0.0000001573062, z: 0.7499998}
   m_DirtyAABB: 0
 --- !u!183 &6293121715656894021
 Cloth:

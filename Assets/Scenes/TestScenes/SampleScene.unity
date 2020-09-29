@@ -1333,21 +1333,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerAnimatedV1
       objectReference: {fileID: 0}
-    - target: {fileID: 6102220615782285761, guid: 4100fdaad8c789e4186c1444a44388d7,
+    - target: {fileID: 4563915537844903938, guid: 4100fdaad8c789e4186c1444a44388d7,
         type: 3}
-      propertyPath: m_AABB.m_Extent.x
-      value: 0.0500001
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102220615782285761, guid: 4100fdaad8c789e4186c1444a44388d7,
-        type: 3}
-      propertyPath: m_AABB.m_Extent.y
-      value: 0.00000007079507
-      objectReference: {fileID: 0}
-    - target: {fileID: 6102220615782285761, guid: 4100fdaad8c789e4186c1444a44388d7,
-        type: 3}
-      propertyPath: m_AABB.m_Extent.z
-      value: 0.74999994
-      objectReference: {fileID: 0}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2ca1ff463cd798b4dbf9c56d69c3a4c8, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4100fdaad8c789e4186c1444a44388d7, type: 3}
 --- !u!1 &377542428
