@@ -1,21 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class InputController : MonoBehaviour
+public class InputController : NetworkBehaviour
 {
     // Start is called before the first frame update
+    public bool jumpPressed;
 
+    public Vector3 moveDirection;
 
-    public static bool jumpPressed;
-    public static Vector3 moveDirection;
-    public static bool dashPressed;
-    public static bool crouchPressed;
+    public bool dashPressed;
 
-
-    void Start()
-    {   
-    }
+    public bool crouchPressed;
 
     // Update is called once per frame
     void Update()
@@ -41,5 +38,11 @@ public class InputController : MonoBehaviour
         Vector3 movementZ = camForward * Input.GetAxis("Vertical");
         moveDirection = (movementX + movementZ);
         moveDirection = Vector3.ClampMagnitude(moveDirection, 1f);
+    }
+
+    [Client]
+    public void CmdResetJumpAndDashInput() {
+        jumpPressed = false;
+        dashPressed = false;
     }
 }

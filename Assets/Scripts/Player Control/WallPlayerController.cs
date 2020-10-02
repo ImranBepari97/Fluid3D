@@ -74,8 +74,9 @@ public class WallPlayerController : NetworkBehaviour
 
     void Update()
     {
-        currentWallRunDuration -= Time.deltaTime;
-
+        if(gpc.recentAction == RecentActionType.WallRunning) {
+            currentWallRunDuration -= Time.deltaTime;
+        }
     }
 
     // Update is called once per frame
@@ -97,7 +98,7 @@ public class WallPlayerController : NetworkBehaviour
         isWallRunning = wallRunDirection != new Vector3(0, 0, 0) && currentWallRunDuration > 0; //  && gpc.recentAction != RecentActionType.WallJump;
 
         //stuff to do this physics frame
-        gpc.recentAction = RecentActionType.None;
+        //gpc.recentAction = RecentActionType.None;
 
         if (isWallRunning) { //regular wall running
             gpc.recentAction = RecentActionType.WallRunning;
@@ -117,19 +118,19 @@ public class WallPlayerController : NetworkBehaviour
             gameObject.transform.rotation = Quaternion.LookRotation(-wallNormal);
         }
 
-        if (InputController.jumpPressed && canAct && isLocalPlayer) {
+        if (gpc.input.jumpPressed && canAct && isLocalPlayer) {
 
             gpc.IncreaseSpeedMultiplier(0.2f);
             if (isWallRunning) {
                 rb.velocity = new Vector3(
-                    rb.velocity.normalized.x + wallNormal.normalized.x + (InputController.moveDirection.x * 0.4f), 
+                    rb.velocity.normalized.x + wallNormal.normalized.x + (gpc.input.moveDirection.x * 0.4f), 
                     1f, 
-                    rb.velocity.normalized.z + wallNormal.normalized.z + (InputController.moveDirection.z * 0.4f)) * wallRunInitialJumpForce;
+                    rb.velocity.normalized.z + wallNormal.normalized.z + (gpc.input.moveDirection.z * 0.4f)) * wallRunInitialJumpForce;
             } else {
                 rb.velocity = new Vector3(
-                    wallNormal.normalized.x + (InputController.moveDirection.x * 0.4f), 
+                    wallNormal.normalized.x + (gpc.input.moveDirection.x * 0.4f), 
                     2f, 
-                    wallNormal.normalized.z + (InputController.moveDirection.z * 0.4f)).normalized * initialJumpForce * 1.25f;
+                    wallNormal.normalized.z + (gpc.input.moveDirection.z * 0.4f)).normalized * initialJumpForce * 1.25f;
 
                 gameObject.transform.rotation = Quaternion.LookRotation(wallNormal);
             }
@@ -138,14 +139,14 @@ public class WallPlayerController : NetworkBehaviour
 
             Debug.DrawRay(rb.position, rb.velocity, Color.blue, 2f);
             gpc.EnableDefaultControls();
-        } else if(InputController.crouchPressed && isLocalPlayer) {
-            InputController.crouchPressed = false;
+        } else if(gpc.input.crouchPressed && isLocalPlayer) {
+            gpc.input.crouchPressed = false;
             DismountFromWall(false);
         }
 
 
-        InputController.jumpPressed = false;
-        InputController.dashPressed = false;
+        gpc.input.jumpPressed = false;
+        gpc.input.dashPressed = false;
     }
 
     void DismountFromWall(bool maintainMomentum = false) {

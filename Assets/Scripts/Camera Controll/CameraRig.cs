@@ -20,7 +20,7 @@ public class CameraRig : MonoBehaviour
 
     // Start is called before the first frame update
     void Awake() { 
-        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.lockState = CursorLockMode.Locked;
         isManuallyMovingCamera = false;
 
         if(instance != null) {
@@ -46,7 +46,6 @@ public class CameraRig : MonoBehaviour
         }
 
         if(target == null) {
-            Debug.Log("Targt null, finding player");
             TryFindDefaultPlayerTarget();
         }
 
@@ -102,7 +101,7 @@ public class CameraRig : MonoBehaviour
     }
 
     void TryFindDefaultPlayerTarget() {
-        Debug.Log(GlobalPlayerController.localInstance);
+        //Debug.Log(GlobalPlayerController.localInstance);
         if(target == null && GlobalPlayerController.localInstance != null) {
             target = GlobalPlayerController.localInstance.gameObject;
             targetRb = target.GetComponent<Rigidbody>();

@@ -66,17 +66,17 @@ public class GrindPlayerController : NetworkBehaviour
         }
 
 
-        if(InputController.jumpPressed && isLocalPlayer) {
+        if(globalPlayerController.input.jumpPressed && isLocalPlayer) {
             globalPlayerController.EnableDefaultControls();
-            rb.velocity = (transform.forward + new Vector3(0, 1, 0) + (InputController.moveDirection * 0.4f)) * grindSpeed * 1.05f;
+            rb.velocity = (transform.forward + new Vector3(0, 1, 0) + (globalPlayerController.input.moveDirection * 0.4f)) * grindSpeed * 1.05f;
             globalPlayerController.IncreaseSpeedMultiplier(0.2f);
             globalPlayerController.recentAction = RecentActionType.SlideJump;
             StartCoroutine(CoolDownTimer(0.1f));
         }
         //Debug.Log(currentRail.path.GetClosestTimeOnPath (rb.position));
 
-        InputController.jumpPressed = false;
-        InputController.dashPressed = false;
+        globalPlayerController.input.jumpPressed = false;
+        globalPlayerController.input.dashPressed = false;
 
     }
 

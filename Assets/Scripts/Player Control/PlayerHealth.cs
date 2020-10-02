@@ -21,7 +21,7 @@ public class PlayerHealth : NetworkBehaviour
     public float currentHealth;
     public float maxHealth = 100f;
 
-    [SyncVar]
+    //[SyncVar (hook = nameof(Damage))]
     float timeSinceLastFallDamage;
     public float fallDamageThresholdVelocity = 40f;
     public float healthRegenTime = 5f;
@@ -87,7 +87,9 @@ public class PlayerHealth : NetworkBehaviour
         Destroy(ragdoll, respawnTime);
     }
 
-    public void Respawn() {
+
+    [Command]
+    public void CmdRespawn() {
 
         gpc.enabled = true;
         transform.position = Checkpoint.playerCheckpointMap[this.gameObject];
@@ -131,6 +133,6 @@ public class PlayerHealth : NetworkBehaviour
 
     public IEnumerator RespawnCoroutine() {
         yield return new WaitForSeconds(respawnTime);
-        Respawn();
+        CmdRespawn();
     }
 }

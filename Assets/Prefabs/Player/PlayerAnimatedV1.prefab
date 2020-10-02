@@ -11,7 +11,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 60c00d515a7c5f94d94883be64d3c505, type: 3}
   m_Controller: {fileID: 9100000, guid: 045b389da2db0e9468d31d3e1c22608d, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
@@ -19,6 +19,22 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1060366523266081549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 639781188294019580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0
 --- !u!114 &5208613169905734194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31,6 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da5e3d16e1e22a241aa1e1b1dba52b8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   defaultOffset: {x: 0, y: -0.76, z: 0}
   crouchOffset: {x: 0, y: -0.4, z: 0}
   wallLeftOffset: {x: -0.14, y: -1, z: 0}
@@ -73,6 +91,8 @@ GameObject:
   - component: {fileID: 406202322311510504}
   - component: {fileID: 1399038271128963814}
   - component: {fileID: 6541126105777029237}
+  - component: {fileID: 7772906871203096907}
+  - component: {fileID: 7937302752770557816}
   m_Layer: 10
   m_Name: PlayerAnimatedV1
   m_TagString: Player
@@ -108,8 +128,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23372dfa91d581747b53f3a02fde8648, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
+  syncMode: 1
+  syncInterval: 0.033333335
+  input: {fileID: 0}
   extraJumps: 1
   currentJumps: 0
   numberOfDashes: 1
@@ -133,8 +154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d9cc54045765d448bceebbc1eae5258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
+  syncMode: 1
+  syncInterval: 0.016666668
   gravityScale: 12.5
   defaultRunSpeed: 10
   currentMaxSpeed: 0
@@ -185,8 +206,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: edda2aa428ef8ed43852db2f6b6039d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
+  syncMode: 1
+  syncInterval: 0.016666668
   wallNormal: {x: 0, y: 0, z: 0}
   wallsCollidingWith: []
   lastWallTouched: {fileID: 0}
@@ -212,6 +233,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 375eac1c881b0564e9f33069d79422e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 1
+  syncInterval: 0.016666668
+  jumpPressed: 0
+  moveDirection: {x: 0, y: 0, z: 0}
+  dashPressed: 0
+  crouchPressed: 0
 --- !u!114 &406202322311510504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -246,7 +273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   syncMode: 0
-  syncInterval: 0.1
+  syncInterval: 0.333
   model: {fileID: 639781188294019580}
   ragdollPrefab: {fileID: 4468600284673209838, guid: b9f68256388dfe34395a68d4fb0e371e,
     type: 3}
@@ -272,6 +299,40 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!114 &7772906871203096907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432478493584155342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f74aedd71d9a4f55b3ce499326d45fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.016666668
+  clientAuthority: 1
+  localPositionSensitivity: 0.01
+  localRotationSensitivity: 0.01
+  localScaleSensitivity: 0.01
+--- !u!114 &7937302752770557816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432478493584155342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  clientAuthority: 1
+  animator: {fileID: 6818962177263511481}
 --- !u!1 &4381873715457731116
 GameObject:
   m_ObjectHideFlags: 0
@@ -363,7 +424,7 @@ SkinnedMeshRenderer:
   m_RootBone: {fileID: 0}
   m_AABB:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.05000002, y: 0.0000001573062, z: 0.7499998}
+    m_Extent: {x: 0.049999997, y: 0.00000015832484, z: 0.7499998}
   m_DirtyAABB: 0
 --- !u!183 &6293121715656894021
 Cloth:

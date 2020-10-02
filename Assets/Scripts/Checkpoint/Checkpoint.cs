@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class Checkpoint : MonoBehaviour
+public class Checkpoint : NetworkBehaviour
 {
 
     public static Dictionary<GameObject, Vector3> playerCheckpointMap = new Dictionary<GameObject, Vector3>();

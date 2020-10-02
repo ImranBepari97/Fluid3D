@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class PlayerAnimator : MonoBehaviour
-{
+public class PlayerAnimator : NetworkBehaviour {
 
     Animator animator;
     GlobalPlayerController gpc;
@@ -23,8 +23,7 @@ public class PlayerAnimator : MonoBehaviour
     bool gameStarted;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         isRightWall = false;
         gpc = transform.parent.GetComponent<GlobalPlayerController>();
         animator = GetComponent<Animator>();
@@ -35,32 +34,37 @@ public class PlayerAnimator : MonoBehaviour
     // Update is called once per frame
     void Update() {
 
-        if(GameControllerCommon.instance != null) {
-           gameStarted = GameControllerCommon.instance.gameState == GameState.PLAYING;
-        } else {
-            gameStarted = true;
+
+        if (gpc.isLocalPlayer) {
+            if (GameControllerCommon.instance != null) {
+                gameStarted = GameControllerCommon.instance.gameState == GameState.PLAYING;
+            } else {
+                gameStarted = true;
+            }
+
+            FindWallClosest();
+
+            animator.SetBool("isRightWallClosest", isRightWall);
+            animator.SetBool("isWallRunning", gpc.recentAction == RecentActionType.WallRunning);
+            animator.SetBool("isDashing", gpc.recentAction == RecentActionType.Dash);
+            animator.SetBool("isSliding", gpc.recentAction == RecentActionType.Slide);
+            animator.SetBool("isJumping", gpc.recentAction == RecentActionType.RegularJump);
+            animator.SetBool("isGrinding", gpc.recentAction == RecentActionType.Grind);
+            animator.SetBool("isGrounded", gpc.isGrounded);
+            animator.SetBool("isSlideJumping", gpc.recentAction == RecentActionType.SlideJump);
+            animator.SetBool("isOnWall", gpc.recentAction == RecentActionType.OnWall);
+            animator.SetBool("gameStarted", gameStarted);
+            animator.SetFloat("playerHeight", cc.height);
+
+            Vector3 horVel = rb.velocity;
+            horVel.y = 0;
+
+
+            animator.SetFloat("horizontalVelocity", horVel.magnitude);
+
+            animator.SetFloat("verticalVelocity", rb.velocity.y);
         }
-
-        FindWallClosest();
-
-        animator.SetBool("isRightWallClosest", isRightWall);
-        animator.SetBool("isWallRunning", gpc.recentAction == RecentActionType.WallRunning);
-        animator.SetBool("isDashing", gpc.recentAction == RecentActionType.Dash);
-        animator.SetBool("isSliding", gpc.recentAction == RecentActionType.Slide);
-        animator.SetBool("isJumping", gpc.recentAction == RecentActionType.RegularJump);
-        animator.SetBool("isGrinding", gpc.recentAction == RecentActionType.Grind);
-        animator.SetBool("isGrounded", gpc.isGrounded);
-        animator.SetBool("isSlideJumping", gpc.recentAction == RecentActionType.SlideJump);
-        animator.SetBool("isOnWall", gpc.recentAction == RecentActionType.OnWall);
-        animator.SetBool("gameStarted", gameStarted);
-        animator.SetFloat("playerHeight", cc.height);
-
-        Vector3 horVel = rb.velocity;
-        horVel.y = 0;
-
-        animator.SetFloat("horizontalVelocity", horVel.magnitude);
-        animator.SetFloat("verticalVelocity", rb.velocity.y);
-
+        
         InterpToLocation();
 
     }
@@ -72,15 +76,15 @@ public class PlayerAnimator : MonoBehaviour
 
         Vector3 offset = new Vector3(0, crouchYOffset, 0);
 
-        if((gpc.recentAction == RecentActionType.None || gpc.recentAction == RecentActionType.Dash) && !(gpc.isGrounded) && gameStarted) {
+        if ((gpc.recentAction == RecentActionType.None || animator.GetBool("isDashing")) && !(gpc.isGrounded) && gameStarted) {
             offset.y = dashOffset.y;
-        } else if(gpc.recentAction == RecentActionType.OnWall) {
+        } else if (animator.GetBool("isOnWall")) {
             offset.z = wallHoldOffset.z;
             shouldInterp = false;
-        } else if(gpc.recentAction == RecentActionType.Grind) {
+        } else if (animator.GetBool("isGrinding")) {
             shouldInterp = false;
-        } else if(gpc.recentAction == RecentActionType.WallRunning) {
-            if(isRightWall) {
+        } else if (animator.GetBool("isWallRunning")) {
+            if (isRightWall) {
                 offset.x = wallRightOffset.x;
             } else {
                 offset.x = wallLeftOffset.x;
@@ -89,7 +93,7 @@ public class PlayerAnimator : MonoBehaviour
             shouldInterp = false;
         }
 
-        if(shouldInterp) {
+        if (shouldInterp) {
             transform.localPosition = Vector3.Lerp(transform.localPosition, offset, 0.1f);
         } else {
             transform.localPosition = offset;
@@ -104,16 +108,16 @@ public class PlayerAnimator : MonoBehaviour
         Debug.DrawRay(rb.position, transform.right, Color.red, 0.01f);
         Debug.DrawRay(rb.position, -transform.right, Color.blue, 0.01f);
         float rightWallDist = 4f;
-        if(Physics.Raycast(rb.position, transform.right,  out hitRight, 3f)) {
-            if(hitRight.collider.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
+        if (Physics.Raycast(rb.position, transform.right, out hitRight, 3f)) {
+            if (hitRight.collider.gameObject.layer == LayerMask.NameToLayer("Parkour")) {
                 //Debug.Log("right wall");
                 isRightWall = true;
                 rightWallDist = Vector3.Distance(rb.position, hitRight.point);
             }
         }
 
-        if(Physics.Raycast(rb.position, -transform.right,  out hitLeft, 3f)) {
-            if(hitLeft.collider.gameObject.layer == LayerMask.NameToLayer("Parkour") &&
+        if (Physics.Raycast(rb.position, -transform.right, out hitLeft, 3f)) {
+            if (hitLeft.collider.gameObject.layer == LayerMask.NameToLayer("Parkour") &&
                 Vector3.Distance(rb.position, hitLeft.point) < rightWallDist) {
                 //Debug.Log("left wall");
                 isRightWall = false;
@@ -121,7 +125,7 @@ public class PlayerAnimator : MonoBehaviour
         }
     }
 
-    public static float RangeRemap (float value, float from1, float to1, float from2, float to2) {
-    return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
-}
+    public static float RangeRemap(float value, float from1, float to1, float from2, float to2) {
+        return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+    }
 }

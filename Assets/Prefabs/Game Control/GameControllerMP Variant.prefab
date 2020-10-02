@@ -158,7 +158,7 @@ PrefabInstance:
     - target: {fileID: 6171184714607560665, guid: 8bd2694c19823dd40a78c95a055c3c59,
         type: 3}
       propertyPath: m_Name
-      value: GameControllerMP
+      value: GameControllerMP Variant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8bd2694c19823dd40a78c95a055c3c59, type: 3}

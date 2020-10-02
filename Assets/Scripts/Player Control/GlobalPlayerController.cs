@@ -12,6 +12,8 @@ public class GlobalPlayerController : NetworkBehaviour
 
     GrindPlayerController grindPlayerController;
 
+    public InputController input; 
+
     PlayerHealth health;
 
     [SyncVar]
@@ -30,7 +32,6 @@ public class GlobalPlayerController : NetworkBehaviour
     [SyncVar]
     public float currentSpeedMultiplier = 1f;
 
-    [SyncVar]
     public float maxSpeedMultiplier = 2f;
 
     [SyncVar]
@@ -47,10 +48,8 @@ public class GlobalPlayerController : NetworkBehaviour
 
     bool isResetCRRunning; //bool for checking if the coroutines for resetting actions is active
 
-    [SyncVar]
     public float angleOfNearestWall; //the angle of the players velocity compared to the nearest wall they're facing
 
-    [SyncVar]
     public Vector3 floorNormal; //the normal of the floor the player is standing on 
 
 
@@ -65,6 +64,7 @@ public class GlobalPlayerController : NetworkBehaviour
         defaultPlayerController = GetComponent<DefaultPlayerController>();
         wallPlayerController = GetComponent<WallPlayerController>();
         grindPlayerController = GetComponent<GrindPlayerController>();
+        input = GetComponent<InputController>();
         cc = GetComponent<CapsuleCollider>();
         recentAction = RecentActionType.None;
         currentJumps = 0;
@@ -136,7 +136,7 @@ public class GlobalPlayerController : NetworkBehaviour
                     StartCoroutine(JumpControlCooldownClampSpeed(0.25f, defaultPlayerController.currentMaxSpeed, recentAction));
                     break;
                 case RecentActionType.Slide:
-                    if(!InputController.crouchPressed) {
+                    if(!input.crouchPressed) {
                         isResetCRRunning = true;
                         StartCoroutine(JumpControlCoolDown(0.35f, recentAction));
                     }
@@ -168,6 +168,11 @@ public class GlobalPlayerController : NetworkBehaviour
         return isGrounded;
     }
 
+    [Command]
+    public void CmdSetRecentAction(RecentActionType action) {
+        recentAction = action;
+    }
+
     void CheckFloorNormal() {
         RaycastHit hit;
         Debug.DrawLine(rb.position, rb.position + (-Vector3.up * 1f), Color.red, 0.01f);
@@ -188,6 +193,7 @@ public class GlobalPlayerController : NetworkBehaviour
         yield return new WaitForSeconds(cooldownTimeSeconds);
         if(recentAction == entryAction) { //check playerstate
             recentAction = RecentActionType.None;
+            CmdSetRecentAction(RecentActionType.None);
         }
         isResetCRRunning = false;
     }
@@ -197,6 +203,7 @@ public class GlobalPlayerController : NetworkBehaviour
         if(recentAction == entryAction) { //check if something else changed the player state
             rb.velocity = Vector3.ClampMagnitude(new Vector3(rb.velocity.x, 0, rb.velocity.z), maxSpeed);
             recentAction = RecentActionType.None;
+            CmdSetRecentAction(RecentActionType.None);
         }
         isResetCRRunning = false;
     }
