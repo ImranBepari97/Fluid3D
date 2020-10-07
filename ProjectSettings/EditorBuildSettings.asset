@@ -6,10 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/FullMaps/ConstructionZone/Sandbox_MP.unity
-    guid: 966e7779028c3b64fa3eb26924417bc5
-  - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
+    path: Assets/Scenes/Menu/MainMenu.unity
     guid: e057c46deda71d54e88f62d298441e4d
   - enabled: 0
     path: Assets/Scenes/TestScenes/Lab.unity
@@ -32,4 +29,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/TimeTrials/Level3.unity
     guid: 2b8fa7734fa24a04981c4170d090585c
+  - enabled: 1
+    path: Assets/Mirror/Examples/Room/Scenes/OfflineScene.unity
+    guid: 9e6f14982412b2545a0911ebaaa46a23
+  - enabled: 1
+    path: Assets/Mirror/Examples/Room/Scenes/OnlineScene.unity
+    guid: d7a6763559b31854586c9e49916273ef
+  - enabled: 1
+    path: Assets/Mirror/Examples/Room/Scenes/RoomScene.unity
+    guid: 48478f4d522f96945b8396f376299d3a
   m_configObjects: {}

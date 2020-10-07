@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class DefaultPlayerController : NetworkBehaviour
-{
+public class DefaultPlayerController : NetworkBehaviour {
     //general variables
     GlobalPlayerController gpc;
     Rigidbody rb;
@@ -36,8 +35,7 @@ public class DefaultPlayerController : NetworkBehaviour
 
 
     // Start is called before the first frame update
-    void Awake()
-    {
+    void Awake() {
         col = GetComponent<CapsuleCollider>();
         gpc = GetComponent<GlobalPlayerController>();
         rb = GetComponent<Rigidbody>();
@@ -46,7 +44,7 @@ public class DefaultPlayerController : NetworkBehaviour
     }
 
     void Start() {
-        if(!isLocalPlayer) {
+        if (!isLocalPlayer) {
             rb.isKinematic = true;
         }
     }
@@ -62,7 +60,7 @@ public class DefaultPlayerController : NetworkBehaviour
         currentMaxSpeed = defaultRunSpeed * gpc.currentSpeedMultiplier;
         //moveDirection = gpc.input.moveDirection; //current input left and right, relative to the camera
 
-        if(gpc.input.moveDirection.magnitude > 0.1f && gpc.recentAction != RecentActionType.Dash 
+        if (gpc.input.moveDirection.magnitude > 0.1f && gpc.recentAction != RecentActionType.Dash
             && gpc.recentAction != RecentActionType.Slide && gpc.recentAction != RecentActionType.SlideJump) {
             gameObject.transform.rotation = Quaternion.LookRotation(gpc.input.moveDirection);
         }
@@ -80,7 +78,7 @@ public class DefaultPlayerController : NetworkBehaviour
         //reset inputs
         gpc.input.jumpPressed = false;
         gpc.input.dashPressed = false;
-    }    
+    }
 
     void CmdDoFixedUpdate(Vector3 moveDirection, bool jump, bool dash, bool crouch) {
         yVel = rb.velocity.y;
@@ -93,36 +91,36 @@ public class DefaultPlayerController : NetworkBehaviour
         if (gpc.recentAction != RecentActionType.Dash) { //custom gravity, turn off while dashing
             rb.AddForce(Physics.gravity * gravityScale * Time.fixedDeltaTime * 60);
         }
-        
+
         //these methods will edit yVel for the later statement
-        if(gpc.isGrounded) {
+        if (gpc.isGrounded) {
             HandleGrounded(moveDirection, jump, dash, crouch);
         } else {
             HandleInAir(moveDirection, jump, dash, crouch);
         }
-        
+
         //put it all together
         rb.velocity = new Vector3(rb.velocity.x, yVel, rb.velocity.z);
     }
 
     void ShrinkPlayer() {
-        // col.height = Mathf.Lerp(col.height, 0f, 0.1f);
-        // col.radius = Mathf.Lerp(col.radius, 0.4f, 0.1f); 
-        col.height = 0.01f;
-        col.radius = 0.4f;
+        col.height = Mathf.Lerp(col.height, 0f, 0.1f);
+        col.radius = Mathf.Lerp(col.radius, 0.4f, 0.1f);
+        // col.height = 0.01f;
+        // col.radius = 0.4f;
     }
 
     void UnshrinkPlayer() {
         RaycastHit hit;
         //only try to unshrink if you have free space above so player doesn't get stuck
-        if(Physics.SphereCast(transform.position + (Vector3.up * col.height / 2), col.radius + 0.1f, Vector3.up, out hit, 1.1f) &&
+        if (Physics.SphereCast(transform.position + (Vector3.up * col.height / 2), col.radius + 0.1f, Vector3.up, out hit, 1.1f) &&
             hit.collider.gameObject.tag != "Player") {
             return;
         } else {
-            // col.height = Mathf.Lerp(col.height, 1.5f, 0.1f);
-            // col.radius = Mathf.Lerp(col.radius, 0.5f, 0.1f);
-            col.height = 1.5f;
-            col.radius = 0.5f;
+            col.height = Mathf.Lerp(col.height, 1.5f, 0.1f);
+            col.radius = Mathf.Lerp(col.radius, 0.5f, 0.1f);
+            // col.height = 1.5f;
+            // col.radius = 0.5f;
         }
     }
 
@@ -132,15 +130,15 @@ public class DefaultPlayerController : NetworkBehaviour
 
     private void HandleInAir(Vector3 moveDirection, bool jump, bool dash, bool crouch) {
         UnshrinkPlayer();
-            //check what the players doing
+        //check what the players doing
         if (gpc.recentAction == RecentActionType.None) { //general air drift
 
-            if(currentHorizontalVelocity.magnitude < currentMaxSpeed * 1.1f) {
+            if (currentHorizontalVelocity.magnitude < currentMaxSpeed * 1.1f) {
                 rb.AddForce(moveDirection * currentMaxSpeed * airControl, ForceMode.Force);
                 rb.velocity = Vector3.ClampMagnitude(new Vector3(rb.velocity.x, 0, rb.velocity.z), currentMaxSpeed);
             }
 
-            if(jump && gpc.currentJumps > 0) { //multi jump if you can
+            if (jump && gpc.currentJumps > 0) { //multi jump if you can
                 //gpc.recentAction = RecentActionType.RegularJump;
                 gpc.CmdSetRecentAction(RecentActionType.RegularJump);
                 yVel = initialJumpForce;
@@ -149,14 +147,14 @@ public class DefaultPlayerController : NetworkBehaviour
                 CmdStartDash(moveDirection);
             }
 
-        } else if(gpc.recentAction == RecentActionType.RegularJump) { //if you just jumped, you still have air control for a split second
+        } else if (gpc.recentAction == RecentActionType.RegularJump) { //if you just jumped, you still have air control for a split second
 
             float dot = Vector3.Dot(
-                currentHorizontalVelocity.normalized, 
+                currentHorizontalVelocity.normalized,
                 moveDirection.normalized
             );
             //Debug.Log(dot);
-            if(dot > 0.85f) {
+            if (dot > 0.85f) {
                 rb.velocity = new Vector3(
                     moveDirection.x * currentHorizontalVelocity.magnitude * 0.85f,
                     rb.velocity.y,
@@ -169,8 +167,8 @@ public class DefaultPlayerController : NetworkBehaviour
                     moveDirection.z * currentHorizontalVelocity.magnitude * 0.5f
                 );
             }
-            
-        } else if(gpc.recentAction == RecentActionType.Dash) { //if dashing continue doing that 
+
+        } else if (gpc.recentAction == RecentActionType.Dash) { //if dashing continue doing that 
             rb.velocity = new Vector3(dashDirection.x, 0, dashDirection.z) * airDashSpeed;
             gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
         }
@@ -186,7 +184,7 @@ public class DefaultPlayerController : NetworkBehaviour
             } else {
                 //gpc.recentAction = RecentActionType.RegularJump;
                 gpc.CmdSetRecentAction(RecentActionType.RegularJump);
-            }       
+            }
         }
 
         //running is always locked at a default speed to encourage air movement
@@ -230,35 +228,34 @@ public class DefaultPlayerController : NetworkBehaviour
             UnshrinkPlayer();
             rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * currentMaxSpeed;
             //fine if we're still crouched stay slow
-            if(col.height < 1.4f) {
+            if (col.height < 1.4f) {
                 rb.velocity *= crouchSpeedMultiplier;
             }
 
             //if we're clearly not moving and grounded, then dont move on the Y axis
             //stops slopes 
 
-            if ((!isLocalPlayer || moveDirection.magnitude < 0.15f) && rb.velocity.magnitude < 2f && 
+            if ((!isLocalPlayer || moveDirection.magnitude < 0.15f) && rb.velocity.magnitude < 2f &&
             gpc.recentAction == RecentActionType.None && gpc.floorNormal != new Vector3(0, 1, 0)) {
                 rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
                 rb.isKinematic = true;
             }
-        } 
+        }
     }
-    
+
     private void CmdStartDash(Vector3 moveDirection) {
         gpc.recentAction = RecentActionType.Dash;
         gpc.CmdSetRecentAction(RecentActionType.Dash);
         yVel = 0;
         gpc.currentDashes -= 1;
-                //Debug.DrawRay(rb.position, moveDirection.normalized, Color.cyan, 2f );
+        //Debug.DrawRay(rb.position, moveDirection.normalized, Color.cyan, 2f );
 
         if (moveDirection.magnitude > 0) { //dash in your current facing direction if you have no directional input 
             dashDirection = moveDirection.normalized;
         } else {
             dashDirection = rb.transform.forward;
         }
-    
+
         rb.velocity = new Vector3(dashDirection.x, 0, dashDirection.z) * airDashSpeed;
     }
 }
-            

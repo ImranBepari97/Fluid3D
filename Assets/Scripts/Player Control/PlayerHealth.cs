@@ -24,7 +24,12 @@ public class PlayerHealth : NetworkBehaviour
     //[SyncVar (hook = nameof(Damage))]
     float timeSinceLastFallDamage;
     public float fallDamageThresholdVelocity = 40f;
+
+    [Header("Health Regen Properties")]
+    public bool canRegen = true;
     public float healthRegenTime = 5f;
+    public float regenRate = 25f;
+    
     // Start is called before the first frame update
     void Awake()
     {
@@ -42,9 +47,14 @@ public class PlayerHealth : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+        if(!canRegen) {
+            return;
+        }
+        
         timeSinceLastFallDamage += Time.deltaTime;
         if(timeSinceLastFallDamage > healthRegenTime && currentHealth < maxHealth) {
-            currentHealth += 25f * Time.deltaTime;
+            currentHealth += regenRate * Time.deltaTime;
             if(currentHealth > maxHealth) {
                 currentHealth = maxHealth;
             }
