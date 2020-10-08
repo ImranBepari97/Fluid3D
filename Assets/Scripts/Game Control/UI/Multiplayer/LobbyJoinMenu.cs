@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Mirror;
+
 public class LobbyJoinMenu : MonoBehaviour {
 
-    [SerializeField] LobbyNetworkManager networkManager;
     // Start is called before the first frame update
 
     [Header("UI")]
@@ -34,14 +35,14 @@ public class LobbyJoinMenu : MonoBehaviour {
 
     public void JoinLobby() {
         string ipAddress = ipInputField.text;
-        networkManager.networkAddress = ipAddress;
-        networkManager.StartClient();
+        NetworkManager.singleton.networkAddress = ipAddress;
+        NetworkManager.singleton.StartClient();
 
         joinButton.interactable = false;
     }
 
     public void HostLobby() {
-        networkManager.StartHost();
+        NetworkManager.singleton.StartHost();
     }
 
     public void ToggleShowJoinMenu(bool show) {

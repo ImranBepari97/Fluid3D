@@ -47,11 +47,17 @@ public class LevelTransitionLoader : MonoBehaviour
         StartCoroutine(LoadSceneWithTransitionCoroutine(sceneName));
     }
 
+    /// <summary>
+    /// Fades the scene to black.
+    /// </summary>
     public void PlayTransitionFadeIn() {
         instance.transition.SetTrigger("Start");
         Time.timeScale = 1f;
     }
 
+    /// <summary>
+    /// Unfades the scene.
+    /// </summary>
     public void PlayTransitionFadeOut() {
         instance.transition.SetTrigger("End");
     }

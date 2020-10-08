@@ -9,34 +9,8 @@ public class GamePlayerEntity : NetworkBehaviour {
     [SyncVar]
     public string displayName = "Loading...";
 
-    private LobbyNetworkManager lobbyManager;
-    private LobbyNetworkManager LobbyManager {
-        get {
-            if (lobbyManager != null) return lobbyManager;
-
-            if(NetworkManager.singleton is LobbyNetworkManager) {
-                return lobbyManager = NetworkManager.singleton as LobbyNetworkManager;
-            }
-
-            return null;
-        }
-    }
-
-    void Awake() {
-        if(NetworkManager.singleton is OfflineNetworkManager) {
-            Destroy(this);
-        }
-    }
-
     public override void OnStartClient() {
-
         DontDestroyOnLoad(this.gameObject);
-        LobbyManager.GamePlayers.Add(this);
-    }
-
-    public override void OnStopClient() {
-
-        LobbyManager.GamePlayers.Remove(this);
     }
 
     [Server]
