@@ -79,7 +79,6 @@ public class GlobalPlayerController : NetworkBehaviour
     public override void OnStartLocalPlayer() {
         base.OnStartLocalPlayer();
 
-        Debug.Log("local player spawned?:" + this.isLocalPlayer);
         if(localInstance == null && this.isLocalPlayer) {
             localInstance = this;
         }

@@ -61,7 +61,7 @@ public class LobbyPlayerEntity : NetworkBehaviour
     [Command]
     public void CmdReadyUp() {
         isReady = !isReady;
-
+        Debug.Log("togglign ready:" + isReady);
         LobbyManager.NotifyPlayersOfReadyState();
     }
 
@@ -72,7 +72,7 @@ public class LobbyPlayerEntity : NetworkBehaviour
         }
 
         Debug.Log("Received command to start game");
-        //Start
+        LobbyManager.StartGame();
     }
 
     private void HandleReadyStatusChanged(bool oldValue, bool newValue) {

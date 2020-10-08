@@ -80,7 +80,7 @@ public class PlayerHealth : NetworkBehaviour
         Vector3 dollPos = new Vector3(transform.position.x,  transform.position.y - (capsuleCollider.height / 2),  transform.position.z);
         GameObject ragdoll = Instantiate(ragdollPrefab, dollPos , transform.rotation);
         
-        Debug.Log("curVelMag =  " + rb.velocity.magnitude);
+        //Debug.Log("curVelMag =  " + rb.velocity.magnitude);
 
         if(deathVelocity == new Vector3(0,0,0)) {
             deathVelocity = rb.velocity;

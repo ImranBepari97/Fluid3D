@@ -8,12 +8,17 @@ public class LobbyNetworkManager : NetworkManager
 {
 
     [Scene] [SerializeField] private string menuScene = string.Empty;
-    public int minPlayers = 2;
+    public int minPlayers = 1;
 
     public static event Action OnClientConnected;
     public static event Action OnClientDisconnected;
+   // public static event Action<NetworkConnection> OnServerReadied;
 
-    [SerializeField] public List<LobbyPlayerEntity> RoomPlayers {get; } = new List<LobbyPlayerEntity>();
+    public List<LobbyPlayerEntity> RoomPlayers {get; } = new List<LobbyPlayerEntity>();
+    public List<GamePlayerEntity> GamePlayers {get; } = new List<GamePlayerEntity>();
+
+    [Header("Game")]
+    public GamePlayerEntity gamePlayerPrefab;
 
 
     // Start is called before the first frame update
@@ -58,7 +63,7 @@ public class LobbyNetworkManager : NetworkManager
         if(SceneManager.GetActiveScene().path == menuScene) {
             bool isLeader = RoomPlayers.Count == 0;
 
-            GameObject roomPlayerInstance = Instantiate(playerPrefab);
+            GameObject roomPlayerInstance = Instantiate(playerPrefab); //player prefab here is the lobby prefab
             roomPlayerInstance.GetComponent<LobbyPlayerEntity>().IsLeader = isLeader;
 
             //RoomPlayers.Add(roomPlayerInstance.GetComponent<LobbyPlayerEntity>());
@@ -87,5 +92,75 @@ public class LobbyNetworkManager : NetworkManager
         }
 
         return true;
+    }
+
+    public void StartGame() {
+        if(SceneManager.GetActiveScene().path == menuScene) {
+            if(!IsReadyToStart()) {
+                return;
+            }
+
+            Debug.Log("Change scene everyone");
+            ServerChangeScene("Sandbox_MP");
+        }
+    }
+
+    public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling) {
+        //LevelTransitionLoader.instance.PlayTransitionFadeIn();
+        base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
+    }
+
+    public override void OnClientSceneChanged(NetworkConnection conn) {
+        LevelTransitionLoader.instance.PlayTransitionFadeOut();
+        base.OnClientSceneChanged(conn);
+        // foreach (GamePlayerEntity player in GamePlayers) {
+        //     Transform newPos = GetStartPosition();
+        //     player.transform.position = newPos.position;
+        //     player.transform.rotation = newPos.rotation;
+        // }
+    }
+
+    
+    public override void OnServerSceneChanged(string sceneName) {
+        LevelTransitionLoader.instance.PlayTransitionFadeOut();
+        base.OnServerSceneChanged(sceneName);
+        // foreach (GamePlayerEntity player in GamePlayers) {
+        //     Transform newPos = GetStartPosition();
+        //     player.transform.position = newPos.position;
+        //     player.transform.rotation = newPos.rotation;
+        // }
+    }
+
+    public override void ServerChangeScene(string newSceneName) {
+
+        if( SceneManager.GetActiveScene().path == menuScene && !(menuScene.Contains(newSceneName)) ) {
+            for(int i = RoomPlayers.Count - 1; i >= 0; i--) {
+                var conn = RoomPlayers[i].connectionToClient;
+                var gamePlayer = Instantiate(gamePlayerPrefab); //this is the actual game prefab
+                gamePlayer.SetDisplayName(RoomPlayers[i].displayName);
+
+                NetworkServer.Destroy(conn.identity.gameObject);
+                NetworkServer.ReplacePlayerForConnection(conn, gamePlayer.gameObject);
+            }
+        }
+
+        base.ServerChangeScene(newSceneName);
+        //This will call OnServerChangeScene then OnServerSceneChanged after the scene is done loading
+    }
+
+    public override void OnServerReady(NetworkConnection conn) {
+        if(SceneManager.GetActiveScene().path == menuScene) {
+            Debug.Log("Join lobby");
+            base.OnServerReady(conn);
+        } else {
+            
+            GamePlayerEntity gpe;
+            if(gpe = conn.identity.gameObject.GetComponent<GamePlayerEntity>()) {
+                Debug.Log("A client is ready, time to change their pos");
+                Transform spawnPos = GetStartPosition();
+                gpe.TargetSetPosition(conn, spawnPos.position, spawnPos.rotation);
+            }
+            
+        }
     }
 }

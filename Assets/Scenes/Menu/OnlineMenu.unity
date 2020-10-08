@@ -697,7 +697,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.00012207031, y: -0.000061035156}
+  m_AnchoredPosition: {x: 0.00012207031, y: 0}
   m_SizeDelta: {x: 110, y: 70}
   m_Pivot: {x: 0, y: 1}
 --- !u!1001 &436962615
@@ -1385,6 +1385,80 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1001 &751933019
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 6127353501963544678, guid: 397e793b06c3289448aa969d2145d8cb,
+        type: 3}
+      propertyPath: m_Name
+      value: SceneTransition
+      objectReference: {fileID: 0}
+    - target: {fileID: 6127353501963544679, guid: 397e793b06c3289448aa969d2145d8cb,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6127353501963544679, guid: 397e793b06c3289448aa969d2145d8cb,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6127353501963544679, guid: 397e793b06c3289448aa969d2145d8cb,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6127353501963544679, guid: 397e793b06c3289448aa969d2145d8cb,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6127353501963544679, guid: 397e793b06c3289448aa969d2145d8cb,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6127353501963544679, guid: 397e793b06c3289448aa969d2145d8cb,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6127353501963544679, guid: 397e793b06c3289448aa969d2145d8cb,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6127353501963544679, guid: 397e793b06c3289448aa969d2145d8cb,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6127353501963544679, guid: 397e793b06c3289448aa969d2145d8cb,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6127353501963544679, guid: 397e793b06c3289448aa969d2145d8cb,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6127353501963544679, guid: 397e793b06c3289448aa969d2145d8cb,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8248330475043404999, guid: 397e793b06c3289448aa969d2145d8cb,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 397e793b06c3289448aa969d2145d8cb, type: 3}
 --- !u!1001 &763562047
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1851,7 +1925,7 @@ MonoBehaviour:
   dontDestroyOnLoad: 1
   runInBackground: 1
   autoStartServerBuild: 1
-  showDebugMessages: 1
+  showDebugMessages: 0
   serverTickRate: 60
   offlineScene: Assets/Scenes/Menu/MainMenu.unity
   onlineScene: 
@@ -1866,9 +1940,11 @@ MonoBehaviour:
   autoCreatePlayer: 1
   playerSpawnMethod: 1
   spawnPrefabs:
-  - {fileID: 93546335094116182, guid: 08b64855858be464c806ca1ce3d3e141, type: 3}
+  - {fileID: 1432478493584155342, guid: 4100fdaad8c789e4186c1444a44388d7, type: 3}
   menuScene: Assets/Scenes/Menu/OnlineMenu.unity
   minPlayers: 2
+  gamePlayerPrefab: {fileID: 6570950118592086390, guid: 4100fdaad8c789e4186c1444a44388d7,
+    type: 3}
 --- !u!4 &855352820
 Transform:
   m_ObjectHideFlags: 0
@@ -1969,14 +2045,14 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
   m_ScrollSensitivity: 1
-  m_ContentType: 9
+  m_ContentType: 0
   m_InputType: 0
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
-  m_CharacterValidation: 6
+  m_CharacterValidation: 0
   m_RegexValue: ^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$
   m_GlobalPointSize: 14
   m_CharacterLimit: 0
@@ -2929,7 +3005,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u200B"
+  m_text: localhost
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

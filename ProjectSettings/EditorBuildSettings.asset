@@ -8,25 +8,28 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Menu/MainMenu.unity
     guid: e057c46deda71d54e88f62d298441e4d
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/TestScenes/Lab.unity
     guid: 7fc60de9320fc4d46a6484aedf77a1e0
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/FullMaps/ConstructionZone/Sandbox.unity
     guid: aabb525f7f2d6284284777ee49dfe558
   - enabled: 1
+    path: Assets/Scenes/FullMaps/ConstructionZone/Sandbox_MP.unity
+    guid: 966e7779028c3b64fa3eb26924417bc5
+  - enabled: 1
     path: Assets/Scenes/FullMaps/ConstructionZone/Sandbox_Geometry.unity
     guid: 88e0e869b70a6894e863c881f7f583be
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/TimeTrials/Tutorial.unity
     guid: 86291b8912a91af4dbc61ba596f355c2
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/TimeTrials/Level1.unity
     guid: f70f4e0f045156341ac7acc3140d2267
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/TimeTrials/Level2.unity
     guid: bc3201063ea88ff4284729f3854baa93
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/TimeTrials/Level3.unity
     guid: 2b8fa7734fa24a04981c4170d090585c
   - enabled: 1

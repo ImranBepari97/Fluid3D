@@ -24,17 +24,40 @@ public class LevelTransitionLoader : MonoBehaviour
         }
     }
 
+    private void OnEnable() {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable() {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
     void Start() {
-        transition.Rebind();
+        //transition.Rebind();
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+        if(mode == LoadSceneMode.Single) {
+            PlayTransitionFadeOut();
+        }
+        
     }
 
     public void LoadSceneWithTransition(string sceneName) {
         StartCoroutine(LoadSceneWithTransitionCoroutine(sceneName));
     }
 
-    IEnumerator LoadSceneWithTransitionCoroutine(string sceneName) {
+    public void PlayTransitionFadeIn() {
         instance.transition.SetTrigger("Start");
         Time.timeScale = 1f;
+    }
+
+    public void PlayTransitionFadeOut() {
+        instance.transition.SetTrigger("End");
+    }
+
+    IEnumerator LoadSceneWithTransitionCoroutine(string sceneName) {
+        PlayTransitionFadeIn();
 
         yield return new WaitForSeconds(transitionTime);
 
@@ -57,7 +80,6 @@ public class LevelTransitionLoader : MonoBehaviour
             } 
         }
         
-        instance.transition.SetTrigger("End");
-
+        //PlayTransitionFadeOut();
     }
 }

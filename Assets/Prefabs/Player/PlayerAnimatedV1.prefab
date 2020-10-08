@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: -7673258944486549088}
   - component: {fileID: -6654580313816487878}
   - component: {fileID: -6132478839347158311}
+  - component: {fileID: 6570950118592086390}
   m_Layer: 10
   m_Name: PlayerAnimatedV1
   m_TagString: Player
@@ -283,7 +284,9 @@ MonoBehaviour:
   currentHealth: 0
   maxHealth: 100
   fallDamageThresholdVelocity: 40
+  canRegen: 1
   healthRegenTime: 3
+  regenRate: 25
 --- !u!114 &6541126105777029237
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -344,6 +347,7 @@ MonoBehaviour:
   _preciseSynchronization: 0
   _interpolationFallbehind: 0.04
   _extrapolationSpan: 0
+  _teleportThreshold: 0
   _clientAuthoritative: 1
   _synchronizeToOwner: 1
   _synchronizePosition: 0
@@ -371,6 +375,22 @@ MonoBehaviour:
   _synchronizeToOwner: 0
   _smoothFloats: 1
   _interpolationFallbehind: 0.02
+--- !u!114 &6570950118592086390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1432478493584155342}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c1c4c34fd6d61947944532f4c2a433d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  isReady: 0
+  displayName: Loading...
 --- !u!1 &4381873715457731116
 GameObject:
   m_ObjectHideFlags: 0

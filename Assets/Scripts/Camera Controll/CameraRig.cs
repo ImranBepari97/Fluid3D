@@ -20,7 +20,7 @@ public class CameraRig : MonoBehaviour
 
     // Start is called before the first frame update
     void Awake() { 
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;
         isManuallyMovingCamera = false;
 
         if(instance != null) {
@@ -31,11 +31,6 @@ public class CameraRig : MonoBehaviour
         }
 
         TryLoadPlayerPrefs();
-    }
-
-    void Start() {
-        
-        
     }
 
     // Update is called once per frame
