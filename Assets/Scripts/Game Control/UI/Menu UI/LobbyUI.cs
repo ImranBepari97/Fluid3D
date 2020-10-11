@@ -65,13 +65,8 @@ public class LobbyUI : MonoBehaviour {
                     }
 
                     //if you're the leader and the local player
-                    if(i == 0) {
+                    if(managerExt.roomSlots[i].index == 0) {
                         startGameButton.gameObject.SetActive(true);
-                        if(managerExt.allPlayersReady) {
-                            startGameButton.interactable = false;
-                        } else {
-                            startGameButton.interactable = true;
-                        }
                     } else {
                         startGameButton.gameObject.SetActive(false);
                     }

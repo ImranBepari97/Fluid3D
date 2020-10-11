@@ -15,12 +15,6 @@ public class Waypoint : MonoBehaviour
     public GameObject upElement;
     public GameObject downElement;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update() {
         float minX = img.GetPixelAdjustedRect().width / 2;

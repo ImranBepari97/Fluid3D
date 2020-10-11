@@ -36,7 +36,7 @@ public class CameraRig : MonoBehaviour
     // Update is called once per frame
     void Update() {
 
-        if(Time.deltaTime == 0) {
+        if(PauseMenu.isPaused) {
             return;
         }
 

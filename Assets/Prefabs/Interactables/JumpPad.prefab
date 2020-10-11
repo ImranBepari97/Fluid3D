@@ -326,3 +326,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpPadPower: 50
+  resetsDashesAndJumps: 1

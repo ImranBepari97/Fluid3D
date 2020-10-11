@@ -36,6 +36,7 @@ public class LobbyJoinMenu : MonoBehaviour {
     public void JoinLobby() {
         string ipAddress = ipInputField.text;
         NetworkManager.singleton.networkAddress = ipAddress;
+        Debug.Log(ipAddress);
         NetworkManager.singleton.StartClient();
 
         joinButton.interactable = false;

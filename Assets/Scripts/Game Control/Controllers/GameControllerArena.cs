@@ -3,69 +3,73 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.Playables;
+using System.Linq;
 
-public class GameControllerArena : GameControllerCommon
-{
+public class GameControllerArena : GameControllerCommon {
 
-    [SyncVar]    
+    [SyncVar]
     public float timeLeftSeconds;
     public float minimumDistanceBetweenNewGoals = 40f;
 
-    public int minimumPlayersToStart = 1;
-
     [System.Serializable]
-    public class SyncDictionaryScoreboard : SyncDictionary<NetworkIdentity, int> {}
+    public class SyncDictionaryScoreboard : SyncDictionary<NetworkIdentity, int> { }
     public SyncDictionaryScoreboard scoreboard;
 
     [SerializeField]
-    DestinationPoint[] destinations;
+    DestinationPoint destination;
+
+    [SerializeField]
+    Vector3[] destinationSpawns;
+
+    [SyncVar]
     int currentSelectedPoint;
 
-    public PlayableDirector localAnimatorCutscene; 
-
-    NetworkManager nm; 
+    public PlayableDirector localAnimatorCutscene;
 
     Waypoint wp;
 
     // Start is called before the first frame update
-    new void Awake()
-    {
-        base.Awake();
-        
 
+    public override void OnStartServer() {
         gameState = GameState.WAITING_FOR_PLAYERS;
-        
-        scoreboard = new SyncDictionaryScoreboard();
         scoreboard.Clear();
-    }
 
-    void Start() {
-        nm = NetworkManager.singleton;
-        wp = Object.FindObjectOfType<Waypoint>();
-        destinations = Object.FindObjectsOfType<DestinationPoint>();
-        currentSelectedPoint = Random.Range(0, destinations.Length);
-
-        foreach (DestinationPoint d in destinations) {
-            d.gameObject.SetActive(false);
+        //Get all destinations
+        GameObject[] destSpawn = GameObject.FindGameObjectsWithTag("DestinationPoint");
+        destinationSpawns = new Vector3[destSpawn.Length];
+        for(int i = 0; i < destSpawn.Length; i++) {
+            destinationSpawns[i] = destSpawn[i].transform.position;
         }
 
-        destinations[currentSelectedPoint].gameObject.SetActive(true);
-        wp.target = destinations[currentSelectedPoint].transform;
+        //set first destination point
+        currentSelectedPoint = Random.Range(0, destinationSpawns.Length);
+        destination.transform.position = destinationSpawns[currentSelectedPoint];
+
+        GamePlayerEntity[] ens = GameObject.FindObjectsOfType<GamePlayerEntity>();
+        foreach(GamePlayerEntity ent in ens) {
+            scoreboard.Add(ent.GetComponent<NetworkIdentity>(), 0);
+        }
+    }
+
+    new void Awake() {
+        base.Awake();
+        scoreboard = new SyncDictionaryScoreboard();
+
     }
 
     // Update is called once per frame
-    new void Update()
-    {
-        if(!NetworkServer.dontListen) {
-            if(nm.numPlayers > minimumPlayersToStart && gameState == GameState.WAITING_FOR_PLAYERS) {
+    new void Update() {
+        if (!NetworkServer.dontListen) {
+            if (gameState == GameState.WAITING_FOR_PLAYERS) { //&& TODO: CHECK EVERYONE IS SPAWNED
                 gameState = GameState.NOT_STARTED; //begin countdown since we have enough players
             }
 
-            if(!(nm.numPlayers > minimumPlayersToStart) && gameState == GameState.WAITING_FOR_PLAYERS ) { //&& condition to enforce that the game hasnt started yet
+            if (gameState == GameState.WAITING_FOR_PLAYERS) { //&& condition to enforce that the game hasnt started yet
                 return;
             }
         } else {
-            if(GlobalPlayerController.localInstance != null && gameState == GameState.WAITING_FOR_PLAYERS) {
+            //IF OFFLINE
+            if (GlobalPlayerController.localInstance != null && gameState == GameState.WAITING_FOR_PLAYERS) {
                 gameState = GameState.NOT_STARTED;
                 scoreboard.Add(GlobalPlayerController.localInstance.gameObject.GetComponent<NetworkIdentity>(), 0);
                 DeactivateAllPlayers();
@@ -74,22 +78,23 @@ public class GameControllerArena : GameControllerCommon
             }
         }
 
-        if(gameState == GameState.WAITING_FOR_PLAYERS) {
+        if (gameState == GameState.WAITING_FOR_PLAYERS) {
             return;
         }
 
         base.Update();
 
-        if(gameState == GameState.PLAYING) {
+        if (gameState == GameState.PLAYING) {
             timeLeftSeconds -= Time.deltaTime;
 
-            if(timeLeftSeconds < 0) {
+            if (timeLeftSeconds < 0) {
                 gameState = GameState.ENDED;
                 DeactivateAllPlayers();
             }
         }
     }
 
+    [Server]
     public void AddPoint(NetworkIdentity player, int pointCount) {
         if (scoreboard.ContainsKey(player)) {
             scoreboard[player] = scoreboard[player] + pointCount;
@@ -98,51 +103,55 @@ public class GameControllerArena : GameControllerCommon
         }
     }
 
+    [Server]
     public void ActivateAllPlayers() {
-        foreach( NetworkIdentity player in scoreboard.Keys) {
+        foreach (NetworkIdentity player in scoreboard.Keys) {
             GlobalPlayerController gpc = player.gameObject.GetComponent<GlobalPlayerController>();
             ActivatePlayer(gpc);
         }
     }
 
+    [Server]
     public void DeactivateAllPlayers() {
-        foreach( NetworkIdentity player in scoreboard.Keys) {
+        foreach (NetworkIdentity player in scoreboard.Keys) {
             GlobalPlayerController gpc = player.gameObject.GetComponent<GlobalPlayerController>();
             DeactivatePlayer(gpc);
         }
     }
 
 
+    [Server]
     public void ActivatePlayer(GlobalPlayerController player) {
         player.enabled = true;
         player.EnableDefaultControls();
     }
 
+    [Server]
     public void DeactivatePlayer(GlobalPlayerController player) {
         player.DisableAllControls();
         player.enabled = false;
-        
+
     }
 
+    [Server]
     public void SetNewDestination() {
 
-        if (destinations.Length < 2) return; 
-        
+        if (destinationSpawns.Length < 2) return;
+
         int newChoose = currentSelectedPoint;
         float newDist = 0f;
-        
+
         do {
-            newChoose = Random.Range(0, destinations.Length);
-            newDist = Vector3.Distance(destinations[newChoose].transform.position, destinations[currentSelectedPoint].transform.position);
-        } while(newChoose == currentSelectedPoint || newDist < minimumDistanceBetweenNewGoals);
+            newChoose = Random.Range(0, destinationSpawns.Length);
+            newDist = Vector3.Distance(destinationSpawns[newChoose], destinationSpawns[currentSelectedPoint]);
+        } while (newChoose == currentSelectedPoint || newDist < minimumDistanceBetweenNewGoals);
 
         Debug.Log("New checkpoint distance: " + newDist);
-        destinations[currentSelectedPoint].gameObject.SetActive(false); //disable old point
         currentSelectedPoint = newChoose;
-        destinations[currentSelectedPoint].gameObject.SetActive(true); //enable new point 
-        wp.target = destinations[currentSelectedPoint].transform;
+        destination.transform.position = destinationSpawns[currentSelectedPoint];
     }
 
+    [Server]
     public override void StartGame() {
         gameState = GameState.PLAYING;
         ActivateAllPlayers();

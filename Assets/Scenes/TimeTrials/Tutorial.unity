@@ -776,6 +776,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameControllerTimeTrial
       objectReference: {fileID: 0}
+    - target: {fileID: 6020539431902233070, guid: c2182e3841d41a34aabbc25af6250fc3,
+        type: 3}
+      propertyPath: sceneId
+      value: 1490204025
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c2182e3841d41a34aabbc25af6250fc3, type: 3}
 --- !u!1 &90801648
@@ -10660,6 +10665,75 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1001 &1767539658
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 8568397907011364784, guid: 9767a2a7ba1564743a381f6b4af94376,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 18.54599
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568397907011364784, guid: 9767a2a7ba1564743a381f6b4af94376,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 94.18459
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568397907011364784, guid: 9767a2a7ba1564743a381f6b4af94376,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 45.977444
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568397907011364784, guid: 9767a2a7ba1564743a381f6b4af94376,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568397907011364784, guid: 9767a2a7ba1564743a381f6b4af94376,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568397907011364784, guid: 9767a2a7ba1564743a381f6b4af94376,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568397907011364784, guid: 9767a2a7ba1564743a381f6b4af94376,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568397907011364784, guid: 9767a2a7ba1564743a381f6b4af94376,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568397907011364784, guid: 9767a2a7ba1564743a381f6b4af94376,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568397907011364784, guid: 9767a2a7ba1564743a381f6b4af94376,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568397907011364784, guid: 9767a2a7ba1564743a381f6b4af94376,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8568397907011364798, guid: 9767a2a7ba1564743a381f6b4af94376,
+        type: 3}
+      propertyPath: m_Name
+      value: OfflineNetworkManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9767a2a7ba1564743a381f6b4af94376, type: 3}
 --- !u!1 &1787817635
 GameObject:
   m_ObjectHideFlags: 0

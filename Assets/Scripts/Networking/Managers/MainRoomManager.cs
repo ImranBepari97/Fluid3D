@@ -86,7 +86,20 @@ public class MainRoomManager : NetworkRoomManager {
             base.OnRoomServerPlayersReady();
 #else
         showStartButton = true;
+        foreach (RoomPlayerEntity rpe in roomSlots) {
+            if (rpe.index == 0) {
+                rpe.TargetToggleStartButton(rpe.connectionToClient, true);
+            }
+        }
 #endif
+    }
+
+    public override void OnRoomServerPlayersNotReady() {
+        foreach (RoomPlayerEntity rpe in roomSlots) {
+            if (rpe.index == 0) {
+                rpe.TargetToggleStartButton(rpe.connectionToClient, false);
+            }
+        }
     }
 
     // public override void OnGUI() {

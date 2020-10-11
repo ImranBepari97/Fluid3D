@@ -3,40 +3,55 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class RoomPlayerEntity : NetworkRoomPlayer
-{
-    [SyncVar (hook = nameof(UpdateUI))]
+public class RoomPlayerEntity : NetworkRoomPlayer {
+    [SyncVar(hook = nameof(UpdateUI))]
     public string displayName = "Loading...";
+
+    [SyncVar]
+    public bool isLeader = false;
 
     public static RoomPlayerEntity localRoomPlayer;
 
     LobbyUI ui;
 
     public override void OnStartAuthority() {
+        ui = LobbyUI.instance;
         CmdSetDisplayName(PlayerNameField.DisplayName);
+        ui.UpdateDisplay();
     }
 
     [Command]
     private void CmdSetDisplayName(string name) {
         displayName = name;
-    } 
+    }
+
+    public override void OnClientEnterRoom() { 
+        ui = LobbyUI.instance;
+        ui.UpdateDisplay();
+    }
 
     public override void OnStartClient() {
         ui = LobbyUI.instance;
-        Debug.Log("Starting client doing first update.");
         SetStaticInstance();
         ui.UpdateDisplay();
     }
 
     private void SetStaticInstance() {
-        if(isLocalPlayer) {
+        if (isLocalPlayer) {
             localRoomPlayer = this;
         }
     }
 
     public void UpdateUI(string oldValue, string newValue) {
-        if(ui != null)
+        if (ui != null)
             ui.UpdateDisplay();
+    }
+
+    [TargetRpc]
+    public void TargetToggleStartButton(NetworkConnection target, bool readyToStart) {
+        if(isLocalPlayer) {
+            ui.startGameButton.interactable = readyToStart;
+        }
     }
 
     [Command]
@@ -45,12 +60,13 @@ public class RoomPlayerEntity : NetworkRoomPlayer
     }
 
     public override void ReadyStateChanged(bool _, bool newReadyState) {
-        if(ui != null)
+        if (ui != null) {
             ui.UpdateDisplay();
+        }
     }
 
     public override void IndexChanged(int oldIndex, int newIndex) {
-         if(ui != null)
+        if (ui != null)
             ui.UpdateDisplay();
     }
 }

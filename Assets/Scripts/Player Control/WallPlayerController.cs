@@ -200,7 +200,7 @@ public class WallPlayerController : NetworkBehaviour
 
             RaycastHit lastHit;
             if(Physics.Raycast(transform.position, horVel.normalized, out lastHit, 1f)) {
-                Debug.Log("wall in front, cling");
+                //Debug.Log("wall in front, cling");
                 return;
             }
 
@@ -226,14 +226,14 @@ public class WallPlayerController : NetworkBehaviour
         float ang = Vector3.Angle(wallNormal, hit.normal);
         if(Vector3.Angle(wallNormal, hit.normal) < 39f) {
             wallNormal = hit.normal;
-            Debug.Log("change normal: " + ang);
+            //Debug.Log("change normal: " + ang);
             if(reverseCross) {
                 wallRunDirection = -Vector3.Cross(transform.up, wallNormal);
             } else {
                 wallRunDirection = Vector3.Cross(transform.up, wallNormal);
             }
         } else {
-            Debug.Log("on wall but too big angle: " + ang);
+            //Debug.Log("on wall but too big angle: " + ang);
         }
     }
 

@@ -7,7 +7,10 @@ using Mirror;
 public class GameControllerCommon : NetworkBehaviour
 {
 
+    [SyncVar]
     public float countdownLeft = 3f;
+    
+    [SyncVar]
     public GameState gameState;
 
     // Start is called before the first frame update
@@ -28,8 +31,10 @@ public class GameControllerCommon : NetworkBehaviour
     // Update is called once per frame
     public void Update()
     {
-        StartCountdown();
 
+        if(isServer) {
+            StartCountdown();
+        }
 
         if(PauseMenu.isPaused) {
             Cursor.lockState = CursorLockMode.None;
@@ -42,6 +47,7 @@ public class GameControllerCommon : NetworkBehaviour
         }
     }
 
+    [Server]
     void StartCountdown() {
         if(gameState == GameState.NOT_STARTED) {
             countdownLeft -= Time.deltaTime;
@@ -51,7 +57,7 @@ public class GameControllerCommon : NetworkBehaviour
             }
         }
 
-        if(Input.GetButtonDown("Restart")) {
+        if(NetworkServer.dontListen && Input.GetButtonDown("Restart")) {
             RestartLevel();
         }
     }
@@ -64,6 +70,8 @@ public class GameControllerCommon : NetworkBehaviour
         gameState = GameState.PLAYING;
     }
 
+
+    [Client]
     public void RestartLevel() {
         LevelTransitionLoader.instance.LoadSceneWithTransition(SceneManager.GetActiveScene().name);
 
@@ -72,6 +80,7 @@ public class GameControllerCommon : NetworkBehaviour
         }
     }
 
+    [Client]
     public void QuitToMenu() {
         LevelTransitionLoader.instance.LoadSceneWithTransition("MainMenu");
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Mirror;
 
 
 public class PauseMenu : MonoBehaviour
@@ -75,14 +76,22 @@ public class PauseMenu : MonoBehaviour
     public void Unpause() {
         pauseMenuUIParent.SetActive(false);
         quitConfirmation.SetActive(false);
-        Time.timeScale = 1f;
+
+        if(NetworkServer.dontListen) {
+            Time.timeScale = 1f;
+        }
+        
         isPaused = false;
     }
 
     public void Pause() {
         Debug.Log("Pause called");
         pauseMenuUIParent.SetActive(true);
-        Time.timeScale = 0f;
+
+        if(NetworkServer.dontListen) {
+            Time.timeScale = 0f;
+        }
+        
         isPaused = true;
 
         Selectable first = pauseMenuUIParent.GetComponentInChildren<Selectable>();
