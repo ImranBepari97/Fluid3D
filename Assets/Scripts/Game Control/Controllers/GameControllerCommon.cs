@@ -22,6 +22,7 @@ public class GameControllerCommon : NetworkBehaviour
             Debug.Log("Another GameController already exists, deleting this one.");
             Destroy(this.gameObject);
         } else {
+            Debug.Log(this.gameObject + " has been set as local GameController instance.");
             instance = this;
         }
 

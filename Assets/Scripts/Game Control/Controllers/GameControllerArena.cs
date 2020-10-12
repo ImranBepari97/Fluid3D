@@ -13,7 +13,7 @@ public class GameControllerArena : GameControllerCommon {
 
     [System.Serializable]
     public class SyncDictionaryScoreboard : SyncDictionary<NetworkIdentity, int> { }
-    public SyncDictionaryScoreboard scoreboard;
+    public SyncDictionaryScoreboard scoreboard = new SyncDictionaryScoreboard();
 
     [SerializeField]
     DestinationPoint destination;
@@ -37,41 +37,48 @@ public class GameControllerArena : GameControllerCommon {
         //Get all destinations
         GameObject[] destSpawn = GameObject.FindGameObjectsWithTag("DestinationPoint");
         destinationSpawns = new Vector3[destSpawn.Length];
-        for(int i = 0; i < destSpawn.Length; i++) {
+        for (int i = 0; i < destSpawn.Length; i++) {
             destinationSpawns[i] = destSpawn[i].transform.position;
         }
 
         //set first destination point
         currentSelectedPoint = Random.Range(0, destinationSpawns.Length);
         destination.transform.position = destinationSpawns[currentSelectedPoint];
-
-        GamePlayerEntity[] ens = GameObject.FindObjectsOfType<GamePlayerEntity>();
-        foreach(GamePlayerEntity ent in ens) {
-            scoreboard.Add(ent.GetComponent<NetworkIdentity>(), 0);
-        }
     }
 
     new void Awake() {
         base.Awake();
-        scoreboard = new SyncDictionaryScoreboard();
-
     }
 
     // Update is called once per frame
     new void Update() {
-        if (!NetworkServer.dontListen) {
-            if (gameState == GameState.WAITING_FOR_PLAYERS) { //&& TODO: CHECK EVERYONE IS SPAWNED
-                gameState = GameState.NOT_STARTED; //begin countdown since we have enough players
-            }
 
-            if (gameState == GameState.WAITING_FOR_PLAYERS) { //&& condition to enforce that the game hasnt started yet
-                return;
+        if (!NetworkServer.dontListen) {
+            if (isServer) {
+                //IF ONLINE
+                if (gameState == GameState.WAITING_FOR_PLAYERS) {
+                    if ((NetworkManager.singleton as MainRoomManager).playersToGoIngame.Count == 0) {
+                        gameState = GameState.NOT_STARTED; //begin countdown since we have enough players
+                        RpcAllPlayCutscene();
+                        Debug.Log("Starting");
+                    } else {
+                        return;
+                    }
+                }
             }
         } else {
             //IF OFFLINE
             if (GlobalPlayerController.localInstance != null && gameState == GameState.WAITING_FOR_PLAYERS) {
                 gameState = GameState.NOT_STARTED;
-                scoreboard.Add(GlobalPlayerController.localInstance.gameObject.GetComponent<NetworkIdentity>(), 0);
+                Debug.Log("chjecking if player is on leaderboard");
+                if (!scoreboard.ContainsKey(GlobalPlayerController.localInstance.gameObject.GetComponent<NetworkIdentity>())) {
+                    Debug.Log("Not on leaderboard");
+                    return; //wait until the player has spawned
+                }
+
+                // if(!scoreboard.ContainsKey(GlobalPlayerController.localInstance.gameObject.GetComponent<NetworkIdentity>())) {
+                //     scoreboard.Add(GlobalPlayerController.localInstance.gameObject.GetComponent<NetworkIdentity>(), 0);
+                // }
                 DeactivateAllPlayers();
                 localAnimatorCutscene.Play();
                 Debug.Log("Only player has joined game offline, starting");
@@ -89,9 +96,31 @@ public class GameControllerArena : GameControllerCommon {
 
             if (timeLeftSeconds < 0) {
                 gameState = GameState.ENDED;
-                DeactivateAllPlayers();
+
+                if (isServer) {
+                    DeactivateAllPlayers();
+                    StartCoroutine(GoBackToLobbyRoutine());
+                }
             }
         }
+    }
+
+    [Server]
+    public IEnumerator GoBackToLobbyRoutine() {
+        yield return new WaitForSeconds(5f);
+        GoBackToLobby();
+    }
+
+    [Server]
+    public void GoBackToLobby() {
+        MainRoomManager mrm = (NetworkManager.singleton as MainRoomManager);
+        mrm.ServerChangeScene(mrm.GetRoomScene());
+    }
+
+    [ClientRpc]
+    public void RpcAllPlayCutscene() {
+        Debug.Log("Play cutscene");
+        localAnimatorCutscene.Play();
     }
 
     [Server]
@@ -119,18 +148,40 @@ public class GameControllerArena : GameControllerCommon {
         }
     }
 
+    [Server]
+    public void AddPlayerToScoreboard(NetworkIdentity playerToAdd) {
+        scoreboard.Add(playerToAdd, 0);
+    }
 
     [Server]
     public void ActivatePlayer(GlobalPlayerController player) {
         player.enabled = true;
         player.EnableDefaultControls();
+        RpcClientActivatePlayer(player.GetComponent<NetworkIdentity>());
+
     }
 
     [Server]
     public void DeactivatePlayer(GlobalPlayerController player) {
         player.DisableAllControls();
         player.enabled = false;
+        RpcClientDeactivatePlayer(player.GetComponent<NetworkIdentity>());
 
+    }
+
+    [ClientRpc]
+    public void RpcClientDeactivatePlayer(NetworkIdentity player) {
+        GlobalPlayerController gpc = player.GetComponent<GlobalPlayerController>();
+        gpc.DisableAllControls();
+        gpc.enabled = false;
+    }
+
+    [ClientRpc]
+    public void RpcClientActivatePlayer(NetworkIdentity player) {
+        Debug.Log("Activating " + player);
+        GlobalPlayerController gpc = player.GetComponent<GlobalPlayerController>();
+        gpc.enabled = true;
+        gpc.EnableDefaultControls();
     }
 
     [Server]
@@ -154,6 +205,7 @@ public class GameControllerArena : GameControllerCommon {
     [Server]
     public override void StartGame() {
         gameState = GameState.PLAYING;
+        Debug.Log("Starting Game and activating players");
         ActivateAllPlayers();
     }
 }

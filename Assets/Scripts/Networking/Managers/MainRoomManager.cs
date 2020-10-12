@@ -6,6 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class MainRoomManager : NetworkRoomManager {
 
+
+    public List<NetworkConnection> playersToGoIngame = new List<NetworkConnection>();
+
+
     /// <summary>
     /// Called just after GamePlayer object is instantiated and just before it replaces RoomPlayer object.
     /// This is the ideal point to pass any data like player name, credentials, tokens, colors, etc.
@@ -23,8 +27,22 @@ public class MainRoomManager : NetworkRoomManager {
 
         Transform spawn = GetStartPosition();
         gpe.TargetSetPosition(conn, spawn.position, spawn.rotation);
+        gpe.GetComponent<GlobalPlayerController>().DisableAllControls();
 
         return true;
+    }
+
+    public override void OnRoomClientDisconnect(NetworkConnection conn) {
+        base.OnRoomClientDisconnect(conn);
+        playersToGoIngame.Clear();
+    }
+
+    public override void OnRoomServerDisconnect(NetworkConnection conn) {
+        base.OnRoomServerDisconnect(conn);
+
+        if (playersToGoIngame.Contains(conn)) {
+            playersToGoIngame.Remove(conn);
+        }
     }
 
     public override void OnRoomStopClient() {
@@ -34,6 +52,7 @@ public class MainRoomManager : NetworkRoomManager {
             SceneManager.MoveGameObjectToScene(gameObject, SceneManager.GetActiveScene());
 
         base.OnRoomStopClient();
+
     }
 
     public override void OnRoomStopServer() {
@@ -43,40 +62,53 @@ public class MainRoomManager : NetworkRoomManager {
             SceneManager.MoveGameObjectToScene(gameObject, SceneManager.GetActiveScene());
 
         base.OnRoomStopServer();
+
+        playersToGoIngame.Clear();
     }
 
     public void StartGame() {
         ServerChangeScene(GameplayScene);
     }
 
-    public override void OnServerSceneChanged(string sceneName) {
-        base.OnServerSceneChanged(sceneName);
-        //LevelTransitionLoader.instance.PlayTransitionFadeOut();
-    }
-
-    public override void OnClientSceneChanged(NetworkConnection conn) {
-        base.OnClientSceneChanged(conn);
-        //LevelTransitionLoader.instance.PlayTransitionFadeOut();
-    }
-
     public override void ServerChangeScene(string newSceneName) {
         LevelTransitionLoader.instance.PlayTransitionFadeIn();
+
+        if (newSceneName != RoomScene) {
+            foreach (NetworkRoomPlayer nrp in roomSlots) {
+                playersToGoIngame.Add(nrp.connectionToClient);
+            }
+        }
+
         base.ServerChangeScene(newSceneName);
+
+        string[] sceneDefaultName = newSceneName.Split('_');
+        Debug.Log("Switching to " + sceneDefaultName[0]);
+       // Debug.Log("Is " + sceneDefaultName[0] + "_Geometry.unity valid? " + SceneManager.GetSceneByName(sceneDefaultName[0] + "_Geometry.unity").IsValid());
+        if(Application.CanStreamedLevelBeLoaded(sceneDefaultName[0] + "_Geometry.unity")) {
+            Debug.Log("Loading geometry for " + sceneDefaultName[0]);
+            SceneManager.LoadSceneAsync(sceneDefaultName[0] + "_Geometry.unity", LoadSceneMode.Additive);
+        }
     }
 
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling) {
         LevelTransitionLoader.instance.PlayTransitionFadeIn();
+
         base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
+
+        StartCoroutine(LoadAdditiveSceneAfterWait(newSceneName));
+        
     }
 
-    /*
-        This code below is to demonstrate how to do a Start button that only appears for the Host player
-        showStartButton is a local bool that's needed because OnRoomServerPlayersReady is only fired when
-        all players are ready, but if a player cancels their ready state there's no callback to set it back to false
-        Therefore, allPlayersReady is used in combination with showStartButton to show/hide the Start button correctly.
-        Setting showStartButton false when the button is pressed hides it in the game scene since NetworkRoomManager
-        is set as DontDestroyOnLoad = true.
-    */
+    IEnumerator LoadAdditiveSceneAfterWait(string newSceneName) {
+        yield return new WaitForSeconds(0.5f);
+        string[] sceneDefaultName = newSceneName.Split('_');
+        Debug.Log("Switching to " + sceneDefaultName[0]);
+        //Debug.Log("Is " + sceneDefaultName[0] + "_Geometry.unity valid? " + SceneManager.GetSceneByName(sceneDefaultName[0] + "_Geometry.unity").IsValid());
+        if(Application.CanStreamedLevelBeLoaded(sceneDefaultName[0] + "_Geometry.unity")) {
+            Debug.Log("Loading geometry for " + sceneDefaultName[0]);
+            SceneManager.LoadSceneAsync(sceneDefaultName[0] + "_Geometry.unity", LoadSceneMode.Additive);
+        }
+    }
 
     bool showStartButton;
 
@@ -102,15 +134,7 @@ public class MainRoomManager : NetworkRoomManager {
         }
     }
 
-    // public override void OnGUI() {
-    //     base.OnGUI();
-
-    //     if (allPlayersReady && showStartButton && GUI.Button(new Rect(150, 300, 120, 20), "START GAME")) {
-    //         // set to false to hide it in the game scene
-    //         showStartButton = false;
-
-    //         ServerChangeScene(GameplayScene);
-    //     }
-    // }
-
+    public string GetRoomScene() {
+        return RoomScene;
+    }
 }

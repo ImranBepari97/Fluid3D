@@ -71,9 +71,6 @@ public class GlobalPlayerController : NetworkBehaviour
         currentDashes = 0;
         isResetCRRunning = false;
         angleOfNearestWall = 0f;
-
-        
-        
     }
 
     public override void OnStartLocalPlayer() {
@@ -81,6 +78,7 @@ public class GlobalPlayerController : NetworkBehaviour
 
         if(localInstance == null && this.isLocalPlayer) {
             localInstance = this;
+            Debug.Log("Local player singleton is set");
         }
         
         //Somehow another player is the localplayer on the same client

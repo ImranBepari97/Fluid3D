@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
-public class PlayerAnimator : NetworkBehaviour {
+public class PlayerAnimator : MonoBehaviour {
 
     Animator animator;
     GlobalPlayerController gpc;

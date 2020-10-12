@@ -3897,6 +3897,11 @@ PrefabInstance:
       propertyPath: destination
       value: 
       objectReference: {fileID: 6616980579957621027}
+    - target: {fileID: 599780902261852547, guid: 2a7d3296b4917e24aaeeafa7b56aef98,
+        type: 3}
+      propertyPath: countdownLeft
+      value: 3.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2a7d3296b4917e24aaeeafa7b56aef98, type: 3}
 --- !u!1001 &811019227566769008
@@ -4245,7 +4250,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 770295821}
     - target: {fileID: 8974470868035504240, guid: 30b67bf796f1aa84e81ee5800c9a3eac,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName

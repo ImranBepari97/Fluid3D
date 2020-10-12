@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu/MainMenu.unity
     guid: e057c46deda71d54e88f62d298441e4d
   - enabled: 1
+    path: Assets/Scenes/Menu/OnlineMenu.unity
+    guid: 027439ebdb0c38143b2a571a66fc2c21
+  - enabled: 1
     path: Assets/Scenes/TestScenes/Lab.unity
     guid: 7fc60de9320fc4d46a6484aedf77a1e0
   - enabled: 1

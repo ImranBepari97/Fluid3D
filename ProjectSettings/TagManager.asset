@@ -7,6 +7,7 @@ TagManager:
   - Grind
   - Glass
   - DestinationPoint
+  - Cutscene
   layers:
   - Default
   - TransparentFX

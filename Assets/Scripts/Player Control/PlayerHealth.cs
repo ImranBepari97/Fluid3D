@@ -100,19 +100,22 @@ public class PlayerHealth : NetworkBehaviour
 
     [Command]
     public void CmdRespawn() {
+        RpcRespawn();
+        //GetComponent<GamePlayerEntity>().TargetSetPosition(this.connectionToClient, Checkpoint.playerCheckpointMap[this.gameObject], transform.rotation);
+    }
 
+    [ClientRpc]
+    public void RpcRespawn() {
         gpc.enabled = true;
         transform.position = Checkpoint.playerCheckpointMap[this.gameObject];
         rb.velocity = new Vector3(0, 0, 0);
         rb.useGravity = true;
-
         capsuleCollider.enabled = true;
 
         currentHealth = maxHealth;
         gpc.EnableDefaultControls();
         model.SetActive(true);
     }
-
     public void HandleFallDamage(float floorTouchVelocity) {
 
         if(floorTouchVelocity > fallDamageThresholdVelocity) {

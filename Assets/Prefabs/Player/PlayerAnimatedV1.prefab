@@ -19,22 +19,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1060366523266081549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 639781188294019580}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneId: 0
-  serverOnly: 0
-  m_AssetId: 
-  hasSpawned: 0
 --- !u!114 &5208613169905734194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47,8 +31,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da5e3d16e1e22a241aa1e1b1dba52b8f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
   defaultOffset: {x: 0, y: -0.76, z: 0}
   crouchOffset: {x: 0, y: -0.4, z: 0}
   wallLeftOffset: {x: -0.14, y: -1, z: 0}
@@ -280,7 +262,7 @@ MonoBehaviour:
   ragdollPrefab: {fileID: 4468600284673209838, guid: b9f68256388dfe34395a68d4fb0e371e,
     type: 3}
   deathVelocity: {x: 0, y: 0, z: 0}
-  respawnTime: 1
+  respawnTime: 3
   currentHealth: 0
   maxHealth: 100
   fallDamageThresholdVelocity: 40
