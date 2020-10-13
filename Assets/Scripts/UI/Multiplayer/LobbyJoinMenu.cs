@@ -13,17 +13,6 @@ public class LobbyJoinMenu : MonoBehaviour {
     [Header("UI")]
     [SerializeField] private TMP_InputField ipInputField;
     [SerializeField] private Button joinButton;
-
-    private void OnEnable() {
-        LobbyNetworkManager.OnClientConnected += HandleClientConnected;
-        LobbyNetworkManager.OnClientDisconnected += HandleClientDisconnected;
-    }
-
-    private void OnDisable() {
-        LobbyNetworkManager.OnClientConnected -= HandleClientConnected;
-        LobbyNetworkManager.OnClientDisconnected -= HandleClientDisconnected;
-    }
-
     private void HandleClientConnected() {
         joinButton.interactable = true;
 
@@ -45,7 +34,7 @@ public class LobbyJoinMenu : MonoBehaviour {
     }
 
     public void HostLobby() {
-        NetworkManager.singleton.StartServer();
+        NetworkManager.singleton.StartHost();
     }
 
     public void ToggleShowJoinMenu(bool show) {

@@ -69,16 +69,14 @@ public class GameControllerArena : GameControllerCommon {
         } else {
             //IF OFFLINE
             if (GlobalPlayerController.localInstance != null && gameState == GameState.WAITING_FOR_PLAYERS) {
-                gameState = GameState.NOT_STARTED;
+
                 Debug.Log("chjecking if player is on leaderboard");
                 if (!scoreboard.ContainsKey(GlobalPlayerController.localInstance.gameObject.GetComponent<NetworkIdentity>())) {
                     Debug.Log("Not on leaderboard");
                     return; //wait until the player has spawned
                 }
-
-                // if(!scoreboard.ContainsKey(GlobalPlayerController.localInstance.gameObject.GetComponent<NetworkIdentity>())) {
-                //     scoreboard.Add(GlobalPlayerController.localInstance.gameObject.GetComponent<NetworkIdentity>(), 0);
-                // }
+                
+                gameState = GameState.NOT_STARTED;
                 DeactivateAllPlayers();
                 localAnimatorCutscene.Play();
                 Debug.Log("Only player has joined game offline, starting");

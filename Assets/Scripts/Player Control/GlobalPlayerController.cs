@@ -214,7 +214,7 @@ public class GlobalPlayerController : NetworkBehaviour
     }
 
     public void EnableDefaultControls() {
-
+        rb.useGravity = true;
         defaultPlayerController.enabled = true;
         wallPlayerController.enabled = false;
         grindPlayerController.enabled = false;
@@ -291,10 +291,10 @@ public class GlobalPlayerController : NetworkBehaviour
 
                     gameObject.transform.rotation = Quaternion.RotateTowards(gameObject.transform.rotation, Quaternion.LookRotation(rb.velocity), 540f * Time.deltaTime);
                     //gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
-                    Debug.Log("starting with wall run");
+                    //Debug.Log("starting with wall run");
                 } else {
                     wallPlayerController.wallRunDirection = new Vector3(0,0,0);
-                    Debug.Log("starting with wall cling");
+                    //Debug.Log("starting with wall cling");
                 }
 
                 wallPlayerController.lastWallTouched = other.collider.gameObject;

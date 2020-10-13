@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Mirror;
 
-public class LevelTransitionLoader : MonoBehaviour
-{
+public class LevelTransitionLoader : MonoBehaviour {
 
     public Animator transition;
     public float transitionTime;
@@ -15,7 +15,7 @@ public class LevelTransitionLoader : MonoBehaviour
     public static LevelTransitionLoader instance;
 
     void Awake() {
-        if(instance != null && instance != this) {
+        if (instance != null && instance != this) {
             Debug.Log("Destroying animation instance, as one already exists");
             Destroy(this.gameObject);
         } else {
@@ -32,15 +32,33 @@ public class LevelTransitionLoader : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    void Start() {
-        //transition.Rebind();
-    }
-
     void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-        if(mode == LoadSceneMode.Single) {
-            PlayTransitionFadeOut();
-        }
         
+        for(int i = 0; i < SceneManager.sceneCount; i++) {
+            Debug.Log("Checking load for " + SceneManager.GetSceneAt(i).name);
+            if(SceneManager.GetSceneAt(i).isLoaded) {
+                Debug.Log( SceneManager.GetSceneAt(i).name + " is loaded");   
+                continue;
+            } else {
+                return;
+            }
+        }
+        PlayTransitionFadeOut();
+
+        // if (mode == LoadSceneMode.Additive) {
+        //     PlayTransitionFadeOut();
+        //     return;
+        // }
+
+        // if (mode == LoadSceneMode.Single) {
+        //     //Does this scene have geometry associated with it?
+        //     string[] sceneDefaultName = scene.name.Split('_');
+        //     if (Application.CanStreamedLevelBeLoaded(sceneDefaultName[0] + "_Geometry")) {
+        //         return;
+        //     } else {
+        //         PlayTransitionFadeOut();
+        //     }
+        // }
     }
 
     public void LoadSceneWithTransition(string sceneName) {
@@ -51,6 +69,7 @@ public class LevelTransitionLoader : MonoBehaviour
     /// Fades the scene to black.
     /// </summary>
     public void PlayTransitionFadeIn() {
+        Debug.Log("Fading to black");
         instance.transition.SetTrigger("Start");
         Time.timeScale = 1f;
     }
@@ -59,6 +78,7 @@ public class LevelTransitionLoader : MonoBehaviour
     /// Unfades the scene.
     /// </summary>
     public void PlayTransitionFadeOut() {
+        Debug.Log("Unfading scene");
         instance.transition.SetTrigger("End");
     }
 
@@ -74,18 +94,18 @@ public class LevelTransitionLoader : MonoBehaviour
 
         string[] sceneDefaultName = sceneName.Split('_');
 
-        if(Application.CanStreamedLevelBeLoaded(sceneDefaultName[0] + "_Geometry")) {
+        if (Application.CanStreamedLevelBeLoaded(sceneDefaultName[0] + "_Geometry")) {
             scenesToLoad.Add(SceneManager.LoadSceneAsync(sceneDefaultName[0] + "_Geometry", LoadSceneMode.Additive));
         }
-        
-        for(int i = 0; i < scenesToLoad.Count; ++i) {
-            while(!scenesToLoad[i].isDone) {
+
+        for (int i = 0; i < scenesToLoad.Count; ++i) {
+            while (!scenesToLoad[i].isDone) {
                 totalProgress += scenesToLoad[i].progress;
                 progressBar.value = totalProgress / scenesToLoad.Count;
                 yield return null;
-            } 
+            }
         }
-        
+
         //PlayTransitionFadeOut();
     }
 }

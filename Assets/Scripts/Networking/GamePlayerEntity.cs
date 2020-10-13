@@ -9,15 +9,12 @@ public class GamePlayerEntity : NetworkBehaviour {
     [SyncVar]
     public string displayName = "Loading...";
 
-    // public override void OnStartClient() {
-    //     DontDestroyOnLoad(this.gameObject);
-    // }
 
     public override void OnStartAuthority() {
-        Debug.Log("trying add player to leaderboard");
+        Debug.Log("Trying add player to leaderboard, sending command");
         CmdAddPlayerToLeaderBoard(this.GetComponent<NetworkIdentity>());
 
-        Debug.Log("Setting cutscene");
+        //Debug.Log("Setting cutscene");
         GameObject cutscene = GameObject.FindGameObjectWithTag("Cutscene");
         cutscene.transform.position = transform.position;
         cutscene.transform.rotation = transform.rotation;
@@ -25,7 +22,7 @@ public class GamePlayerEntity : NetworkBehaviour {
 
     [Command]
     public void CmdAddPlayerToLeaderBoard(NetworkIdentity playerToAdd) {
-        Debug.Log("Adding " + playerToAdd.gameObject + " to leaderboard");
+        Debug.Log("Command received, addding " + playerToAdd.gameObject + " to leaderboard");
         (GameControllerCommon.instance as GameControllerArena).AddPlayerToScoreboard(playerToAdd);
         (NetworkManager.singleton as MainRoomManager).playersToGoIngame.Remove(playerToAdd.connectionToClient);
     }

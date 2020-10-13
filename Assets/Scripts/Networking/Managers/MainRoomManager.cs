@@ -19,14 +19,11 @@ public class MainRoomManager : NetworkRoomManager {
     /// <param name="gamePlayer"></param>
     /// <returns>true unless some code in here decides it needs to abort the replacement</returns>
     public override bool OnRoomServerSceneLoadedForPlayer(NetworkConnection conn, GameObject roomPlayer, GameObject gamePlayer) {
-
         GamePlayerEntity gpe = gamePlayer.GetComponent<GamePlayerEntity>();
         gpe.displayName = roomPlayer.GetComponent<RoomPlayerEntity>().displayName;
-        // PlayerScore playerScore = gamePlayer.GetComponent<PlayerScore>();
-        // playerScore.index = roomPlayer.GetComponent<NetworkRoomPlayer>().index;
 
-        Transform spawn = GetStartPosition();
-        gpe.TargetSetPosition(conn, spawn.position, spawn.rotation);
+        gpe.GetComponent<Rigidbody>().velocity = new Vector3(0,0,0);
+        gpe.GetComponent<Rigidbody>().useGravity = false;
         gpe.GetComponent<GlobalPlayerController>().DisableAllControls();
 
         return true;
@@ -83,32 +80,43 @@ public class MainRoomManager : NetworkRoomManager {
 
         string[] sceneDefaultName = newSceneName.Split('_');
         Debug.Log("Switching to " + sceneDefaultName[0]);
-       // Debug.Log("Is " + sceneDefaultName[0] + "_Geometry.unity valid? " + SceneManager.GetSceneByName(sceneDefaultName[0] + "_Geometry.unity").IsValid());
-        if(Application.CanStreamedLevelBeLoaded(sceneDefaultName[0] + "_Geometry.unity")) {
+        // Debug.Log("Is " + sceneDefaultName[0] + "_Geometry.unity valid? " + SceneManager.GetSceneByName(sceneDefaultName[0] + "_Geometry.unity").IsValid());
+        if (Application.CanStreamedLevelBeLoaded(sceneDefaultName[0] + "_Geometry.unity")) {
             Debug.Log("Loading geometry for " + sceneDefaultName[0]);
             SceneManager.LoadSceneAsync(sceneDefaultName[0] + "_Geometry.unity", LoadSceneMode.Additive);
+            NetworkServer.SendToAll(new SceneMessage { sceneName = sceneDefaultName[0] + "_Geometry.unity", sceneOperation = SceneOperation.LoadAdditive });
         }
     }
 
-    public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling) {
-        LevelTransitionLoader.instance.PlayTransitionFadeIn();
+    // public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling) {
+    //     LevelTransitionLoader.instance.PlayTransitionFadeIn();
 
-        base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
+    //     base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
 
-        StartCoroutine(LoadAdditiveSceneAfterWait(newSceneName));
-        
-    }
+    //     //StartCoroutine(LoadAdditiveSceneAfterWait(newSceneName));
 
-    IEnumerator LoadAdditiveSceneAfterWait(string newSceneName) {
-        yield return new WaitForSeconds(0.5f);
-        string[] sceneDefaultName = newSceneName.Split('_');
-        Debug.Log("Switching to " + sceneDefaultName[0]);
-        //Debug.Log("Is " + sceneDefaultName[0] + "_Geometry.unity valid? " + SceneManager.GetSceneByName(sceneDefaultName[0] + "_Geometry.unity").IsValid());
-        if(Application.CanStreamedLevelBeLoaded(sceneDefaultName[0] + "_Geometry.unity")) {
-            Debug.Log("Loading geometry for " + sceneDefaultName[0]);
-            SceneManager.LoadSceneAsync(sceneDefaultName[0] + "_Geometry.unity", LoadSceneMode.Additive);
-        }
-    }
+    // }
+
+    // public override void OnRoomClientSceneChanged(NetworkConnection conn) {
+    //     Debug.Log("Fade out");
+    //     LevelTransitionLoader.instance.PlayTransitionFadeOut();
+    // }
+
+    // public override void OnRoomServerSceneChanged(string newSceneName) {
+    //     Debug.Log("Fade out");
+    //     LevelTransitionLoader.instance.PlayTransitionFadeOut();
+    // }
+
+    // IEnumerator LoadAdditiveSceneAfterWait(string newSceneName) {
+    //     yield return new WaitForSeconds(0.5f);
+    //     string[] sceneDefaultName = newSceneName.Split('_');
+    //     Debug.Log("Switching to " + sceneDefaultName[0]);
+    //     //Debug.Log("Is " + sceneDefaultName[0] + "_Geometry.unity valid? " + SceneManager.GetSceneByName(sceneDefaultName[0] + "_Geometry.unity").IsValid());
+    //     if (Application.CanStreamedLevelBeLoaded(sceneDefaultName[0] + "_Geometry.unity")) {
+    //         Debug.Log("Loading geometry for " + sceneDefaultName[0]);
+    //         SceneManager.LoadSceneAsync(sceneDefaultName[0] + "_Geometry.unity", LoadSceneMode.Additive);
+    //     }
+    // }
 
     bool showStartButton;
 
@@ -118,20 +126,24 @@ public class MainRoomManager : NetworkRoomManager {
             base.OnRoomServerPlayersReady();
 #else
         showStartButton = true;
-        foreach (RoomPlayerEntity rpe in roomSlots) {
-            if (rpe.index == 0) {
-                rpe.TargetToggleStartButton(rpe.connectionToClient, true);
-            }
-        }
+        (roomSlots[0] as RoomPlayerEntity).TargetToggleStartButton((roomSlots[0] as RoomPlayerEntity).connectionToClient, true);
+        // foreach (RoomPlayerEntity rpe in roomSlots) {
+        //     if (rpe.index == 0) {
+        //         rpe.TargetToggleStartButton(rpe.connectionToClient, true);
+        //     }
+        // }
 #endif
     }
 
     public override void OnRoomServerPlayersNotReady() {
-        foreach (RoomPlayerEntity rpe in roomSlots) {
-            if (rpe.index == 0) {
-                rpe.TargetToggleStartButton(rpe.connectionToClient, false);
-            }
-        }
+
+        (roomSlots[0] as RoomPlayerEntity).TargetToggleStartButton((roomSlots[0] as RoomPlayerEntity).connectionToClient, false);
+
+        // foreach (RoomPlayerEntity rpe in roomSlots) {
+        //     if (rpe.index == 0) {
+        //         rpe.TargetToggleStartButton(rpe.connectionToClient, false);
+        //     }
+        // }
     }
 
     public string GetRoomScene() {

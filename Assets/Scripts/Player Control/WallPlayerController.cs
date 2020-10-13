@@ -106,10 +106,10 @@ public class WallPlayerController : NetworkBehaviour
             gameObject.transform.rotation = Quaternion.RotateTowards(rb.rotation, Quaternion.LookRotation(rb.velocity), 540f * Time.deltaTime);
 
         } else if (wallRunDirection != new Vector3(0, 0, 0)) { //ran out of running, detach from wall
-            Debug.Log("dismount as ran out of wall run time");
-            Debug.Log("wallRunDir: " + wallRunDirection);
-            Debug.Log("wallRunDuration: " + currentWallRunDuration);
-            Debug.Log("wallNormal: " +  wallNormal);
+            // Debug.Log("dismount as ran out of wall run time");
+            // Debug.Log("wallRunDir: " + wallRunDirection);
+            // Debug.Log("wallRunDuration: " + currentWallRunDuration);
+            // Debug.Log("wallNormal: " +  wallNormal);
             DismountFromWall(true);
 
         } else { //sliding down wall
@@ -204,7 +204,7 @@ public class WallPlayerController : NetworkBehaviour
                 return;
             }
 
-            Debug.Log("no wall");
+            //Debug.Log("no wall");
             DismountFromWall(true);
             return;
         }
