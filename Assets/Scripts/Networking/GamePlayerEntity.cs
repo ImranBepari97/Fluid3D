@@ -14,17 +14,24 @@ public class GamePlayerEntity : NetworkBehaviour {
         Debug.Log("Trying add player to leaderboard, sending command");
         CmdAddPlayerToLeaderBoard(this.GetComponent<NetworkIdentity>());
 
-        //Debug.Log("Setting cutscene");
         GameObject cutscene = GameObject.FindGameObjectWithTag("Cutscene");
         cutscene.transform.position = transform.position;
         cutscene.transform.rotation = transform.rotation;
+
+        GameObject cameraRig = GameObject.FindObjectOfType<CameraRig>().gameObject;
+        cameraRig.transform.rotation = Quaternion.LookRotation(transform.forward);
     }
 
     [Command]
     public void CmdAddPlayerToLeaderBoard(NetworkIdentity playerToAdd) {
         Debug.Log("Command received, addding " + playerToAdd.gameObject + " to leaderboard");
-        (GameControllerCommon.instance as GameControllerArena).AddPlayerToScoreboard(playerToAdd);
-        (NetworkManager.singleton as MainRoomManager).playersToGoIngame.Remove(playerToAdd.connectionToClient);
+        if (GameControllerCommon.instance != null && GameControllerCommon.instance is GameControllerArena) {
+            (GameControllerCommon.instance as GameControllerArena).AddPlayerToScoreboard(playerToAdd);
+        }
+
+        if (NetworkManager.singleton is MainRoomManager) {
+            (NetworkManager.singleton as MainRoomManager).playersToGoIngame.Remove(playerToAdd.connectionToClient);
+        }
     }
 
     [Server]

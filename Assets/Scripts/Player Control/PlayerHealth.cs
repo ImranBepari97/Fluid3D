@@ -119,7 +119,7 @@ public class PlayerHealth : NetworkBehaviour
     public void HandleFallDamage(float floorTouchVelocity) {
 
         if(floorTouchVelocity > fallDamageThresholdVelocity) {
-            Debug.Log("fall damage time");
+            //Debug.Log("fall damage time");
             StartCoroutine(FallDamageCoroutine(floorTouchVelocity));
         }
 
@@ -137,7 +137,7 @@ public class PlayerHealth : NetworkBehaviour
     public IEnumerator FallDamageCoroutine(float velocity) {
         yield return new WaitForSeconds(0.066f);
         if(!(gpc.floorNormal != new Vector3(0,1,0) && gpc.recentAction == RecentActionType.Slide)) {
-            Debug.Log("fall damage at " + velocity + " is " + PlayerAnimator.RangeRemap(velocity, 40f, 53f, 0f, 100f));
+            //Debug.Log("fall damage at " + velocity + " is " + PlayerAnimator.RangeRemap(velocity, 40f, 53f, 0f, 100f));
             Damage(PlayerAnimator.RangeRemap(velocity, 40f, 53f, 0f, 100f));
         
             timeSinceLastFallDamage = 0f;

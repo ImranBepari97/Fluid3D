@@ -12,6 +12,8 @@ public class LevelTransitionLoader : MonoBehaviour {
 
     public Slider progressBar;
 
+    bool isLoadingAdditiveScene;
+
     public static LevelTransitionLoader instance;
 
     void Awake() {
@@ -21,44 +23,41 @@ public class LevelTransitionLoader : MonoBehaviour {
         } else {
             DontDestroyOnLoad(this.gameObject);
             instance = this;
+            isLoadingAdditiveScene = false;
         }
     }
 
     private void OnEnable() {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        SceneManager.activeSceneChanged += OnNewActiveScene;
     }
 
     private void OnDisable() {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        SceneManager.activeSceneChanged -= OnNewActiveScene;
+    }
+
+
+    void OnNewActiveScene(Scene current, Scene next) {
+        string[] sceneDefaultName = next.name.Split('_');
+
+        if (Application.CanStreamedLevelBeLoaded(sceneDefaultName[0] + "_Geometry")) {
+            isLoadingAdditiveScene = true;
+        }
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-        
-        for(int i = 0; i < SceneManager.sceneCount; i++) {
-            Debug.Log("Checking load for " + SceneManager.GetSceneAt(i).name);
-            if(SceneManager.GetSceneAt(i).isLoaded) {
-                Debug.Log( SceneManager.GetSceneAt(i).name + " is loaded");   
-                continue;
-            } else {
-                return;
-            }
+        if(!isLoadingAdditiveScene) {
+            StartCoroutine(WaitBeforeFadeOut());
+        } else if(mode == LoadSceneMode.Additive) {
+            StartCoroutine(WaitBeforeFadeOut());
+            isLoadingAdditiveScene = false;
         }
+    }
+
+    IEnumerator WaitBeforeFadeOut() {
+        yield return new WaitForSeconds(0.2f);
         PlayTransitionFadeOut();
-
-        // if (mode == LoadSceneMode.Additive) {
-        //     PlayTransitionFadeOut();
-        //     return;
-        // }
-
-        // if (mode == LoadSceneMode.Single) {
-        //     //Does this scene have geometry associated with it?
-        //     string[] sceneDefaultName = scene.name.Split('_');
-        //     if (Application.CanStreamedLevelBeLoaded(sceneDefaultName[0] + "_Geometry")) {
-        //         return;
-        //     } else {
-        //         PlayTransitionFadeOut();
-        //     }
-        // }
     }
 
     public void LoadSceneWithTransition(string sceneName) {

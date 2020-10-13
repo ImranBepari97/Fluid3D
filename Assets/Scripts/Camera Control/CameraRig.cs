@@ -36,6 +36,10 @@ public class CameraRig : MonoBehaviour
     // Update is called once per frame
     void Update() {
 
+        if(target != null) {
+            gameObject.transform.position = target.transform.position;
+        }
+
         if(PauseMenu.isPaused) {
             return;
         }
@@ -72,8 +76,6 @@ public class CameraRig : MonoBehaviour
         
 
         if(target != null) {
-            gameObject.transform.position = target.transform.position;
-        
             //gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position, 1f);
             
             //Auto camera rotation

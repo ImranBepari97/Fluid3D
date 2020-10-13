@@ -88,35 +88,14 @@ public class MainRoomManager : NetworkRoomManager {
         }
     }
 
-    // public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling) {
-    //     LevelTransitionLoader.instance.PlayTransitionFadeIn();
+    public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling) {
 
-    //     base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
-
-    //     //StartCoroutine(LoadAdditiveSceneAfterWait(newSceneName));
-
-    // }
-
-    // public override void OnRoomClientSceneChanged(NetworkConnection conn) {
-    //     Debug.Log("Fade out");
-    //     LevelTransitionLoader.instance.PlayTransitionFadeOut();
-    // }
-
-    // public override void OnRoomServerSceneChanged(string newSceneName) {
-    //     Debug.Log("Fade out");
-    //     LevelTransitionLoader.instance.PlayTransitionFadeOut();
-    // }
-
-    // IEnumerator LoadAdditiveSceneAfterWait(string newSceneName) {
-    //     yield return new WaitForSeconds(0.5f);
-    //     string[] sceneDefaultName = newSceneName.Split('_');
-    //     Debug.Log("Switching to " + sceneDefaultName[0]);
-    //     //Debug.Log("Is " + sceneDefaultName[0] + "_Geometry.unity valid? " + SceneManager.GetSceneByName(sceneDefaultName[0] + "_Geometry.unity").IsValid());
-    //     if (Application.CanStreamedLevelBeLoaded(sceneDefaultName[0] + "_Geometry.unity")) {
-    //         Debug.Log("Loading geometry for " + sceneDefaultName[0]);
-    //         SceneManager.LoadSceneAsync(sceneDefaultName[0] + "_Geometry.unity", LoadSceneMode.Additive);
-    //     }
-    // }
+        if(sceneOperation != SceneOperation.LoadAdditive) {
+            LevelTransitionLoader.instance.PlayTransitionFadeIn();
+        }
+        
+        base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
+    }
 
     bool showStartButton;
 
@@ -127,23 +106,11 @@ public class MainRoomManager : NetworkRoomManager {
 #else
         showStartButton = true;
         (roomSlots[0] as RoomPlayerEntity).TargetToggleStartButton((roomSlots[0] as RoomPlayerEntity).connectionToClient, true);
-        // foreach (RoomPlayerEntity rpe in roomSlots) {
-        //     if (rpe.index == 0) {
-        //         rpe.TargetToggleStartButton(rpe.connectionToClient, true);
-        //     }
-        // }
 #endif
     }
 
     public override void OnRoomServerPlayersNotReady() {
-
         (roomSlots[0] as RoomPlayerEntity).TargetToggleStartButton((roomSlots[0] as RoomPlayerEntity).connectionToClient, false);
-
-        // foreach (RoomPlayerEntity rpe in roomSlots) {
-        //     if (rpe.index == 0) {
-        //         rpe.TargetToggleStartButton(rpe.connectionToClient, false);
-        //     }
-        // }
     }
 
     public string GetRoomScene() {
