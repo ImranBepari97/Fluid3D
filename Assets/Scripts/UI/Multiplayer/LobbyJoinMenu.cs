@@ -13,14 +13,41 @@ public class LobbyJoinMenu : MonoBehaviour {
     [Header("UI")]
     [SerializeField] private TMP_InputField ipInputField;
     [SerializeField] private Button joinButton;
-    private void HandleClientConnected() {
-        joinButton.interactable = true;
+    [SerializeField] private Button hostButton;
+    [SerializeField] GameObject youSureWindow;
 
-        gameObject.SetActive(false);
+
+    void Start() {
+        ipInputField.text = PlayerPrefs.GetString("LastJoinedIp", "localhost");
     }
 
-    private void HandleClientDisconnected() {
-        joinButton.interactable = true;
+
+    void Update() {
+        if(Input.GetButtonDown("Cancel")) {
+            ToggleExitWindow(!youSureWindow.activeSelf);
+        }
+    }
+
+    public void ToggleExitWindow(bool visible) {
+        youSureWindow.SetActive(visible);
+        if (visible) {
+            ipInputField.interactable = false;
+            joinButton.interactable = false;
+            hostButton.interactable = false;
+            Selectable first = youSureWindow.GetComponentInChildren<Selectable>();
+            first.Select();
+            first.OnSelect(null);
+        } else {
+            ipInputField.interactable = true;
+            joinButton.interactable = true;
+            hostButton.interactable = true;
+            joinButton.Select();
+            joinButton.OnSelect(null);
+        }
+    }
+
+    public void ReturnToMain() {
+        LevelTransitionLoader.instance.LoadSceneWithTransition("MainMenu");
     }
 
     public void JoinLobby() {
@@ -28,13 +55,19 @@ public class LobbyJoinMenu : MonoBehaviour {
         NetworkManager.singleton.networkAddress = ipAddress;
         ipAddress = Regex.Replace(ipAddress, @"\s", "");
         Debug.Log(ipAddress);
-        NetworkManager.singleton.StartClient();
+        if (!NetworkServer.active) {
+            NetworkManager.singleton.StartClient();
+            PlayerPrefs.SetString("LastJoinedIp", ipAddress);
+            PlayerPrefs.Save();
+        }
 
         joinButton.interactable = false;
     }
 
     public void HostLobby() {
-        NetworkManager.singleton.StartHost();
+        if (!NetworkServer.active) {
+            NetworkManager.singleton.StartHost();
+        }
     }
 
     public void ToggleShowJoinMenu(bool show) {

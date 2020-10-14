@@ -14,8 +14,12 @@ public class LobbyUI : MonoBehaviour {
     [SerializeField] private TMP_Text[] playerNameTexts;
     [SerializeField] private TMP_Text[] playerReadyTexts;
 
+    [SerializeField] GameObject youSureWindow;
+
     public Button startGameButton = null;
-    public TMP_Text readyButtonText = null;
+    [SerializeField] TMP_Text readyButtonText = null;
+
+    [SerializeField] Button readyButton;
 
     void Awake() {
         if (instance == null) {
@@ -39,11 +43,34 @@ public class LobbyUI : MonoBehaviour {
         if (playerEntity == null) {
             playerEntity = RoomPlayerEntity.localRoomPlayer;
         }
+
+        if (Input.GetButtonDown("Cancel")) {
+            ToggleExitWindow(!youSureWindow.activeInHierarchy);
+        }
+    }
+
+    public void ToggleExitWindow(bool visible) {
+        youSureWindow.SetActive(visible);
+        if (visible) {
+            if (startGameButton.interactable) {
+                startGameButton.interactable = false;
+            }
+            readyButton.interactable = false;
+            Selectable first = youSureWindow.GetComponentInChildren<Selectable>();
+            first.Select();
+            first.OnSelect(null);
+        } else {
+            startGameButton.interactable = managerExt.allPlayersReady;
+            readyButton.interactable = true;
+            readyButton.Select();
+            readyButton.OnSelect(null);
+        }
+
     }
 
     public void UpdateDisplay() {
 
-        for(int j = 0; j < playerNameTexts.Length; j++ ) {
+        for (int j = 0; j < playerNameTexts.Length; j++) {
             playerNameTexts[j].text = "Waiting for Player ...";
             playerReadyTexts[j].gameObject.SetActive(false);
         }
@@ -56,22 +83,34 @@ public class LobbyUI : MonoBehaviour {
 
                 playerReadyTexts[i].text = roomPlayerEntity.readyToBegin ?
                 "<color=green>Ready</color>" : "<color=red> Not Ready</color>";
-                
-                if(managerExt.roomSlots[i].isLocalPlayer) {
-                    if(managerExt.roomSlots[i].readyToBegin) {
+
+                if (managerExt.roomSlots[i].isLocalPlayer) {
+                    if (managerExt.roomSlots[i].readyToBegin) {
                         readyButtonText.text = "UNREADY";
                     } else {
                         readyButtonText.text = "READY UP";
                     }
 
                     //if you're the leader and the local player
-                    if(managerExt.roomSlots[i].index == 0) {
+                    if (managerExt.roomSlots[i].index == 0) {
                         startGameButton.gameObject.SetActive(true);
+                        startGameButton.interactable = managerExt.allPlayersReady;
                     } else {
                         startGameButton.gameObject.SetActive(false);
                     }
                 }
             }
+        }
+    }
+
+    public void Disconnect() {
+        switch (NetworkManager.singleton.mode) {
+            case NetworkManagerMode.ClientOnly:
+                NetworkManager.singleton.StopClient();
+                break;
+            case NetworkManagerMode.Host:
+                NetworkManager.singleton.StopHost();
+                break;
         }
     }
 

@@ -36,7 +36,6 @@ public class MainRoomManager : NetworkRoomManager {
 
     public override void OnRoomServerDisconnect(NetworkConnection conn) {
         base.OnRoomServerDisconnect(conn);
-
         if (playersToGoIngame.Contains(conn)) {
             playersToGoIngame.Remove(conn);
         }

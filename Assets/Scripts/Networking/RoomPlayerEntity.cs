@@ -36,6 +36,11 @@ public class RoomPlayerEntity : NetworkRoomPlayer {
         ui.UpdateDisplay();
     }
 
+    public override void OnStopClient() {
+        base.OnStopClient();
+        ui.UpdateDisplay();
+    }
+
     private void SetStaticInstance() {
         if (isLocalPlayer) {
             localRoomPlayer = this;
