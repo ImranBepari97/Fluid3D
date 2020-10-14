@@ -14,6 +14,7 @@ public class GameControllerArena : GameControllerCommon {
     [System.Serializable]
     public class SyncDictionaryScoreboard : SyncDictionary<NetworkIdentity, int> { }
     public SyncDictionaryScoreboard scoreboard = new SyncDictionaryScoreboard();
+    
 
     [SerializeField]
     DestinationPoint destination;
