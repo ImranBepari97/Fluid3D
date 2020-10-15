@@ -69,6 +69,10 @@ public class MainRoomManager : NetworkRoomManager {
     public override void ServerChangeScene(string newSceneName) {
         LevelTransitionLoader.instance.PlayTransitionFadeIn();
 
+        foreach(RoomPlayerEntity rpe in roomSlots) {
+            rpe.RpcFadeSceneToBlack();
+        }
+
         if (newSceneName != RoomScene) {
             foreach (NetworkRoomPlayer nrp in roomSlots) {
                 playersToGoIngame.Add(nrp.connectionToClient);
@@ -88,11 +92,7 @@ public class MainRoomManager : NetworkRoomManager {
     }
 
     public override void OnClientChangeScene(string newSceneName, SceneOperation sceneOperation, bool customHandling) {
-
-        if(sceneOperation != SceneOperation.LoadAdditive) {
-            LevelTransitionLoader.instance.PlayTransitionFadeIn();
-        }
-        
+        LevelTransitionLoader.instance.PlayTransitionFadeIn();
         base.OnClientChangeScene(newSceneName, sceneOperation, customHandling);
     }
 

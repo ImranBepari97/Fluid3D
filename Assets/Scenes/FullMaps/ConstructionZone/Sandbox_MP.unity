@@ -3665,7 +3665,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  countdownLeft: 3.5
+  countdownLeft: 3
   gameState: 0
   timeLeftSeconds: 180
   minimumDistanceBetweenNewGoals: 60
@@ -4695,6 +4695,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2902264001661337053, guid: 30b67bf796f1aa84e81ee5800c9a3eac,
+        type: 3}
+      propertyPath: m_text
+      value: 'Are you sure you want to disconnect and quit to menu? (Note: You cannot
+        rejoin this game after.)'
+      objectReference: {fileID: 0}
     - target: {fileID: 3792908254832160524, guid: 30b67bf796f1aa84e81ee5800c9a3eac,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -4780,6 +4786,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8491053452494183139, guid: 30b67bf796f1aa84e81ee5800c9a3eac,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8754397850858123736, guid: 30b67bf796f1aa84e81ee5800c9a3eac,
         type: 3}
       propertyPath: currentPlayer
@@ -4789,16 +4800,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1855914828}
     - target: {fileID: 8974470868035504240, guid: 30b67bf796f1aa84e81ee5800c9a3eac,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: QuitToMenu
+      value: DisconnectFromServer
       objectReference: {fileID: 0}
     - target: {fileID: 8974470868035504240, guid: 30b67bf796f1aa84e81ee5800c9a3eac,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: GameControllerCommon, Assembly-CSharp
+      value: GameControllerArena, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 30b67bf796f1aa84e81ee5800c9a3eac, type: 3}

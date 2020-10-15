@@ -78,7 +78,7 @@ public class GlobalPlayerController : NetworkBehaviour
 
         if(localInstance == null && this.isLocalPlayer) {
             localInstance = this;
-            Debug.Log("Local player singleton is set");
+            //Debug.Log("Local player singleton is set");
         }
         
         //Somehow another player is the localplayer on the same client

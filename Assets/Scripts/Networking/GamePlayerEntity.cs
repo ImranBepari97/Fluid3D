@@ -14,9 +14,12 @@ public class GamePlayerEntity : NetworkBehaviour {
         Debug.Log("Trying add player to leaderboard, sending command");
         CmdAddPlayerToLeaderBoard(this.GetComponent<NetworkIdentity>());
 
-        GameObject cutscene = GameObject.FindGameObjectWithTag("Cutscene");
-        cutscene.transform.position = transform.position;
-        cutscene.transform.rotation = transform.rotation;
+        //LevelTransitionLoader.instance.PlayTransitionFadeOut();
+        GameObject cutscene;
+        if (cutscene = GameObject.FindGameObjectWithTag("Cutscene")) {
+            cutscene.transform.position = transform.position;
+            cutscene.transform.rotation = transform.rotation;
+        }
 
         GameObject cameraRig = GameObject.FindObjectOfType<CameraRig>().gameObject;
         cameraRig.transform.rotation = Quaternion.LookRotation(transform.forward);
@@ -46,5 +49,19 @@ public class GamePlayerEntity : NetworkBehaviour {
         gameObject.transform.rotation = rotation;
     }
 
+    public override void OnStopServer() {
+        //Remove from scoreboard
+        (GameControllerCommon.instance as GameControllerArena).scoreboard.Remove(GetComponent<NetworkIdentity>());
+        base.OnStopServer();
+    }
 
+    // public override void OnStopClient() {
+    //     //Add to disconnected players, so technically still on scoreboard
+    //     KeyValuePair<NetworkIdentity, int> dc = new KeyValuePair<NetworkIdentity, int>
+    //         (GetComponent<NetworkIdentity>(), 
+    //         (GameControllerCommon.instance as GameControllerArena).scoreboard[GetComponent<NetworkIdentity>()]
+    //     );
+
+    //     base.OnStopClient();
+    // }
 }

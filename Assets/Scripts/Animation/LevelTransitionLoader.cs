@@ -27,38 +27,47 @@ public class LevelTransitionLoader : MonoBehaviour {
         }
     }
 
-    private void OnEnable() {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-        SceneManager.activeSceneChanged += OnNewActiveScene;
-    }
+    // private void OnEnable() {
+    //     //SceneManager.sceneLoaded += OnSceneLoaded;
+    //     SceneManager.activeSceneChanged += OnNewActiveScene;
+    // }
 
-    private void OnDisable() {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-        SceneManager.activeSceneChanged -= OnNewActiveScene;
-    }
+    // private void OnDisable() {
+    //     //SceneManager.sceneLoaded -= OnSceneLoaded;
+    //     SceneManager.activeSceneChanged -= OnNewActiveScene;
+    // }
 
 
-    void OnNewActiveScene(Scene current, Scene next) {
-        string[] sceneDefaultName = next.name.Split('_');
+    // void OnNewActiveScene(Scene current, Scene next) {
 
-        if (Application.CanStreamedLevelBeLoaded(sceneDefaultName[0] + "_Geometry")) {
-            isLoadingAdditiveScene = true;
-        }
-    }
+    //     Debug.Log("new active scene time");
+    //     // string[] sceneDefaultName = next.name.Split('_');
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
-        if(!isLoadingAdditiveScene) {
-            StartCoroutine(WaitBeforeFadeOut());
-        } else if(mode == LoadSceneMode.Additive) {
-            StartCoroutine(WaitBeforeFadeOut());
-            isLoadingAdditiveScene = false;
-        }
-    }
+    //     // if (Application.CanStreamedLevelBeLoaded(sceneDefaultName[0] + "_Geometry")) {
+    //     //     Debug.Log("New active scene has an additive with it, so set the wait for fading.");
+    //     //     isLoadingAdditiveScene = true;
+    //     // } else {
+    //     //     Debug.Log("No additive scene for this loaded scene, fading now.");
+    //     // }
+    // }
 
-    IEnumerator WaitBeforeFadeOut() {
-        yield return new WaitForSeconds(0.2f);
-        PlayTransitionFadeOut();
-    }
+    // void OnSceneLoaded(Scene scene, LoadSceneMode mode) {
+    //     if(!isLoadingAdditiveScene) {
+    //         Debug.Log("This has no additive scene, fade out");
+    //         StartCoroutine(WaitBeforeFadeOut());
+    //     } else if(mode == LoadSceneMode.Additive) {
+    //         Debug.Log("Additive scene has loaded, fade out");
+    //         StartCoroutine(WaitBeforeFadeOut());
+    //         isLoadingAdditiveScene = false;
+    //     } else {
+    //         Debug.Log("This scene has additive waiting, dont fade");
+    //     }
+    // }
+
+    // IEnumerator WaitBeforeFadeOut() {
+    //     yield return new WaitForSeconds(0.2f);
+    //     PlayTransitionFadeOut();
+    // }
 
     public void LoadSceneWithTransition(string sceneName) {
         StartCoroutine(LoadSceneWithTransitionCoroutine(sceneName));
@@ -69,6 +78,7 @@ public class LevelTransitionLoader : MonoBehaviour {
     /// </summary>
     public void PlayTransitionFadeIn() {
         Debug.Log("Fading to black");
+        instance.transition.ResetTrigger("End");
         instance.transition.SetTrigger("Start");
         Time.timeScale = 1f;
     }
@@ -78,6 +88,7 @@ public class LevelTransitionLoader : MonoBehaviour {
     /// </summary>
     public void PlayTransitionFadeOut() {
         Debug.Log("Unfading scene");
+        instance.transition.ResetTrigger("Start");
         instance.transition.SetTrigger("End");
     }
 

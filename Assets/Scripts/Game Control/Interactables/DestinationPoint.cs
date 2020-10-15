@@ -10,20 +10,14 @@ public class DestinationPoint : NetworkBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        gc = (GameControllerArena)GameControllerCommon.instance;
-    }
-
-    // Update is called once per frame
-    void Update() {
-
+        gc = (GameControllerArena) GameControllerCommon.instance;
     }
 
     void OnTriggerEnter(Collider coll) {
-        Debug.Log("Entered");
-        Debug.Log("IsServer: " + isServer);
         if (isServer) {
             NetworkIdentity ni;
             if ((ni = coll.gameObject.GetComponent<NetworkIdentity>()) && coll.gameObject.GetComponent<GlobalPlayerController>()) {
+
                 gc.AddPoint(ni, 1);
                 gc.SetNewDestination();
 

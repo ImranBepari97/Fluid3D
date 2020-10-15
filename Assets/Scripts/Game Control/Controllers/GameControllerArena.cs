@@ -14,7 +14,7 @@ public class GameControllerArena : GameControllerCommon {
     [System.Serializable]
     public class SyncDictionaryScoreboard : SyncDictionary<NetworkIdentity, int> { }
     public SyncDictionaryScoreboard scoreboard = new SyncDictionaryScoreboard();
-    
+
 
     [SerializeField]
     DestinationPoint destination;
@@ -47,10 +47,6 @@ public class GameControllerArena : GameControllerCommon {
         destination.transform.position = destinationSpawns[currentSelectedPoint];
     }
 
-    new void Awake() {
-        base.Awake();
-    }
-
     // Update is called once per frame
     new void Update() {
 
@@ -76,7 +72,7 @@ public class GameControllerArena : GameControllerCommon {
                     Debug.Log("Not on leaderboard");
                     return; //wait until the player has spawned
                 }
-                
+
                 gameState = GameState.NOT_STARTED;
                 DeactivateAllPlayers();
                 localAnimatorCutscene.Play();
@@ -98,7 +94,9 @@ public class GameControllerArena : GameControllerCommon {
 
                 if (isServer) {
                     DeactivateAllPlayers();
-                    StartCoroutine(GoBackToLobbyRoutine());
+                    if (!NetworkServer.dontListen) {
+                        StartCoroutine(GoBackToLobbyRoutine());
+                    }
                 }
             }
         }
@@ -206,5 +204,17 @@ public class GameControllerArena : GameControllerCommon {
         gameState = GameState.PLAYING;
         Debug.Log("Starting Game and activating players");
         ActivateAllPlayers();
+    }
+
+
+    public void DisconnectFromServer() {
+        switch (NetworkManager.singleton.mode) {
+            case NetworkManagerMode.ClientOnly:
+                NetworkManager.singleton.StopClient();
+                break;
+            case NetworkManagerMode.Host:
+                NetworkManager.singleton.StopHost();
+                break;
+        }
     }
 }

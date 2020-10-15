@@ -17,7 +17,7 @@ public class InputController : NetworkBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Time.deltaTime == 0 || (GameControllerCommon.instance != null && GameControllerCommon.instance.gameState != GameState.PLAYING)) {
+        if(Time.deltaTime == 0 || (GameControllerCommon.instance != null && GameControllerCommon.instance.gameState != GameState.PLAYING) || PauseMenu.isPaused) {
             return;
         }
 

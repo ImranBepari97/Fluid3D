@@ -25,7 +25,7 @@ public class RoomPlayerEntity : NetworkRoomPlayer {
         displayName = name;
     }
 
-    public override void OnClientEnterRoom() { 
+    public override void OnClientEnterRoom() {
         ui = LobbyUI.instance;
         ui.UpdateDisplay();
     }
@@ -33,12 +33,17 @@ public class RoomPlayerEntity : NetworkRoomPlayer {
     public override void OnStartClient() {
         ui = LobbyUI.instance;
         SetStaticInstance();
-        ui.UpdateDisplay();
+        if (ui != null) {
+            ui.UpdateDisplay();
+        }
     }
 
     public override void OnStopClient() {
         base.OnStopClient();
-        ui.UpdateDisplay();
+        if (ui != null) {
+            ui.UpdateDisplay();
+        }
+
     }
 
     private void SetStaticInstance() {
@@ -54,8 +59,15 @@ public class RoomPlayerEntity : NetworkRoomPlayer {
 
     [TargetRpc]
     public void TargetToggleStartButton(NetworkConnection target, bool readyToStart) {
-        if(isLocalPlayer) {
+        if (isLocalPlayer) {
             ui.startGameButton.interactable = readyToStart;
+        }
+    }
+
+    [ClientRpc]
+    public void RpcFadeSceneToBlack() {
+        if (this.hasAuthority) {
+            LevelTransitionLoader.instance.PlayTransitionFadeIn();
         }
     }
 

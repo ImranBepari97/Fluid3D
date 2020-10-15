@@ -3900,7 +3900,7 @@ PrefabInstance:
     - target: {fileID: 599780902261852547, guid: 2a7d3296b4917e24aaeeafa7b56aef98,
         type: 3}
       propertyPath: countdownLeft
-      value: 3.5
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2a7d3296b4917e24aaeeafa7b56aef98, type: 3}
