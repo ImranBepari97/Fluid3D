@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5528499860890717998}
   - component: {fileID: 5396907334189484369}
+  - component: {fileID: 6020539431902233070}
   m_Layer: 0
   m_Name: GameControllerTimeTrial
   m_TagString: Untagged
@@ -43,6 +44,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a0431505982c4d4aab01945fa0f6b9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   countdownLeft: 3
   gameState: 0
   timerSeconds: 0
+  nameOfNextLevel: Level1
+  localAnimatorCutscene: {fileID: 0}
+--- !u!114 &6020539431902233070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5882481896820631908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0

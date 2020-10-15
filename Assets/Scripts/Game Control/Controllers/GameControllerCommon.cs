@@ -2,11 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Mirror;
 
-public class GameControllerCommon : MonoBehaviour
+public class GameControllerCommon : NetworkBehaviour
 {
 
+    [SyncVar]
     public float countdownLeft = 3f;
+    
+    [SyncVar]
     public GameState gameState;
 
     // Start is called before the first frame update
@@ -18,6 +22,7 @@ public class GameControllerCommon : MonoBehaviour
             Debug.Log("Another GameController already exists, deleting this one.");
             Destroy(this.gameObject);
         } else {
+            Debug.Log(this.gameObject + " has been set as local GameController instance.");
             instance = this;
         }
 
@@ -27,8 +32,10 @@ public class GameControllerCommon : MonoBehaviour
     // Update is called once per frame
     public void Update()
     {
-        StartCountdown();
 
+        if(isServer) {
+            StartCountdown();
+        }
 
         if(PauseMenu.isPaused) {
             Cursor.lockState = CursorLockMode.None;
@@ -41,6 +48,7 @@ public class GameControllerCommon : MonoBehaviour
         }
     }
 
+    [Server]
     void StartCountdown() {
         if(gameState == GameState.NOT_STARTED) {
             countdownLeft -= Time.deltaTime;
@@ -50,7 +58,7 @@ public class GameControllerCommon : MonoBehaviour
             }
         }
 
-        if(Input.GetButtonDown("Restart")) {
+        if(NetworkServer.dontListen && Input.GetButtonDown("Restart")) {
             RestartLevel();
         }
     }
@@ -63,11 +71,22 @@ public class GameControllerCommon : MonoBehaviour
         gameState = GameState.PLAYING;
     }
 
+
+    [Client]
     public void RestartLevel() {
         LevelTransitionLoader.instance.LoadSceneWithTransition(SceneManager.GetActiveScene().name);
+
+        if(OfflineNetworkManager.instance != null) {
+            OfflineNetworkManager.instance.StopHost();
+        }
     }
 
+    [Client]
     public void QuitToMenu() {
         LevelTransitionLoader.instance.LoadSceneWithTransition("MainMenu");
+
+        if(OfflineNetworkManager.instance != null) {
+            OfflineNetworkManager.instance.StopHost();
+        }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class PlayerHealth : MonoBehaviour
+public class PlayerHealth : NetworkBehaviour
 {
 
     GlobalPlayerController gpc;
@@ -15,11 +16,20 @@ public class PlayerHealth : MonoBehaviour
     public Vector3 deathVelocity;
 
     public float respawnTime = 5f;
+
+    [SyncVar]
     public float currentHealth;
     public float maxHealth = 100f;
+
+    //[SyncVar (hook = nameof(Damage))]
     float timeSinceLastFallDamage;
     public float fallDamageThresholdVelocity = 40f;
+
+    [Header("Health Regen Properties")]
+    public bool canRegen = true;
     public float healthRegenTime = 5f;
+    public float regenRate = 25f;
+    
     // Start is called before the first frame update
     void Awake()
     {
@@ -37,9 +47,14 @@ public class PlayerHealth : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+        if(!canRegen) {
+            return;
+        }
+        
         timeSinceLastFallDamage += Time.deltaTime;
         if(timeSinceLastFallDamage > healthRegenTime && currentHealth < maxHealth) {
-            currentHealth += 25f * Time.deltaTime;
+            currentHealth += regenRate * Time.deltaTime;
             if(currentHealth > maxHealth) {
                 currentHealth = maxHealth;
             }
@@ -65,7 +80,7 @@ public class PlayerHealth : MonoBehaviour
         Vector3 dollPos = new Vector3(transform.position.x,  transform.position.y - (capsuleCollider.height / 2),  transform.position.z);
         GameObject ragdoll = Instantiate(ragdollPrefab, dollPos , transform.rotation);
         
-        Debug.Log("curVelMag =  " + rb.velocity.magnitude);
+        //Debug.Log("curVelMag =  " + rb.velocity.magnitude);
 
         if(deathVelocity == new Vector3(0,0,0)) {
             deathVelocity = rb.velocity;
@@ -82,24 +97,29 @@ public class PlayerHealth : MonoBehaviour
         Destroy(ragdoll, respawnTime);
     }
 
-    public void Respawn() {
 
+    [Command]
+    public void CmdRespawn() {
+        RpcRespawn();
+        //GetComponent<GamePlayerEntity>().TargetSetPosition(this.connectionToClient, Checkpoint.playerCheckpointMap[this.gameObject], transform.rotation);
+    }
+
+    [ClientRpc]
+    public void RpcRespawn() {
         gpc.enabled = true;
         transform.position = Checkpoint.playerCheckpointMap[this.gameObject];
         rb.velocity = new Vector3(0, 0, 0);
         rb.useGravity = true;
-
         capsuleCollider.enabled = true;
 
         currentHealth = maxHealth;
         gpc.EnableDefaultControls();
         model.SetActive(true);
     }
-
     public void HandleFallDamage(float floorTouchVelocity) {
 
         if(floorTouchVelocity > fallDamageThresholdVelocity) {
-            Debug.Log("fall damage time");
+            //Debug.Log("fall damage time");
             StartCoroutine(FallDamageCoroutine(floorTouchVelocity));
         }
 
@@ -117,7 +137,7 @@ public class PlayerHealth : MonoBehaviour
     public IEnumerator FallDamageCoroutine(float velocity) {
         yield return new WaitForSeconds(0.066f);
         if(!(gpc.floorNormal != new Vector3(0,1,0) && gpc.recentAction == RecentActionType.Slide)) {
-            Debug.Log("fall damage at " + velocity + " is " + PlayerAnimator.RangeRemap(velocity, 40f, 53f, 0f, 100f));
+            //Debug.Log("fall damage at " + velocity + " is " + PlayerAnimator.RangeRemap(velocity, 40f, 53f, 0f, 100f));
             Damage(PlayerAnimator.RangeRemap(velocity, 40f, 53f, 0f, 100f));
         
             timeSinceLastFallDamage = 0f;
@@ -126,6 +146,6 @@ public class PlayerHealth : MonoBehaviour
 
     public IEnumerator RespawnCoroutine() {
         yield return new WaitForSeconds(respawnTime);
-        Respawn();
+        CmdRespawn();
     }
 }

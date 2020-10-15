@@ -3,34 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 using PathCreation;
 using PathCreation.Examples;
+using Mirror;
 
-public class GlobalPlayerController : MonoBehaviour
+public class GlobalPlayerController : NetworkBehaviour
 {
-
     DefaultPlayerController defaultPlayerController;
     WallPlayerController wallPlayerController;
 
     GrindPlayerController grindPlayerController;
 
+    public InputController input; 
+
     PlayerHealth health;
 
+    [SyncVar]
     public int extraJumps = 1;
 
     
+    [SyncVar]
     public int currentJumps;
 
+    [SyncVar]
     public int numberOfDashes = 1;
+
+    [SyncVar]
     public int currentDashes;
 
+    [SyncVar]
     public float currentSpeedMultiplier = 1f;
+
     public float maxSpeedMultiplier = 2f;
+
+    [SyncVar]
     public bool isGrounded;
 
+    [SyncVar]
     public RecentActionType recentAction;
 
     Rigidbody rb;
     CapsuleCollider cc;
-
 
     public float angleRequire = 45f;
 
@@ -41,8 +52,8 @@ public class GlobalPlayerController : MonoBehaviour
 
     public Vector3 floorNormal; //the normal of the floor the player is standing on 
 
-    
 
+    public static GlobalPlayerController localInstance;
 
     // Start is called before the first frame update
     void Awake()
@@ -53,12 +64,29 @@ public class GlobalPlayerController : MonoBehaviour
         defaultPlayerController = GetComponent<DefaultPlayerController>();
         wallPlayerController = GetComponent<WallPlayerController>();
         grindPlayerController = GetComponent<GrindPlayerController>();
+        input = GetComponent<InputController>();
         cc = GetComponent<CapsuleCollider>();
         recentAction = RecentActionType.None;
         currentJumps = 0;
         currentDashes = 0;
         isResetCRRunning = false;
         angleOfNearestWall = 0f;
+    }
+
+    public override void OnStartLocalPlayer() {
+        base.OnStartLocalPlayer();
+
+        if(localInstance == null && this.isLocalPlayer) {
+            localInstance = this;
+            //Debug.Log("Local player singleton is set");
+        }
+        
+        //Somehow another player is the localplayer on the same client
+        if(localInstance != null && localInstance.isLocalPlayer 
+        && this.isLocalPlayer && this != localInstance) {
+            Debug.Log("Something went wrong, deleting this player.");
+            Destroy(this.gameObject);
+        }
     }
 
     // Update is called once per frame
@@ -105,7 +133,7 @@ public class GlobalPlayerController : MonoBehaviour
                     StartCoroutine(JumpControlCooldownClampSpeed(0.25f, defaultPlayerController.currentMaxSpeed, recentAction));
                     break;
                 case RecentActionType.Slide:
-                    if(!InputController.crouchPressed) {
+                    if(!input.crouchPressed) {
                         isResetCRRunning = true;
                         StartCoroutine(JumpControlCoolDown(0.35f, recentAction));
                     }
@@ -137,6 +165,11 @@ public class GlobalPlayerController : MonoBehaviour
         return isGrounded;
     }
 
+    [Command]
+    public void CmdSetRecentAction(RecentActionType action) {
+        recentAction = action;
+    }
+
     void CheckFloorNormal() {
         RaycastHit hit;
         Debug.DrawLine(rb.position, rb.position + (-Vector3.up * 1f), Color.red, 0.01f);
@@ -157,6 +190,7 @@ public class GlobalPlayerController : MonoBehaviour
         yield return new WaitForSeconds(cooldownTimeSeconds);
         if(recentAction == entryAction) { //check playerstate
             recentAction = RecentActionType.None;
+            CmdSetRecentAction(RecentActionType.None);
         }
         isResetCRRunning = false;
     }
@@ -166,6 +200,7 @@ public class GlobalPlayerController : MonoBehaviour
         if(recentAction == entryAction) { //check if something else changed the player state
             rb.velocity = Vector3.ClampMagnitude(new Vector3(rb.velocity.x, 0, rb.velocity.z), maxSpeed);
             recentAction = RecentActionType.None;
+            CmdSetRecentAction(RecentActionType.None);
         }
         isResetCRRunning = false;
     }
@@ -179,7 +214,7 @@ public class GlobalPlayerController : MonoBehaviour
     }
 
     public void EnableDefaultControls() {
-
+        rb.useGravity = true;
         defaultPlayerController.enabled = true;
         wallPlayerController.enabled = false;
         grindPlayerController.enabled = false;
@@ -256,10 +291,10 @@ public class GlobalPlayerController : MonoBehaviour
 
                     gameObject.transform.rotation = Quaternion.RotateTowards(gameObject.transform.rotation, Quaternion.LookRotation(rb.velocity), 540f * Time.deltaTime);
                     //gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
-                    Debug.Log("starting with wall run");
+                    //Debug.Log("starting with wall run");
                 } else {
                     wallPlayerController.wallRunDirection = new Vector3(0,0,0);
-                    Debug.Log("starting with wall cling");
+                    //Debug.Log("starting with wall cling");
                 }
 
                 wallPlayerController.lastWallTouched = other.collider.gameObject;

@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class WallPlayerController : MonoBehaviour
+public class WallPlayerController : NetworkBehaviour
 {
 
     public Vector3 wallNormal;
@@ -22,12 +23,17 @@ public class WallPlayerController : MonoBehaviour
     public float wallRunDuration = 2f;
     public float wallRunLogScale = 1.55f;
     public float wallRunEndSpeed = 8f;
+
+    [SyncVar]
     public float currentWallRunDuration;
 
+    [SyncVar]
     public bool isWallRunning;
 
+    [SyncVar]
     public Vector3 wallRunDirection;
     
+    [SyncVar]
     bool isRunningOnRightWall;
 
     Rigidbody rb;
@@ -68,8 +74,9 @@ public class WallPlayerController : MonoBehaviour
 
     void Update()
     {
-        currentWallRunDuration -= Time.deltaTime;
-
+        if(gpc.recentAction == RecentActionType.WallRunning) {
+            currentWallRunDuration -= Time.deltaTime;
+        }
     }
 
     // Update is called once per frame
@@ -91,7 +98,7 @@ public class WallPlayerController : MonoBehaviour
         isWallRunning = wallRunDirection != new Vector3(0, 0, 0) && currentWallRunDuration > 0; //  && gpc.recentAction != RecentActionType.WallJump;
 
         //stuff to do this physics frame
-        gpc.recentAction = RecentActionType.None;
+        //gpc.recentAction = RecentActionType.None;
 
         if (isWallRunning) { //regular wall running
             gpc.recentAction = RecentActionType.WallRunning;
@@ -99,10 +106,10 @@ public class WallPlayerController : MonoBehaviour
             gameObject.transform.rotation = Quaternion.RotateTowards(rb.rotation, Quaternion.LookRotation(rb.velocity), 540f * Time.deltaTime);
 
         } else if (wallRunDirection != new Vector3(0, 0, 0)) { //ran out of running, detach from wall
-            Debug.Log("dismount as ran out of wall run time");
-            Debug.Log("wallRunDir: " + wallRunDirection);
-            Debug.Log("wallRunDuration: " + currentWallRunDuration);
-            Debug.Log("wallNormal: " +  wallNormal);
+            // Debug.Log("dismount as ran out of wall run time");
+            // Debug.Log("wallRunDir: " + wallRunDirection);
+            // Debug.Log("wallRunDuration: " + currentWallRunDuration);
+            // Debug.Log("wallNormal: " +  wallNormal);
             DismountFromWall(true);
 
         } else { //sliding down wall
@@ -111,19 +118,19 @@ public class WallPlayerController : MonoBehaviour
             gameObject.transform.rotation = Quaternion.LookRotation(-wallNormal);
         }
 
-        if (InputController.jumpPressed && canAct) {
+        if (gpc.input.jumpPressed && canAct && isLocalPlayer) {
 
             gpc.IncreaseSpeedMultiplier(0.2f);
             if (isWallRunning) {
                 rb.velocity = new Vector3(
-                    rb.velocity.normalized.x + wallNormal.normalized.x + (InputController.moveDirection.x * 0.4f), 
+                    rb.velocity.normalized.x + wallNormal.normalized.x + (gpc.input.moveDirection.x * 0.4f), 
                     1f, 
-                    rb.velocity.normalized.z + wallNormal.normalized.z + (InputController.moveDirection.z * 0.4f)) * wallRunInitialJumpForce;
+                    rb.velocity.normalized.z + wallNormal.normalized.z + (gpc.input.moveDirection.z * 0.4f)) * wallRunInitialJumpForce;
             } else {
                 rb.velocity = new Vector3(
-                    wallNormal.normalized.x + (InputController.moveDirection.x * 0.4f), 
+                    wallNormal.normalized.x + (gpc.input.moveDirection.x * 0.4f), 
                     2f, 
-                    wallNormal.normalized.z + (InputController.moveDirection.z * 0.4f)).normalized * initialJumpForce * 1.25f;
+                    wallNormal.normalized.z + (gpc.input.moveDirection.z * 0.4f)).normalized * initialJumpForce * 1.25f;
 
                 gameObject.transform.rotation = Quaternion.LookRotation(wallNormal);
             }
@@ -132,14 +139,14 @@ public class WallPlayerController : MonoBehaviour
 
             Debug.DrawRay(rb.position, rb.velocity, Color.blue, 2f);
             gpc.EnableDefaultControls();
-        } else if(InputController.crouchPressed) {
-                InputController.crouchPressed = false;
-                DismountFromWall(false);
+        } else if(gpc.input.crouchPressed && isLocalPlayer) {
+            gpc.input.crouchPressed = false;
+            DismountFromWall(false);
         }
 
 
-        InputController.jumpPressed = false;
-        InputController.dashPressed = false;
+        gpc.input.jumpPressed = false;
+        gpc.input.dashPressed = false;
     }
 
     void DismountFromWall(bool maintainMomentum = false) {
@@ -192,12 +199,12 @@ public class WallPlayerController : MonoBehaviour
             wallRunDirection = new Vector3(0,0,0);
 
             RaycastHit lastHit;
-            if(Physics.Raycast(transform.position, transform.forward, out lastHit, 1f)) {
-                Debug.Log("wall in front, cling");
+            if(Physics.Raycast(transform.position, horVel.normalized, out lastHit, 1f)) {
+                //Debug.Log("wall in front, cling");
                 return;
             }
 
-            Debug.Log("no wall");
+            //Debug.Log("no wall");
             DismountFromWall(true);
             return;
         }
@@ -219,14 +226,14 @@ public class WallPlayerController : MonoBehaviour
         float ang = Vector3.Angle(wallNormal, hit.normal);
         if(Vector3.Angle(wallNormal, hit.normal) < 39f) {
             wallNormal = hit.normal;
-            Debug.Log("change normal: " + ang);
+            //Debug.Log("change normal: " + ang);
             if(reverseCross) {
                 wallRunDirection = -Vector3.Cross(transform.up, wallNormal);
             } else {
                 wallRunDirection = Vector3.Cross(transform.up, wallNormal);
             }
         } else {
-            Debug.Log("on wall but too big angle: " + ang);
+            //Debug.Log("on wall but too big angle: " + ang);
         }
     }
 

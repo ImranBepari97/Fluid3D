@@ -15,7 +15,7 @@ public class JumpPad : MonoBehaviour
 
             GlobalPlayerController gpc;
             if(gpc = other.gameObject.GetComponent<GlobalPlayerController>()) {
-                gpc.recentAction = RecentActionType.None;
+                gpc.CmdSetRecentAction(RecentActionType.None);
                 if (resetsDashesAndJumps) {
                     gpc.ResetJumpsAndDashes();
                 }
