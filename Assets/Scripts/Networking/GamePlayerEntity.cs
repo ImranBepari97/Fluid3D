@@ -51,7 +51,10 @@ public class GamePlayerEntity : NetworkBehaviour {
 
     public override void OnStopServer() {
         //Remove from scoreboard
-        (GameControllerCommon.instance as GameControllerArena).scoreboard.Remove(GetComponent<NetworkIdentity>());
+        if(GameControllerCommon.instance != null && GameControllerCommon.instance is GameControllerArena) {
+            (GameControllerCommon.instance as GameControllerArena).scoreboard.Remove(GetComponent<NetworkIdentity>());
+        }
+        
         base.OnStopServer();
     }
 

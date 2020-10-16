@@ -149,14 +149,14 @@ public class DefaultPlayerController : NetworkBehaviour {
                 moveDirection.normalized
             );
             //Debug.Log(dot);
-            if (dot > 0.85f) {
+            if (dot > 0.85f) { //if you're going mostly straight, then keep going with only 15% loss
                 rb.velocity = new Vector3(
                     moveDirection.x * currentHorizontalVelocity.magnitude * 0.85f,
                     rb.velocity.y,
                     moveDirection.z * currentHorizontalVelocity.magnitude * 0.85f
                 );
             } else {
-                rb.velocity = new Vector3(
+                rb.velocity = new Vector3( //if you try to change direction too much, 50% loss of speed
                     moveDirection.x * currentHorizontalVelocity.magnitude * 0.5f,
                     rb.velocity.y,
                     moveDirection.z * currentHorizontalVelocity.magnitude * 0.5f
@@ -188,19 +188,17 @@ public class DefaultPlayerController : NetworkBehaviour {
             //Debug.Log("first crouch");
             ShrinkPlayer();
             gpc.recentAction = RecentActionType.Slide;
-            //gpc.CmdSetRecentAction(RecentActionType.Slide);
             rb.velocity = new Vector3(
                 Mathf.Clamp(rb.velocity.x * 1.8f, 1.8f * -currentMaxSpeed, 1.8f * currentMaxSpeed),
                 rb.velocity.y,
                 Mathf.Clamp(rb.velocity.z * 1.8f, 1.8f * -currentMaxSpeed, 1.8f * currentMaxSpeed)
             );
             gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
-        } else if (gpc.recentAction == RecentActionType.Slide && currentHorizontalVelocity.magnitude < defaultRunSpeed * 0.25f) {
+        } else if (gpc.recentAction == RecentActionType.Slide && currentHorizontalVelocity.magnitude < (defaultRunSpeed * 0.25f)) {
             UnshrinkPlayer();
             //Debug.Log("slide is ending");
             gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
-            //gpc.CmdSetRecentAction(RecentActionType.None);
-
+            gpc.recentAction = RecentActionType.None;
         } else if (crouch && gpc.recentAction == RecentActionType.None) { //move with crouched speed
             ShrinkPlayer();
             rb.velocity = new Vector3(moveDirection.x, rb.velocity.y, moveDirection.z) * currentMaxSpeed * crouchSpeedMultiplier;
