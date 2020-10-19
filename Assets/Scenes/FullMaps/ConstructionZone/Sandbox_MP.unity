@@ -98,7 +98,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000002, guid: 16846d84612a768448e22d18341f2c3f,
+  m_LightingDataAsset: {fileID: 112000004, guid: a649ea798dde051439c12c396d88ca96,
     type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: 2597060ca3ba84d43a81e8758d837968,
     type: 2}
@@ -4631,6 +4631,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: PostProcessing
       objectReference: {fileID: 0}
+    - target: {fileID: 2206246458867751190, guid: ff0a23587779474458f666980dff20eb,
+        type: 3}
+      propertyPath: sharedProfile
+      value: 
+      objectReference: {fileID: 11400000, guid: 9edda0b7ed263974c8a7be4a43fb7bda,
+        type: 2}
     - target: {fileID: 2206246458867751191, guid: ff0a23587779474458f666980dff20eb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4711,6 +4717,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6801913400871191296, guid: 30b67bf796f1aa84e81ee5800c9a3eac,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6975673617644753767, guid: 30b67bf796f1aa84e81ee5800c9a3eac,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4789,7 +4800,7 @@ PrefabInstance:
     - target: {fileID: 8491053452494183139, guid: 30b67bf796f1aa84e81ee5800c9a3eac,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8754397850858123736, guid: 30b67bf796f1aa84e81ee5800c9a3eac,
         type: 3}

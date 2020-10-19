@@ -85,6 +85,8 @@ public class LobbyUI : MonoBehaviour {
                 "<color=green>Ready</color>" : "<color=red> Not Ready</color>";
 
                 if (managerExt.roomSlots[i].isLocalPlayer) {
+                    playerNameTexts[i].color = Color.yellow;
+                    
                     if (managerExt.roomSlots[i].readyToBegin) {
                         readyButtonText.text = "UNREADY";
                     } else {
