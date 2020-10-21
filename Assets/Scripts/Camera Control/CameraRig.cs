@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class CameraRig : MonoBehaviour
-{
+public class CameraRig : MonoBehaviour {
 
     public float mouseXSensitivity = 1f;
     public float mouseYSensitivity = 1f;
@@ -18,15 +17,16 @@ public class CameraRig : MonoBehaviour
     public bool isManuallyMovingCamera;
     public static CameraRig instance;
 
+
     // Start is called before the first frame update
-    void Awake() { 
+    void Awake() {
         Cursor.lockState = CursorLockMode.Locked;
         isManuallyMovingCamera = false;
 
-        if(instance != null) {
+        if (instance != null) {
             Debug.LogWarning("There are two instances of CameraRig in the scene when there shouldn't be. This GameObject will be deleted.");
             Destroy(this.gameObject);
-        }  else {
+        } else {
             instance = this;
         }
 
@@ -36,19 +36,19 @@ public class CameraRig : MonoBehaviour
     // Update is called once per frame
     void Update() {
 
-        if(target != null) {
+        if (target != null) {
             gameObject.transform.position = target.transform.position;
         }
 
-        if(PauseMenu.isPaused) {
+        if (PauseMenu.isPaused || (GameControllerCommon.instance != null && GameControllerCommon.instance.gameState == GameState.NOT_STARTED)) {
             return;
         }
 
-        if(target == null) {
+        if (target == null) {
             TryFindDefaultPlayerTarget();
         }
 
-        if(Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0
+        if (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0
             || Input.GetAxis("RStick X") != 0 || Input.GetAxis("RStick Y") != 0) {
             isManuallyMovingCamera = true;
         } else {
@@ -65,19 +65,19 @@ public class CameraRig : MonoBehaviour
 
         Vector3 eulerRotation = transform.rotation.eulerAngles;
         float clampedX = eulerRotation.x;
-        
-        if(clampedX > 180) {
+
+        if (clampedX > 180) {
             clampedX = Mathf.Clamp(eulerRotation.x, 275f, 360f);
         } else {
             clampedX = Mathf.Clamp(eulerRotation.x, 0f, 67.5f);
         }
-         
-        transform.rotation = Quaternion.Euler(clampedX, eulerRotation.y, 0); //cancel z 
-        
 
-        if(target != null) {
+        transform.rotation = Quaternion.Euler(clampedX, eulerRotation.y, 0); //cancel z 
+
+
+        if (target != null) {
             //gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position, 1f);
-            
+
             //Auto camera rotation
             Vector3 xzMovement = targetRb.velocity;
             xzMovement.y = 0;
@@ -99,35 +99,35 @@ public class CameraRig : MonoBehaviour
 
     void TryFindDefaultPlayerTarget() {
         //Debug.Log(GlobalPlayerController.localInstance);
-        if(target == null && GlobalPlayerController.localInstance != null) {
+        if (target == null && GlobalPlayerController.localInstance != null) {
             target = GlobalPlayerController.localInstance.gameObject;
             targetRb = target.GetComponent<Rigidbody>();
         }
     }
 
     void TryLoadPlayerPrefs() {
-        if(PlayerPrefs.HasKey("mouseXInput")) {
-           mouseXSensitivity = PlayerPrefs.GetFloat("mouseXInput");
+        if (PlayerPrefs.HasKey("mouseXInput")) {
+            mouseXSensitivity = PlayerPrefs.GetFloat("mouseXInput");
         }
 
-        if(PlayerPrefs.HasKey("mouseYInput")) {
+        if (PlayerPrefs.HasKey("mouseYInput")) {
             mouseYSensitivity = PlayerPrefs.GetFloat("mouseYInput");
-        } 
+        }
 
-        if(PlayerPrefs.HasKey("stickXInput")) {
+        if (PlayerPrefs.HasKey("stickXInput")) {
             stickXSensitivity = PlayerPrefs.GetFloat("stickXInput");
-        } 
+        }
 
-        if(PlayerPrefs.HasKey("stickYInput")) {
+        if (PlayerPrefs.HasKey("stickYInput")) {
             stickYSensitivity = PlayerPrefs.GetFloat("stickYInput");
-        } 
+        }
 
-        if(PlayerPrefs.HasKey("stickInverted") && PlayerPrefs.GetInt("stickInverted") != 0) {
+        if (PlayerPrefs.HasKey("stickInverted") && PlayerPrefs.GetInt("stickInverted") != 0) {
             stickXSensitivity *= -1;
             stickYSensitivity *= -1;
         }
 
-        if(PlayerPrefs.HasKey("mouseInverted") && PlayerPrefs.GetInt("mouseInverted") != 0) {
+        if (PlayerPrefs.HasKey("mouseInverted") && PlayerPrefs.GetInt("mouseInverted") != 0) {
             mouseXSensitivity *= -1;
             mouseYSensitivity *= -1;
         }
