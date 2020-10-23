@@ -8,6 +8,8 @@ TagManager:
   - Glass
   - DestinationPoint
   - Cutscene
+  - AimCamera
+  - LookAtTarget
   layers:
   - Default
   - TransparentFX

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 using Mirror;
 
 public class PlayerAnimator : MonoBehaviour {
@@ -9,8 +10,13 @@ public class PlayerAnimator : MonoBehaviour {
     GlobalPlayerController gpc;
     Rigidbody rb;
     CapsuleCollider cc;
+    ItemController itemController;
+
+
 
     bool isRightWall;
+
+    [Header("Position Offset Settings")]
     public Vector3 defaultOffset;
     public Vector3 crouchOffset;
 
@@ -20,6 +26,12 @@ public class PlayerAnimator : MonoBehaviour {
     public Vector3 wallHoldOffset;
 
     public Vector3 dashOffset;
+
+    [Header("Constraints")]
+    public AimConstraint lowerSpineConstraint;
+    public AimConstraint headConstraint;
+
+
     bool gameStarted;
 
     // Start is called before the first frame update
@@ -29,12 +41,23 @@ public class PlayerAnimator : MonoBehaviour {
         animator = GetComponent<Animator>();
         rb = transform.parent.GetComponent<Rigidbody>();
         cc = transform.parent.GetComponent<CapsuleCollider>();
+        itemController = transform.parent.GetComponent<ItemController>();
+        StartCoroutine(AddConstraints()); //Because the ic hasnt added the lookAt itself, it seems
+    }
+
+    IEnumerator AddConstraints() {
+        yield return new WaitForSeconds(0.05f);
+
+        ConstraintSource lookAt = new ConstraintSource();
+        lookAt.sourceTransform = itemController.lookAtTarget;
+        lookAt.weight = 0.7f;
+
+        lowerSpineConstraint.AddSource(lookAt);
+        headConstraint.AddSource(lookAt);
     }
 
     // Update is called once per frame
     void Update() {
-
-
         if (gpc.isLocalPlayer) {
             if (GameControllerCommon.instance != null) {
                 gameStarted = GameControllerCommon.instance.gameState == GameState.PLAYING;
@@ -59,6 +82,14 @@ public class PlayerAnimator : MonoBehaviour {
             Vector3 horVel = rb.velocity;
             horVel.y = 0;
 
+
+            if(itemController.isAiming) {
+                lowerSpineConstraint.constraintActive = true;
+                headConstraint.constraintActive = true;
+            } else {
+                lowerSpineConstraint.constraintActive = false;
+                headConstraint.constraintActive = false;
+            }
 
             animator.SetFloat("horizontalVelocity", horVel.magnitude);
 

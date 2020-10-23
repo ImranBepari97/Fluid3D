@@ -120,13 +120,15 @@ public class WallPlayerController : NetworkBehaviour
 
         if (gpc.input.jumpPressed && canAct && isLocalPlayer) {
 
-            gpc.IncreaseSpeedMultiplier(0.2f);
+            
             if (isWallRunning) {
+                gpc.IncreaseSpeedMultiplier(0.2f);
                 rb.velocity = new Vector3(
                     rb.velocity.normalized.x + wallNormal.normalized.x + (gpc.input.moveDirection.x * 0.4f), 
                     1f, 
                     rb.velocity.normalized.z + wallNormal.normalized.z + (gpc.input.moveDirection.z * 0.4f)) * wallRunInitialJumpForce;
             } else {
+                gpc.IncreaseSpeedMultiplier(0.1f);
                 rb.velocity = new Vector3(
                     wallNormal.normalized.x + (gpc.input.moveDirection.x * 0.4f), 
                     2f, 
