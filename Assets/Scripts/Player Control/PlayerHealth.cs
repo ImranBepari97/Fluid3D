@@ -17,8 +17,7 @@ public class PlayerHealth : NetworkBehaviour
 
     public float respawnTime = 5f;
 
-    [SyncVar]
-    public float currentHealth;
+    [SyncVar] public float currentHealth;
     public float maxHealth = 100f;
 
     //[SyncVar (hook = nameof(Damage))]
@@ -61,7 +60,8 @@ public class PlayerHealth : NetworkBehaviour
         }
     }
 
-    public void Die() {
+    [ClientRpc]
+    public void RpcDie() {
         HandleRagdoll();
         gpc.DisableAllControls();
         gpc.enabled = false;
@@ -71,10 +71,9 @@ public class PlayerHealth : NetworkBehaviour
 
         rb.useGravity = false;
         capsuleCollider.enabled = false;
-
-        StartCoroutine(RespawnCoroutine());
-
     }
+
+
 
     void HandleRagdoll() {
         Vector3 dollPos = new Vector3(transform.position.x,  transform.position.y - (capsuleCollider.height / 2),  transform.position.z);
@@ -116,6 +115,7 @@ public class PlayerHealth : NetworkBehaviour
         gpc.EnableDefaultControls();
         model.SetActive(true);
     }
+
     public void HandleFallDamage(float floorTouchVelocity) {
 
         if(floorTouchVelocity > fallDamageThresholdVelocity) {
@@ -126,11 +126,17 @@ public class PlayerHealth : NetworkBehaviour
         floorTouchVelocity = 0; 
     }
 
+    
     public void Damage(float damageDealt) {
+        if(!isServer) {
+            return;
+        }
+
+        timeSinceLastFallDamage = 0;
         currentHealth -= damageDealt;
         if(currentHealth < 0) {
             currentHealth = 0;
-            Die();
+            RpcDie();
         }
     }
 

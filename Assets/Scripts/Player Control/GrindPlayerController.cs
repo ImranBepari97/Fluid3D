@@ -40,6 +40,7 @@ public class GrindPlayerController : NetworkBehaviour
     {
         currentGrindSpeed = grindSpeed * globalPlayerController.currentSpeedMultiplier;
         globalPlayerController.recentAction = RecentActionType.Grind;
+        rb.velocity = new Vector3(0,0,0);
 
         // Debug.DrawRay(rb.position, currentRail.path.GetDirectionAtDistance (dstTravelled,  EndOfPathInstruction.Stop), Color.black, 0.01f);
         // Debug.DrawRay(rb.position, -currentRail.path.GetDirectionAtDistance (dstTravelled,  EndOfPathInstruction.Stop), Color.red, 0.01f);

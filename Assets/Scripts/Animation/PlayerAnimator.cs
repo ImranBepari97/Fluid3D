@@ -11,9 +11,7 @@ public class PlayerAnimator : MonoBehaviour {
     Rigidbody rb;
     CapsuleCollider cc;
     ItemController itemController;
-
-
-
+    
     bool isRightWall;
 
     [Header("Position Offset Settings")]

@@ -4,10 +4,9 @@ using UnityEngine;
 using Cinemachine;
 using Mirror;
 
-public class ItemController : NetworkBehaviour
-{
+public class ItemController : NetworkBehaviour {
 
-    public ItemBase currentItem;
+    [SyncVar(hook = nameof(OnItemChanged))] public NetworkIdentity currentItem;
     CinemachineVirtualCamera aimCam;
 
     public Transform lookAtTarget;
@@ -15,7 +14,12 @@ public class ItemController : NetworkBehaviour
     GlobalPlayerController gpc;
     DefaultPlayerController dpc;
 
+    public Transform restWeaponBone;
+    public Transform useWeaponBone;
+
     public bool isAiming;
+
+    ItemBase currentItemBase;
 
     void Start() {
         aimCam = GameObject.FindGameObjectWithTag("AimCamera").GetComponent<CinemachineVirtualCamera>();
@@ -26,46 +30,59 @@ public class ItemController : NetworkBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        if(Input.GetAxis("Aim") > 0) {
+    void Update() {
+        if (!isLocalPlayer) {
+            // exit from update if this is not the local player
+            return;
+        }
 
-            if(currentItem == null || !currentItem.requiresAim) {
-                Unaim();
+        if (Input.GetAxis("Aim") > 0) {
+
+            if (currentItemBase == null || !currentItemBase.requiresAim) {
+                CmdUnaim();
                 return;
             }
 
-            if(gpc.recentAction == RecentActionType.None || gpc.recentAction == RecentActionType.Grind || gpc.recentAction == RecentActionType.RegularJump) {
-                Aim();
+            if (gpc.recentAction == RecentActionType.None || gpc.recentAction == RecentActionType.Grind || gpc.recentAction == RecentActionType.RegularJump) {
+                CmdAim();
             } else {
-                Unaim();
+                CmdUnaim();
             }
         } else {
-            Unaim();
+            CmdUnaim();
         }
 
-        if(Input.GetButtonDown("Fire")) {
-            if(currentItem != null && (!currentItem.requiresAim || (currentItem.requiresAim && isAiming))) {
-                currentItem.Use();
+        if (Input.GetButtonDown("Fire")) {
+            if (currentItemBase != null && (!currentItemBase.requiresAim || (currentItemBase.requiresAim && isAiming))) {
+                Debug.Log("Trying to fire");
+                currentItemBase.TryUse();
             }
         }
     }
 
-    void Aim() {
+    [Command]
+    void CmdAim() {
         isAiming = true;
         aimCam.Priority = 11;
         dpc.defaultRunSpeed = 7.5f;
 
-        Vector3 lookAtTargetNoY = lookAtTarget.position;
+        Vector3 lookAtTargetNoY = lookAtTarget.position; 
         lookAtTargetNoY.y = transform.position.y;
-        gameObject.transform.rotation = Quaternion.LookRotation(lookAtTargetNoY - transform.position);
+        gameObject.transform.rotation = Quaternion.LookRotation(lookAtTargetNoY - transform.position); //basically point the waist and legs in the direction of the aim, but not torso
 
     }
 
-    void Unaim() {
+    [Command]
+    void CmdUnaim() {
         isAiming = false;
 
         aimCam.Priority = 9;
         dpc.defaultRunSpeed = 10f;
     }
+
+    void OnItemChanged(NetworkIdentity _, NetworkIdentity newValue) {
+        Debug.Log("Received item: " + newValue.gameObject);
+        currentItemBase = newValue.GetComponent<ItemBase>();
+    }
+
 }

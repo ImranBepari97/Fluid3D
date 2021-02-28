@@ -5,29 +5,52 @@ using UnityEngine.Animations;
 using Mirror;
 
 public class ItemBase : NetworkBehaviour {
-    public NetworkIdentity owner;
+    [SyncVar] public NetworkIdentity owner;
     public bool requiresAim;
     [SerializeField] protected int numberOfUses;
 
     protected Transform lookAtTarget;
 
-    PositionConstraint constraint;
+    ParentConstraint constraint;
 
-    void Start() {
+    public override void OnStartClient() {
+        if(!isServer) {
+            PositionSelf();
+        }
+    }
+
+    public override void OnStartServer() {
+        PositionSelf();
+    }
+
+    public void PositionSelf() {
         lookAtTarget = GameObject.FindGameObjectWithTag("LookAtTarget").transform;
-        constraint = GetComponent<PositionConstraint>();
+        constraint = GetComponent<ParentConstraint>();
+
         if(owner != null) {
             ConstraintSource cs = new ConstraintSource();
-            cs.sourceTransform = owner.transform;
+            cs.sourceTransform = owner.gameObject.GetComponent<ItemController>().useWeaponBone;
             cs.weight = 1;
+            ConstraintSource cs1 = new ConstraintSource();
+            cs1.sourceTransform =  owner.gameObject.GetComponent<ItemController>().restWeaponBone;
+            
+            cs1.weight = 0;
             constraint.AddSource(cs);
+            constraint.AddSource(cs1);
             constraint.constraintActive = true;
         }
     }
 
+    public void TryUse() {
+        Debug.Log("Calling command");
+        CmdUse();
+    }
+
     [Command]
     public void CmdUse(NetworkConnectionToClient sender = null) {
-        if(sender.identity == owner) {
+        Debug.Log("Reached server:" + sender);
+        if(sender.clientOwnedObjects.Contains(this.netIdentity)) {
+            Debug.Log("Using");
             Use();
         }
     }

@@ -34,10 +34,11 @@ public class CameraRig : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
+    void LateUpdate() {
 
         if (target != null) {
             gameObject.transform.position = target.transform.position;
+            //transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position, 0.5f);
         }
 
         if (PauseMenu.isPaused || (GameControllerCommon.instance != null && GameControllerCommon.instance.gameState == GameState.NOT_STARTED)) {
@@ -76,7 +77,7 @@ public class CameraRig : MonoBehaviour {
 
 
         if (target != null) {
-            //gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, target.transform.position, 1f);
+            
 
             //Auto camera rotation
             Vector3 xzMovement = targetRb.velocity;

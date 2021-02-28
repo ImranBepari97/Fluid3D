@@ -265,8 +265,10 @@ public class GlobalPlayerController : NetworkBehaviour
         //Fall Damage Check
         if(other.gameObject.layer == LayerMask.NameToLayer("Parkour") || 
             other.gameObject.layer == LayerMask.NameToLayer("Floor")) {
+
             if(Vector3.Dot(other.GetContact(0).normal, Vector3.up) > 0.5f) {
-                //Debug.Log("fallspeed = " + other.relativeVelocity.y);
+                if(!isServer) return;
+                Debug.Log(this.gameObject + " fallspeed = " + other.relativeVelocity.y);
                 health.HandleFallDamage(other.relativeVelocity.y);
                 health.deathVelocity = other.relativeVelocity;
             }
@@ -291,15 +293,15 @@ public class GlobalPlayerController : NetworkBehaviour
 
                     gameObject.transform.rotation = Quaternion.RotateTowards(gameObject.transform.rotation, Quaternion.LookRotation(rb.velocity), 540f * Time.deltaTime);
                     //gameObject.transform.rotation = Quaternion.LookRotation(rb.velocity);
-                    //Debug.Log("starting with wall run");
+                    // Debug.Log("starting with wall run");
                 } else {
                     wallPlayerController.wallRunDirection = new Vector3(0,0,0);
-                    //Debug.Log("starting with wall cling");
+                    // Debug.Log("starting with wall cling");
                 }
 
                 wallPlayerController.lastWallTouched = other.collider.gameObject;
                 wallPlayerController.wallNormal = other.GetContact(0).normal;
-                //Debug.Log("OnWall");   
+                // Debug.Log("OnWall");   
                 wallPlayerController.currentWallRunDuration += 0.1f;
                 EnableWallControls();
 

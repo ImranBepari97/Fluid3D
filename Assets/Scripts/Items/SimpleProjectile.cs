@@ -6,17 +6,17 @@ using Mirror;
 public class SimpleProjectile : ItemBase
 {
 
-
+    public Transform shootPoint;
     public GameObject projectileToSpawn;
-
-
 
     [Server]
     public override void Use() {
 
-        Instantiate(projectileToSpawn, transform.position + (transform.forward * 1f), Quaternion.LookRotation(lookAtTarget.position - transform.position));
-        owner.gameObject.GetComponent<Rigidbody>().AddForce( (transform.position - lookAtTarget.position).normalized * 50f, ForceMode.Impulse);
+        GameObject projectile = Instantiate(projectileToSpawn, shootPoint.position + (shootPoint.forward * 1.5f), Quaternion.LookRotation(lookAtTarget.position - transform.position));
+        NetworkServer.Spawn(projectile, netIdentity.connectionToClient);
 
+        netIdentity.connectionToClient.identity.GetComponent<GamePlayerEntity>().RpcAddForce((transform.position - lookAtTarget.position).normalized * 50f, ForceMode.Impulse);
+        
         //Spawn Rocket
         base.Use();
     }

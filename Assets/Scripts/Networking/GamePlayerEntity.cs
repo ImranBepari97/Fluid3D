@@ -9,7 +9,6 @@ public class GamePlayerEntity : NetworkBehaviour {
     [SyncVar]
     public string displayName = "Loading...";
 
-
     public override void OnStartAuthority() {
         Debug.Log("Trying add player to leaderboard, sending command");
         CmdAddPlayerToLeaderBoard(this.GetComponent<NetworkIdentity>());
@@ -56,6 +55,11 @@ public class GamePlayerEntity : NetworkBehaviour {
         }
         
         base.OnStopServer();
+    }
+
+    [ClientRpc]
+    public void RpcAddForce(Vector3 force, ForceMode mode) {
+        GetComponent<Rigidbody>().AddForce(force, mode);
     }
 
     // public override void OnStopClient() {

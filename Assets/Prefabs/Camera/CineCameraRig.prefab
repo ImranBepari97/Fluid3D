@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 137602868}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 100}
+  m_LocalPosition: {x: 0, y: 0, z: 500}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8396580399002392581}
@@ -392,6 +392,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8396580399002392581}
   - component: {fileID: 4017786377158376698}
+  - component: {fileID: 8838154271905768650}
   m_Layer: 0
   m_Name: AimCam
   m_TagString: AimCamera
@@ -450,3 +451,21 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 3594637183413442515}
+--- !u!114 &8838154271905768650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6756540762455660678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfa8e71ff1158f14ea07a76a86e49064, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minDistance: 0
+  maxDistance: 2.5
+  smooth: 10
+  cameraRadius: 0.3
+  dollyDirAdjusted: {x: 0, y: 0, z: 0}
+  distance: 2.5

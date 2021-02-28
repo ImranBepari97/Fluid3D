@@ -9,7 +9,7 @@ public class ItemSpawner : NetworkBehaviour {
 
     public List<ItemBase> possibleItems;
 
-    MeshRenderer renderer;
+    MeshRenderer meshRenderer;
 
     public float respawnTime = 3f;
 
@@ -18,14 +18,14 @@ public class ItemSpawner : NetworkBehaviour {
 
 
     private void Awake() {
-        renderer = GetComponent<MeshRenderer>();
+        meshRenderer = GetComponent<MeshRenderer>();
     }
     private void Update() {
         if (timeTillActive >= 0) {
-            renderer.enabled = false;
+            meshRenderer.enabled = false;
             timeTillActive -= Time.deltaTime;
         } else {
-            renderer.enabled = true;
+            meshRenderer.enabled = true;
         }
 
         transform.Rotate(0, 100 * Time.deltaTime, 50 * Time.deltaTime);
@@ -37,19 +37,24 @@ public class ItemSpawner : NetworkBehaviour {
     }
 
     IEnumerator GiveItemRoutine(NetworkIdentity newOwner) {
-        yield return new WaitForSeconds(delayToGiveItem);
         ItemController player = newOwner.gameObject.GetComponent<ItemController>();
         if (player.currentItem == null) {
             if (timeTillActive < 0) {
+
+                //trigger waiting dice roll animation here I guess
+
+                timeTillActive = respawnTime;
+                yield return new WaitForSeconds(delayToGiveItem);
+
                 int random = Random.Range(0, possibleItems.Count);
                 GameObject newItem = Instantiate(possibleItems[random].gameObject);
                 ItemBase newBase = newItem.GetComponent<ItemBase>();
-
                 newBase.owner = newOwner;
-                player.currentItem = newBase;
 
                 NetworkServer.Spawn(newItem, newOwner.connectionToClient);
-                timeTillActive = respawnTime;
+                player.currentItem = newItem.GetComponent<NetworkIdentity>();
+                
+
             } else {
                 Debug.Log("Someone tried to call item giving on the server when the CD isn't done");
             }

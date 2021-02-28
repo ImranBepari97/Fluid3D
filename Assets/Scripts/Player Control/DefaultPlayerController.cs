@@ -135,7 +135,7 @@ public class DefaultPlayerController : NetworkBehaviour {
 
             if (jump && gpc.currentJumps > 0) { //multi jump if you can
                 gpc.recentAction = RecentActionType.RegularJump;
-                //gpc.CmdSetRecentAction(RecentActionType.RegularJump);
+                gpc.CmdSetRecentAction(RecentActionType.RegularJump);
                 yVel = initialJumpForce;
                 gpc.currentJumps -= 1;
             } else if (dash && gpc.currentDashes > 0) { //dash if you can
@@ -174,11 +174,11 @@ public class DefaultPlayerController : NetworkBehaviour {
             yVel = initialJumpForce;
             if (gpc.recentAction == RecentActionType.Slide) {
                 gpc.recentAction = RecentActionType.SlideJump;
-                //gpc.CmdSetRecentAction(RecentActionType.SlideJump);
+                gpc.CmdSetRecentAction(RecentActionType.SlideJump);
                 rb.velocity = new Vector3(rb.velocity.x, yVel, rb.velocity.z);
             } else {
                 gpc.recentAction = RecentActionType.RegularJump;
-                //gpc.CmdSetRecentAction(RecentActionType.RegularJump);
+                gpc.CmdSetRecentAction(RecentActionType.RegularJump);
             }
         }
 
@@ -188,6 +188,7 @@ public class DefaultPlayerController : NetworkBehaviour {
             //Debug.Log("first crouch");
             ShrinkPlayer();
             gpc.recentAction = RecentActionType.Slide;
+            gpc.CmdSetRecentAction(RecentActionType.Slide);
             rb.velocity = new Vector3(
                 Mathf.Clamp(rb.velocity.x * 1.8f, 1.8f * -currentMaxSpeed, 1.8f * currentMaxSpeed),
                 rb.velocity.y,
@@ -238,6 +239,7 @@ public class DefaultPlayerController : NetworkBehaviour {
 
     private void CmdStartDash(Vector3 moveDirection) {
         gpc.recentAction = RecentActionType.Dash;
+        gpc.CmdSetRecentAction(RecentActionType.Dash);
         //gpc.CmdSetRecentAction(RecentActionType.Dash);
         yVel = 0;
         gpc.currentDashes -= 1;
